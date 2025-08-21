@@ -1,28 +1,165 @@
-import { useState } from "react";
-import { Shield, Users, FileText, Settings, BarChart3, Calendar, Bell, Lock } from "lucide-react";
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { useToast } from "@/components/ui/use-toast";
+import { 
+  Users, 
+  Shield, 
+  AlertTriangle, 
+  TrendingUp,
+  FileText,
+  Settings,
+  Database,
+  Activity,
+  Plus,
+  Edit,
+  Trash2,
+  Eye,
+  CheckCircle,
+  XCircle,
+  Lock
+} from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
-export default function Admin() {
+const Admin = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [loginError, setLoginError] = useState("");
+  const [stats, setStats] = useState({
+    projects: 0,
+    visitors: 0,
+    alerts: 0,
+    articles: 0,
+    formations: 0,
+    experiences: 0,
+    tools: 0,
+    messages: 0
+  });
+  const [contactMessages, setContactMessages] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedTab, setSelectedTab] = useState("dashboard");
+  const { toast } = useToast();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchStats();
+      fetchContactMessages();
+    }
+  }, [isAuthenticated]);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Mock authentication - in real app, this would connect to Supabase
     if (email === "admin@cybersecpro.com" && password === "CyberAdmin2024!") {
       setIsAuthenticated(true);
-      setError("");
+      setLoginError("");
     } else {
-      setError("Identifiants incorrects. Utilisez admin@cybersecpro.com / CyberAdmin2024!");
+      setLoginError("Identifiants incorrects. Utilisez admin@cybersecpro.com / CyberAdmin2024!");
+    }
+  };
+
+  const fetchStats = async () => {
+    try {
+      const [
+        { count: formationsCount },
+        { count: experiencesCount },
+        { count: toolsCount },
+        { count: messagesCount }
+      ] = await Promise.all([
+        supabase.from('formations').select('*', { count: 'exact', head: true }),
+        supabase.from('experiences').select('*', { count: 'exact', head: true }),
+        supabase.from('tools').select('*', { count: 'exact', head: true }),
+        supabase.from('contact_messages').select('*', { count: 'exact', head: true })
+      ]);
+
+      setStats({
+        projects: 0,
+        visitors: 1234,
+        alerts: 3,
+        articles: 24,
+        formations: formationsCount || 0,
+        experiences: experiencesCount || 0,
+        tools: toolsCount || 0,
+        messages: messagesCount || 0
+      });
+    } catch (error) {
+      console.error('Error fetching stats:', error);
+    }
+  };
+
+  const fetchContactMessages = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('contact_messages')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setContactMessages(data || []);
+    } catch (error) {
+      console.error('Error fetching messages:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const markMessageAsRead = async (id: string) => {
+    try {
+      const { error } = await supabase
+        .from('contact_messages')
+        .update({ is_read: true })
+        .eq('id', id);
+
+      if (error) throw error;
+      
+      setContactMessages(prev => 
+        prev.map(msg => msg.id === id ? { ...msg, is_read: true } : msg)
+      );
+      
+      toast({
+        title: "Message marqué comme lu",
+        description: "Le message a été marqué comme lu avec succès.",
+      });
+    } catch (error) {
+      console.error('Error marking message as read:', error);
+      toast({
+        title: "Erreur",
+        description: "Impossible de marquer le message comme lu.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const deleteMessage = async (id: string) => {
+    try {
+      const { error } = await supabase
+        .from('contact_messages')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+      
+      setContactMessages(prev => prev.filter(msg => msg.id !== id));
+      
+      toast({
+        title: "Message supprimé",
+        description: "Le message a été supprimé avec succès.",
+      });
+    } catch (error) {
+      console.error('Error deleting message:', error);
+      toast({
+        title: "Erreur",
+        description: "Impossible de supprimer le message.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -36,9 +173,9 @@ export default function Admin() {
                 <Lock className="h-8 w-8 text-primary" />
               </div>
               <CardTitle className="text-2xl font-orbitron">Interface Admin</CardTitle>
-              <CardDescription>
+              <p className="text-muted-foreground">
                 Connectez-vous pour accéder au panneau d'administration
-              </CardDescription>
+              </p>
             </CardHeader>
             
             <CardContent>
@@ -69,9 +206,9 @@ export default function Admin() {
                   />
                 </div>
 
-                {error && (
+                {loginError && (
                   <Alert className="border-destructive/50 text-destructive">
-                    <AlertDescription>{error}</AlertDescription>
+                    <AlertDescription>{loginError}</AlertDescription>
                   </Alert>
                 )}
 
@@ -94,257 +231,281 @@ export default function Admin() {
     );
   }
 
-  const stats = [
-    { title: "Projets Actifs", value: "12", change: "+2", icon: BarChart3, color: "text-primary" },
-    { title: "Articles Publiés", value: "28", change: "+5", icon: FileText, color: "text-secondary" },
-    { title: "Visiteurs (30j)", value: "2,847", change: "+12%", icon: Users, color: "text-accent" },
-    { title: "Messages", value: "15", change: "+3", icon: Bell, color: "text-yellow-500" },
-  ];
-
-  const recentProjects = [
-    { id: 1, title: "Pentest Infrastructure Bancaire", status: "Terminé", priority: "Haute" },
-    { id: 2, title: "SOC Implementation", status: "En cours", priority: "Critique" },
-    { id: 3, title: "Threat Hunting Platform", status: "Terminé", priority: "Moyenne" },
-  ];
-
-  const recentMessages = [
-    { id: 1, name: "Jean Dupont", email: "jean@example.com", subject: "Demande de pentest", date: "2024-03-15" },
-    { id: 2, name: "Marie Martin", email: "marie@corp.com", subject: "Formation équipe", date: "2024-03-14" },
-    { id: 3, name: "Pierre Durand", email: "pierre@startup.io", subject: "Consultation RGPD", date: "2024-03-13" },
+  const dashboardStats = [
+    {
+      title: "Formations",
+      value: stats.formations,
+      icon: <Database className="w-4 h-4" />,
+      trend: `${stats.formations} total`
+    },
+    {
+      title: "Expériences",
+      value: stats.experiences,
+      icon: <Users className="w-4 h-4" />,
+      trend: `${stats.experiences} total`
+    },
+    {
+      title: "Outils",
+      value: stats.tools,
+      icon: <Shield className="w-4 h-4" />,
+      trend: `${stats.tools} disponibles`
+    },
+    {
+      title: "Messages",
+      value: stats.messages,
+      icon: <FileText className="w-4 h-4" />,
+      trend: `${contactMessages.filter(m => !m.is_read).length} non lus`
+    }
   ];
 
   return (
-    <div className="min-h-screen py-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8 fade-in">
-          <div>
-            <h1 className="text-3xl font-orbitron font-bold mb-2">
-              Tableau de Bord <span className="cyber-text">Admin</span>
-            </h1>
-            <p className="text-muted-foreground">
-              Gérez votre portfolio et votre contenu depuis cette interface
-            </p>
-          </div>
-          
-          <div className="flex items-center space-x-4 mt-4 md:mt-0">
-            <Badge variant="outline" className="flex items-center">
-              <Shield className="h-4 w-4 mr-2" />
-              Admin connecté
-            </Badge>
-            <Button 
-              variant="outline" 
-              onClick={() => setIsAuthenticated(false)}
-              className="btn-ghost-cyber"
-            >
-              Déconnexion
-            </Button>
+    <div className="min-h-screen bg-background">
+      <div className="border-b bg-card">
+        <div className="container mx-auto px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-bold">Dashboard Admin</h1>
+              <p className="text-muted-foreground">
+                Gestion complète du portfolio cybersécurité
+              </p>
+            </div>
+            <div className="flex items-center gap-4">
+              <Badge variant="outline" className="bg-success/10 text-success border-success/20">
+                <Shield className="w-3 h-3 mr-1" />
+                Sécurisé
+              </Badge>
+              <Button 
+                variant="outline" 
+                onClick={() => setIsAuthenticated(false)}
+                className="btn-ghost-cyber"
+              >
+                Déconnexion
+              </Button>
+            </div>
           </div>
         </div>
+      </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {stats.map((stat, index) => (
-            <Card key={stat.title} className={`cyber-border hover:cyber-glow transition-all duration-300 fade-in fade-in-delay-${index + 1}`}>
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-muted-foreground">{stat.title}</p>
-                    <p className="text-2xl font-bold">{stat.value}</p>
+      <div className="container mx-auto px-6 py-8">
+        <Tabs value={selectedTab} onValueChange={setSelectedTab} className="space-y-6">
+          <TabsList className="grid w-full grid-cols-6">
+            <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
+            <TabsTrigger value="formations">Formations</TabsTrigger>
+            <TabsTrigger value="experiences">Expériences</TabsTrigger>
+            <TabsTrigger value="tools">Outils</TabsTrigger>
+            <TabsTrigger value="messages">Messages</TabsTrigger>
+            <TabsTrigger value="settings">Paramètres</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="dashboard" className="space-y-6">
+            {/* Stats Overview */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {dashboardStats.map((stat, index) => (
+                <Card key={index} className="hover:shadow-cyber transition-all duration-300">
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">
+                      {stat.title}
+                    </CardTitle>
+                    <div className="text-primary">
+                      {stat.icon}
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">{stat.value}</div>
                     <p className="text-xs text-muted-foreground">
-                      <span className="text-secondary">{stat.change}</span> ce mois
+                      {stat.trend}
                     </p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+
+            {/* Quick Actions */}
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <Card className="hover:shadow-cyber transition-all duration-300">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <FileText className="w-5 h-5" />
+                    Gestion des Contenus
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Gérez toutes les données du portfolio depuis un seul endroit.
+                  </p>
+                  <div className="flex gap-2">
+                    <Button size="sm" onClick={() => setSelectedTab("formations")}>
+                      Formations
+                    </Button>
+                    <Button size="sm" variant="outline" onClick={() => setSelectedTab("experiences")}>
+                      Expériences
+                    </Button>
                   </div>
-                  <stat.icon className={`h-8 w-8 ${stat.color}`} />
+                </CardContent>
+              </Card>
+
+              <Card className="hover:shadow-cyber transition-all duration-300">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Users className="w-5 h-5" />
+                    Messages de Contact
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    {contactMessages.filter(m => !m.is_read).length} nouveaux messages en attente.
+                  </p>
+                  <Button size="sm" onClick={() => setSelectedTab("messages")}>
+                    Voir les messages
+                  </Button>
+                </CardContent>
+              </Card>
+
+              <Card className="hover:shadow-cyber transition-all duration-300">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Shield className="w-5 h-5" />
+                    Outils Cybersécurité
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Gérez les outils gratuits disponibles sur le site.
+                  </p>
+                  <Button size="sm" onClick={() => setSelectedTab("tools")}>
+                    Gérer les outils
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="messages" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <FileText className="w-5 h-5" />
+                  Messages de Contact ({contactMessages.length})
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {contactMessages.length === 0 ? (
+                    <p className="text-center text-muted-foreground py-8">
+                      Aucun message pour le moment.
+                    </p>
+                  ) : (
+                    contactMessages.map((message) => (
+                      <Card key={message.id} className={`transition-all duration-300 ${!message.is_read ? 'border-primary/50 bg-primary/5' : ''}`}>
+                        <CardHeader className="pb-3">
+                          <div className="flex items-start justify-between">
+                            <div className="space-y-1">
+                              <div className="flex items-center gap-2">
+                                <span className="font-semibold">{message.name}</span>
+                                <span className="text-sm text-muted-foreground">({message.email})</span>
+                                {!message.is_read && (
+                                  <Badge variant="secondary" className="text-xs">Nouveau</Badge>
+                                )}
+                              </div>
+                              {message.subject && (
+                                <p className="text-sm font-medium">{message.subject}</p>
+                              )}
+                              <p className="text-xs text-muted-foreground">
+                                {new Date(message.created_at).toLocaleDateString('fr-FR', {
+                                  day: 'numeric',
+                                  month: 'long',
+                                  year: 'numeric',
+                                  hour: '2-digit',
+                                  minute: '2-digit'
+                                })}
+                              </p>
+                            </div>
+                            <div className="flex gap-2">
+                              {!message.is_read && (
+                                <Button 
+                                  size="sm" 
+                                  variant="outline"
+                                  onClick={() => markMessageAsRead(message.id)}
+                                >
+                                  <CheckCircle className="w-4 h-4" />
+                                </Button>
+                              )}
+                              <Button 
+                                size="sm" 
+                                variant="destructive"
+                                onClick={() => deleteMessage(message.id)}
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            </div>
+                          </div>
+                        </CardHeader>
+                        <CardContent>
+                          <p className="text-sm whitespace-pre-wrap">{message.message}</p>
+                        </CardContent>
+                      </Card>
+                    ))
+                  )}
                 </div>
               </CardContent>
             </Card>
-          ))}
-        </div>
+          </TabsContent>
 
-        {/* Main Content Tabs */}
-        <div className="fade-in fade-in-delay-2">
-          <Tabs defaultValue="dashboard" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-2 md:grid-cols-6">
-              <TabsTrigger value="dashboard">Vue d'ensemble</TabsTrigger>
-              <TabsTrigger value="projects">Projets</TabsTrigger>
-              <TabsTrigger value="blog">Blog</TabsTrigger>
-              <TabsTrigger value="messages">Messages</TabsTrigger>
-              <TabsTrigger value="analytics">Analytics</TabsTrigger>
-              <TabsTrigger value="settings">Paramètres</TabsTrigger>
-            </TabsList>
+          <TabsContent value="formations">
+            <Card>
+              <CardHeader>
+                <CardTitle>Gestion des Formations</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">
+                  Interface de gestion des formations en développement...
+                </p>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
-            {/* Dashboard Overview */}
-            <TabsContent value="dashboard" className="space-y-6">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Recent Projects */}
-                <Card className="cyber-border">
-                  <CardHeader>
-                    <CardTitle>Projets Récents</CardTitle>
-                    <CardDescription>Vos derniers projets et leur statut</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      {recentProjects.map((project) => (
-                        <div key={project.id} className="flex items-center justify-between p-3 border border-border rounded-lg">
-                          <div>
-                            <p className="font-medium">{project.title}</p>
-                            <div className="flex items-center space-x-2 mt-1">
-                              <Badge variant={project.status === "Terminé" ? "default" : "secondary"}>
-                                {project.status}
-                              </Badge>
-                              <Badge variant="outline">{project.priority}</Badge>
-                            </div>
-                          </div>
-                          <Button variant="ghost" size="sm" className="btn-ghost-cyber">
-                            Voir
-                          </Button>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
+          <TabsContent value="experiences">
+            <Card>
+              <CardHeader>
+                <CardTitle>Gestion des Expériences</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">
+                  Interface de gestion des expériences en développement...
+                </p>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
-                {/* Recent Messages */}
-                <Card className="cyber-border">
-                  <CardHeader>
-                    <CardTitle>Messages Récents</CardTitle>
-                    <CardDescription>Dernières demandes de contact</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      {recentMessages.map((message) => (
-                        <div key={message.id} className="flex items-center justify-between p-3 border border-border rounded-lg">
-                          <div>
-                            <p className="font-medium">{message.name}</p>
-                            <p className="text-sm text-muted-foreground">{message.subject}</p>
-                            <p className="text-xs text-muted-foreground">{message.date}</p>
-                          </div>
-                          <Button variant="ghost" size="sm" className="btn-ghost-cyber">
-                            Répondre
-                          </Button>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            </TabsContent>
+          <TabsContent value="tools">
+            <Card>
+              <CardHeader>
+                <CardTitle>Gestion des Outils</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">
+                  Interface de gestion des outils en développement...
+                </p>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
-            {/* Projects Management */}
-            <TabsContent value="projects">
-              <Card className="cyber-border">
-                <CardHeader>
-                  <CardTitle>Gestion des Projets</CardTitle>
-                  <CardDescription>Créez, modifiez et gérez vos projets</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-center py-12">
-                    <BarChart3 className="h-16 w-16 mx-auto text-muted-foreground/50 mb-4" />
-                    <h3 className="text-lg font-semibold mb-2">Gestion des Projets</h3>
-                    <p className="text-muted-foreground mb-4">
-                      Cette fonctionnalité nécessite la connexion à Supabase pour la gestion de la base de données.
-                    </p>
-                    <Button className="btn-cyber">Configurer Supabase</Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            {/* Blog Management */}
-            <TabsContent value="blog">
-              <Card className="cyber-border">
-                <CardHeader>
-                  <CardTitle>Gestion du Blog</CardTitle>
-                  <CardDescription>Rédigez et publiez vos articles</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-center py-12">
-                    <FileText className="h-16 w-16 mx-auto text-muted-foreground/50 mb-4" />
-                    <h3 className="text-lg font-semibold mb-2">Éditeur d'Articles</h3>
-                    <p className="text-muted-foreground mb-4">
-                      Créez et gérez vos articles de blog avec un éditeur riche.
-                    </p>
-                    <Button className="btn-cyber">Nouvel Article</Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            {/* Messages */}
-            <TabsContent value="messages">
-              <Card className="cyber-border">
-                <CardHeader>
-                  <CardTitle>Centre de Messages</CardTitle>
-                  <CardDescription>Gérez vos communications clients</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-center py-12">
-                    <Bell className="h-16 w-16 mx-auto text-muted-foreground/50 mb-4" />
-                    <h3 className="text-lg font-semibold mb-2">Messagerie</h3>
-                    <p className="text-muted-foreground mb-4">
-                      Système de messagerie intégré pour gérer les demandes clients.
-                    </p>
-                    <Button className="btn-cyber">Voir tous les messages</Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            {/* Analytics */}
-            <TabsContent value="analytics">
-              <Card className="cyber-border">
-                <CardHeader>
-                  <CardTitle>Analytics & Statistiques</CardTitle>
-                  <CardDescription>Suivez les performances de votre portfolio</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-center py-12">
-                    <BarChart3 className="h-16 w-16 mx-auto text-muted-foreground/50 mb-4" />
-                    <h3 className="text-lg font-semibold mb-2">Tableaux de Bord</h3>
-                    <p className="text-muted-foreground mb-4">
-                      Visualisez vos métriques de trafic, engagement et conversions.
-                    </p>
-                    <Button className="btn-cyber">Voir les stats</Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            {/* Settings */}
-            <TabsContent value="settings">
-              <Card className="cyber-border">
-                <CardHeader>
-                  <CardTitle>Paramètres</CardTitle>
-                  <CardDescription>Configurez votre portfolio et vos préférences</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-center py-12">
-                    <Settings className="h-16 w-16 mx-auto text-muted-foreground/50 mb-4" />
-                    <h3 className="text-lg font-semibold mb-2">Configuration</h3>
-                    <p className="text-muted-foreground mb-4">
-                      Personnalisez l'apparence et le comportement de votre portfolio.
-                    </p>
-                    <Button className="btn-cyber">Paramètres avancés</Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-          </Tabs>
-        </div>
-
-        {/* Footer Notice */}
-        <div className="mt-12 fade-in fade-in-delay-3">
-          <Alert className="cyber-border">
-            <Shield className="h-4 w-4" />
-            <AlertDescription>
-              <strong>Note :</strong> Cette interface de démonstration montre la structure de l'administration. 
-              Pour une fonctionnalité complète avec base de données, authentification sécurisée et gestion de contenu, 
-              connectez votre projet à Supabase via le bouton vert en haut à droite.
-            </AlertDescription>
-          </Alert>
-        </div>
+          <TabsContent value="settings">
+            <Card>
+              <CardHeader>
+                <CardTitle>Paramètres du Site</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">
+                  Interface de paramétrage en développement...
+                </p>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
-}
+};
+
+export default Admin;
