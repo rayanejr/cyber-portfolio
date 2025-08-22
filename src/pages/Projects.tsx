@@ -6,12 +6,17 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Link } from "react-router-dom";
+import projectSecurity from "@/assets/project-security.jpg";
+import projectSoc from "@/assets/project-soc.jpg";
+import projectThreat from "@/assets/project-threat.jpg";
 
 export default function Projects() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedYear, setSelectedYear] = useState("all");
 
+  const projectImages = [projectSecurity, projectSoc, projectThreat, projectSecurity, projectSoc, projectThreat];
+  
   const projects = [
     {
       id: 1,
@@ -21,7 +26,7 @@ export default function Projects() {
       technologies: ["Python", "Nmap", "Metasploit", "Burp Suite"],
       year: "2024",
       status: "Terminé",
-      image: "/placeholder.svg",
+      image: projectSecurity,
       github: "https://github.com/cybersecpro/bank-pentest",
       demo: null
     },
@@ -33,7 +38,7 @@ export default function Projects() {
       technologies: ["Splunk", "ELK Stack", "MITRE ATT&CK", "SOAR"],
       year: "2024",
       status: "En cours",
-      image: "/placeholder.svg",
+      image: projectSoc,
       github: "https://github.com/cybersecpro/soc-implementation",
       demo: "https://demo.cybersecpro.com/soc"
     },
@@ -45,7 +50,7 @@ export default function Projects() {
       technologies: ["Python", "Machine Learning", "Elasticsearch", "Kibana"],
       year: "2023",
       status: "Terminé",
-      image: "/placeholder.svg",
+      image: projectThreat,
       github: "https://github.com/cybersecpro/threat-hunting",
       demo: "https://demo.cybersecpro.com/threat-hunting"
     },
@@ -57,7 +62,7 @@ export default function Projects() {
       technologies: ["Go", "Docker", "API REST", "PostgreSQL"],
       year: "2023",
       status: "Terminé",
-      image: "/placeholder.svg",
+      image: projectSecurity,
       github: "https://github.com/cybersecpro/vuln-scanner",
       demo: null
     },
@@ -69,7 +74,7 @@ export default function Projects() {
       technologies: ["React", "Node.js", "MongoDB", "WebSocket"],
       year: "2023",
       status: "Maintenance",
-      image: "/placeholder.svg",
+      image: projectSoc,
       github: "https://github.com/cybersecpro/incident-response",
       demo: "https://demo.cybersecpro.com/incident"
     },
@@ -81,7 +86,7 @@ export default function Projects() {
       technologies: ["Python", "Cuckoo", "YARA", "VirusTotal API"],
       year: "2022",
       status: "Terminé",
-      image: "/placeholder.svg",
+      image: projectThreat,
       github: "https://github.com/cybersecpro/malware-lab",
       demo: null
     }
@@ -187,14 +192,26 @@ export default function Projects() {
         {/* Projects Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredProjects.map((project, index) => (
-            <Card key={project.id} className={`cyber-border hover:cyber-glow transition-all duration-300 fade-in fade-in-delay-${index % 3 + 1}`}>
-              <CardHeader>
-                <div className="flex justify-between items-start mb-2">
+            <Card key={project.id} className={`cyber-border hover:cyber-glow transition-all duration-300 fade-in fade-in-delay-${index % 3 + 1} overflow-hidden`}>
+              {/* Project Image */}
+              <div className="relative h-48 overflow-hidden">
+                <img 
+                  src={project.image} 
+                  alt={project.title}
+                  className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-card/80 to-transparent"></div>
+                <div className="absolute top-4 left-4">
                   <Badge variant={getStatusBadgeVariant(project.status)}>
                     {project.status}
                   </Badge>
-                  <Badge variant="outline">{project.year}</Badge>
                 </div>
+                <Badge className="absolute top-4 right-4 bg-primary/90">
+                  {project.year}
+                </Badge>
+              </div>
+
+              <CardHeader>
                 <CardTitle className="text-xl">{project.title}</CardTitle>
                 <CardDescription className="line-clamp-3">
                   {project.description}
