@@ -8,7 +8,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
+import AdminFormations from "@/components/admin/AdminFormations";
+import AdminExperiences from "@/components/admin/AdminExperiences";
+import AdminTools from "@/components/admin/AdminTools";
+import AdminSkills from "@/components/admin/AdminSkills";
+import AdminCertifications from "@/components/admin/AdminCertifications";
 import { 
   Users, 
   Shield, 
@@ -288,13 +293,14 @@ const Admin = () => {
 
       <div className="container mx-auto px-6 py-8">
         <Tabs value={selectedTab} onValueChange={setSelectedTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-6">
+          <TabsList className="grid w-full grid-cols-7">
             <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
             <TabsTrigger value="formations">Formations</TabsTrigger>
             <TabsTrigger value="experiences">Expériences</TabsTrigger>
             <TabsTrigger value="tools">Outils</TabsTrigger>
+            <TabsTrigger value="skills">Compétences</TabsTrigger>
+            <TabsTrigger value="certifications">Certifications</TabsTrigger>
             <TabsTrigger value="messages">Messages</TabsTrigger>
-            <TabsTrigger value="settings">Paramètres</TabsTrigger>
           </TabsList>
 
           <TabsContent value="dashboard" className="space-y-6">
@@ -452,55 +458,23 @@ const Admin = () => {
           </TabsContent>
 
           <TabsContent value="formations">
-            <Card>
-              <CardHeader>
-                <CardTitle>Gestion des Formations</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">
-                  Interface de gestion des formations en développement...
-                </p>
-              </CardContent>
-            </Card>
+            <AdminFormations />
           </TabsContent>
 
           <TabsContent value="experiences">
-            <Card>
-              <CardHeader>
-                <CardTitle>Gestion des Expériences</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">
-                  Interface de gestion des expériences en développement...
-                </p>
-              </CardContent>
-            </Card>
+            <AdminExperiences />
           </TabsContent>
 
           <TabsContent value="tools">
-            <Card>
-              <CardHeader>
-                <CardTitle>Gestion des Outils</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">
-                  Interface de gestion des outils en développement...
-                </p>
-              </CardContent>
-            </Card>
+            <AdminTools />
           </TabsContent>
 
-          <TabsContent value="settings">
-            <Card>
-              <CardHeader>
-                <CardTitle>Paramètres du Site</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">
-                  Interface de paramétrage en développement...
-                </p>
-              </CardContent>
-            </Card>
+          <TabsContent value="skills">
+            <AdminSkills />
+          </TabsContent>
+
+          <TabsContent value="certifications">
+            <AdminCertifications />
           </TabsContent>
         </Tabs>
       </div>
