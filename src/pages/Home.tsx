@@ -260,29 +260,64 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {skills.map((skillGroup, index) => (
-              <Card key={skillGroup.category} className={`cyber-border hover:cyber-glow transition-all duration-300 fade-in fade-in-delay-${index + 1}`}>
-                <CardHeader>
-                  <CardTitle className="text-lg flex items-center gap-2">
-                    <div className="w-3 h-3 bg-primary rounded-full animate-pulse"></div>
-                    {skillGroup.category}
+              <Card key={skillGroup.category} className={`cyber-border hover:cyber-glow transition-all duration-300 fade-in fade-in-delay-${index + 1} group relative overflow-hidden`}>
+                {/* Glow effect background */}
+                <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-secondary/10 to-accent/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                
+                <CardHeader className="relative z-10">
+                  <CardTitle className="text-xl flex items-center gap-3 mb-4">
+                    <div className="relative">
+                      <div className="w-4 h-4 bg-primary rounded-full animate-pulse"></div>
+                      <div className="absolute inset-0 w-4 h-4 bg-primary rounded-full animate-ping opacity-75"></div>
+                    </div>
+                    <span className="font-orbitron">{skillGroup.category}</span>
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <div className="space-y-2">
-                    {skillGroup.items.map((skill: string) => (
-                      <div key={skill} className="flex items-center justify-between">
-                        <Badge variant="secondary" className="text-xs">
+                
+                <CardContent className="relative z-10">
+                  <div className="space-y-3">
+                    {skillGroup.items.map((skill: string, skillIndex: number) => (
+                      <div key={skill} className={`flex items-center justify-between p-3 rounded-lg bg-card/50 hover:bg-card/80 transition-all duration-300 fade-in fade-in-delay-${skillIndex + 2}`}>
+                        <Badge variant="secondary" className="text-sm font-medium flex-1 mr-3">
                           {skill}
                         </Badge>
-                        <div className="w-2 h-2 bg-secondary rounded-full opacity-60"></div>
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-secondary rounded-full opacity-60 animate-pulse"></div>
+                          <div className="text-xs text-muted-foreground">Expert</div>
+                        </div>
                       </div>
                     ))}
                   </div>
+                  
+                  {/* Category statistics */}
+                  <div className="mt-6 pt-4 border-t border-border/50">
+                    <div className="flex items-center justify-between text-sm text-muted-foreground">
+                      <span>{skillGroup.items.length} compétences</span>
+                      <Badge variant="outline" className="text-xs">
+                        Niveau Expert
+                      </Badge>
+                    </div>
+                  </div>
                 </CardContent>
+
+                {/* Animated border effect */}
+                <div className="absolute inset-0 border-2 border-transparent bg-gradient-to-r from-primary via-secondary to-accent p-[2px] rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                  <div className="bg-card rounded-lg w-full h-full"></div>
+                </div>
               </Card>
             ))}
+          </div>
+          
+          {/* Skills CTA */}
+          <div className="text-center mt-12 fade-in fade-in-delay-4">
+            <Link to="/tools">
+              <Button className="btn-cyber group">
+                Découvrir mes outils de cybersécurité
+                <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
@@ -337,12 +372,14 @@ export default function Home() {
                     </div>
 
                     {/* Actions */}
-                    <Link to={`/projects/${project.id}`}>
-                      <Button size="sm" className="btn-cyber w-full group">
-                        Voir plus
-                        <ExternalLink className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                      </Button>
-                    </Link>
+                    <div className="pt-2">
+                      <Link to={`/projects/${project.id}`}>
+                        <Button size="sm" className="btn-cyber w-full group">
+                          Voir plus
+                          <ExternalLink className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                        </Button>
+                      </Link>
+                    </div>
                   </div>
                 </CardContent>
               </Card>

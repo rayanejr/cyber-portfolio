@@ -281,6 +281,7 @@ export default function AdminCertifications() {
                   type="date"
                   value={formData.expiry_date}
                   onChange={(e) => setFormData({ ...formData, expiry_date: e.target.value })}
+                  min={formData.issue_date || undefined}
                 />
               </div>
             </div>

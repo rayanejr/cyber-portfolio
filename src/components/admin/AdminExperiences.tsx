@@ -318,6 +318,7 @@ export default function AdminExperiences() {
                   type="date"
                   value={formData.end_date}
                   onChange={(e) => setFormData({ ...formData, end_date: e.target.value })}
+                  min={formData.start_date || undefined}
                   disabled={formData.is_current}
                 />
               </div>

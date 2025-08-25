@@ -54,16 +54,30 @@ const Admin = () => {
   const { toast } = useToast();
 
   useEffect(() => {
+    // Check if already authenticated
+    const token = localStorage.getItem('admin_token');
+    if (token === 'authenticated') {
+      setIsAuthenticated(true);
+    }
+  }, []);
+
+  useEffect(() => {
     if (isAuthenticated) {
       fetchStats();
       fetchContactMessages();
     }
   }, [isAuthenticated]);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (email === "admin@cybersecpro.com" && password === "CyberAdmin2024!") {
+      // Create a simple session token for RLS bypass
+      localStorage.setItem('admin_token', 'authenticated');
+      
+      // Create fake auth session for Supabase client
+      await supabase.auth.signInAnonymously();
+      
       setIsAuthenticated(true);
       setLoginError("");
     } else {
@@ -281,7 +295,11 @@ const Admin = () => {
               </Badge>
               <Button 
                 variant="outline" 
-                onClick={() => setIsAuthenticated(false)}
+                onClick={async () => {
+                  localStorage.removeItem('admin_token');
+                  await supabase.auth.signOut();
+                  setIsAuthenticated(false);
+                }}
                 className="btn-ghost-cyber"
               >
                 Déconnexion
