@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { ArrowRight, Shield, Target, Code, Award, ExternalLink, ChevronRight, Eye, Download, Mail, Phone, MapPin, FileText, User } from "lucide-react";
+import CVDownloadButton from "@/components/CVDownloadButton";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -144,6 +145,7 @@ export default function Home() {
                   Me contacter
                 </Button>
               </Link>
+              <CVDownloadButton />
             </div>
           </div>
         </div>
@@ -165,7 +167,7 @@ export default function Home() {
                 <img 
                   src={profilePhoto} 
                   alt="Expert en Cybersécurité" 
-                  className="w-64 h-64 rounded-full mx-auto lg:mx-0 object-cover cyber-border hover:cyber-glow transition-all duration-300"
+                  className="w-64 h-64 rounded-lg mx-auto lg:mx-0 object-cover cyber-border hover:cyber-glow transition-all duration-300"
                 />
                 <div className="absolute -bottom-2 -right-2 bg-primary text-primary-foreground rounded-full p-2">
                   <Shield className="h-6 w-6" />

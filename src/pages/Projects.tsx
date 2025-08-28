@@ -236,7 +236,7 @@ export default function Projects() {
                   </div>
 
                   {/* Actions */}
-                  <div className="flex gap-2 pt-4">
+                  <div className="flex gap-2 pt-8">
                     <Link to={`/projects/${project.id}`} className="flex-1">
                       <Button size="sm" className="btn-cyber w-full">
                         Voir plus

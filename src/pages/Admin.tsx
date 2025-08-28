@@ -14,6 +14,9 @@ import AdminExperiences from "@/components/admin/AdminExperiences";
 import AdminTools from "@/components/admin/AdminTools";
 import AdminSkills from "@/components/admin/AdminSkills";
 import AdminCertifications from "@/components/admin/AdminCertifications";
+import AdminProjects from "@/components/admin/AdminProjects";
+import AdminBlogs from "@/components/admin/AdminBlogs";
+import AdminFiles from "@/components/admin/AdminFiles";
 import { 
   Users, 
   Shield, 
@@ -311,14 +314,16 @@ const Admin = () => {
 
       <div className="container mx-auto px-6 py-8">
         <Tabs value={selectedTab} onValueChange={setSelectedTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-7">
+          <TabsList className="grid w-full grid-cols-5 lg:grid-cols-9">
             <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
             <TabsTrigger value="formations">Formations</TabsTrigger>
             <TabsTrigger value="experiences">Expériences</TabsTrigger>
             <TabsTrigger value="tools">Outils</TabsTrigger>
             <TabsTrigger value="skills">Compétences</TabsTrigger>
             <TabsTrigger value="certifications">Certifications</TabsTrigger>
-            <TabsTrigger value="messages">Messages</TabsTrigger>
+            <TabsTrigger value="projects">Projets</TabsTrigger>
+            <TabsTrigger value="blogs">Articles</TabsTrigger>
+            <TabsTrigger value="files">Fichiers</TabsTrigger>
           </TabsList>
 
           <TabsContent value="dashboard" className="space-y-6">
@@ -493,6 +498,18 @@ const Admin = () => {
 
           <TabsContent value="certifications">
             <AdminCertifications />
+          </TabsContent>
+
+          <TabsContent value="projects">
+            <AdminProjects />
+          </TabsContent>
+
+          <TabsContent value="blogs">
+            <AdminBlogs />
+          </TabsContent>
+
+          <TabsContent value="files">
+            <AdminFiles />
           </TabsContent>
         </Tabs>
       </div>

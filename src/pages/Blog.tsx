@@ -247,12 +247,14 @@ export default function Blog() {
                       </div>
 
                       {/* Read more */}
-                      <Link to={`/blog/${article.id}`}>
-                        <Button size="sm" className="btn-cyber w-full group">
-                          Lire la suite
-                          <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                        </Button>
-                      </Link>
+                      <div className="pt-4">
+                        <Link to={`/blog/${article.id}`}>
+                          <Button size="sm" className="btn-cyber w-full group">
+                            Lire la suite
+                            <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                          </Button>
+                        </Link>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
