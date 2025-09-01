@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -83,8 +82,8 @@ const Projects = () => {
             <Card key={project.id} className="cyber-border hover:shadow-cyber transition-all duration-300 group">
               {project.image_url && (
                 <div className="relative overflow-hidden rounded-t-lg">
-                  <img 
-                    src={project.image_url} 
+                  <img
+                    src={project.image_url}
                     alt={project.title}
                     className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
                   />
@@ -95,7 +94,7 @@ const Projects = () => {
                   )}
                 </div>
               )}
-              
+
               <CardHeader>
                 <CardTitle className="text-xl font-orbitron text-gradient">
                   {project.title}
@@ -106,7 +105,7 @@ const Projects = () => {
                   </p>
                 )}
               </CardHeader>
-              
+
               <CardContent className="space-y-4">
                 {/* Technologies */}
                 {project.technologies && project.technologies.length > 0 && (
@@ -118,38 +117,45 @@ const Projects = () => {
                     ))}
                   </div>
                 )}
-                
+
                 {/* Action Buttons */}
                 <div className="flex gap-2 pt-4">
+                  {/* Détails (route interne) */}
                   <Button asChild size="sm" className="flex-1">
                     <Link to={`/projects/${project.id}`}>
                       <Eye className="w-4 h-4 mr-2" />
                       Détails
                     </Link>
                   </Button>
-                  
+
+                  {/* Démo (lien externe) */}
                   {project.demo_url && (
                     <Button asChild size="sm" variant="outline">
-                      <a 
-                        href={project.demo_url} 
-                        target="_blank" 
+                      <a
+                        href={project.demo_url}
+                        target="_blank"
                         rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2"
                       >
                         <ExternalLink className="w-4 h-4" />
+                        <span className="sr-only">Démo</span>
                       </a>
-                    </Link>
+                    </Button>
                   )}
-                  
+
+                  {/* GitHub (lien externe) */}
                   {project.github_url && (
                     <Button asChild size="sm" variant="outline">
-                      <a 
-                        href={project.github_url} 
-                        target="_blank" 
+                      <a
+                        href={project.github_url}
+                        target="_blank"
                         rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2"
                       >
                         <Github className="w-4 h-4" />
+                        <span className="sr-only">Code</span>
                       </a>
-                    </Link>
+                    </Button>
                   )}
                 </div>
               </CardContent>
