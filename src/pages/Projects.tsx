@@ -137,7 +137,7 @@ const Projects = () => {
                       >
                         <ExternalLink className="w-4 h-4" />
                       </a>
-                    </Link>
+                    </Button>
                   )}
                   
                   {project.github_url && (
@@ -149,7 +149,7 @@ const Projects = () => {
                       >
                         <Github className="w-4 h-4" />
                       </a>
-                    </Link>
+                    </Button>
                   )}
                 </div>
               </CardContent>
