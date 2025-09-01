@@ -1,292 +1,164 @@
-import { useState } from "react";
-import { Search, Filter, Calendar, Github, ExternalLink, Tag } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import projectSecurity from "@/assets/project-security.jpg";
-import projectSoc from "@/assets/project-soc.jpg";
-import projectThreat from "@/assets/project-threat.jpg";
+import { supabase } from "@/integrations/supabase/client";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { ExternalLink, Github, Eye } from "lucide-react";
 
-export default function Projects() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("all");
-  const [selectedYear, setSelectedYear] = useState("all");
+interface Project {
+  id: string;
+  title: string;
+  description: string;
+  image_url: string;
+  demo_url: string;
+  github_url: string;
+  technologies: string[];
+  featured: boolean;
+  is_active: boolean;
+}
 
-  const projectImages = [projectSecurity, projectSoc, projectThreat, projectSecurity, projectSoc, projectThreat];
-  
-  const projects = [
-    {
-      id: 1,
-      title: "Pentest Infrastructure Bancaire",
-      description: "Audit de sécurité complet d'une infrastructure bancaire avec identification de vulnérabilités critiques et recommandations de remédiation.",
-      category: "Pentest",
-      technologies: ["Python", "Nmap", "Metasploit", "Burp Suite"],
-      year: "2024",
-      status: "Terminé",
-      image: projectSecurity,
-      github: "https://github.com/cybersecpro/bank-pentest",
-      demo: null
-    },
-    {
-      id: 2,
-      title: "SOC Implementation",
-      description: "Mise en place d'un Security Operations Center avec détection d'incidents en temps réel et réponse automatisée.",
-      category: "SOC",
-      technologies: ["Splunk", "ELK Stack", "MITRE ATT&CK", "SOAR"],
-      year: "2024",
-      status: "En cours",
-      image: projectSoc,
-      github: "https://github.com/cybersecpro/soc-implementation",
-      demo: "https://demo.cybersecpro.com/soc"
-    },
-    {
-      id: 3,
-      title: "Threat Hunting Platform",
-      description: "Développement d'une plateforme de chasse aux menaces utilisant l'IA pour la détection proactive des cybermenaces.",
-      category: "Threat Hunting",
-      technologies: ["Python", "Machine Learning", "Elasticsearch", "Kibana"],
-      year: "2023",
-      status: "Terminé",
-      image: projectThreat,
-      github: "https://github.com/cybersecpro/threat-hunting",
-      demo: "https://demo.cybersecpro.com/threat-hunting"
-    },
-    {
-      id: 4,
-      title: "Vulnerability Scanner",
-      description: "Scanner de vulnérabilités automatisé avec reporting détaillé et intégration CI/CD.",
-      category: "Sécurité",
-      technologies: ["Go", "Docker", "API REST", "PostgreSQL"],
-      year: "2023",
-      status: "Terminé",
-      image: projectSecurity,
-      github: "https://github.com/cybersecpro/vuln-scanner",
-      demo: null
-    },
-    {
-      id: 5,
-      title: "Incident Response Tool",
-      description: "Outil de réponse aux incidents avec workflow automatisé et intégration SIEM.",
-      category: "Incident Response",
-      technologies: ["React", "Node.js", "MongoDB", "WebSocket"],
-      year: "2023",
-      status: "Maintenance",
-      image: projectSoc,
-      github: "https://github.com/cybersecpro/incident-response",
-      demo: "https://demo.cybersecpro.com/incident"
-    },
-    {
-      id: 6,
-      title: "Malware Analysis Lab",
-      description: "Environnement d'analyse de malware avec sandboxing et analyse comportementale.",
-      category: "Malware Analysis",
-      technologies: ["Python", "Cuckoo", "YARA", "VirusTotal API"],
-      year: "2022",
-      status: "Terminé",
-      image: projectThreat,
-      github: "https://github.com/cybersecpro/malware-lab",
-      demo: null
-    }
-  ];
+const Projects = () => {
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const categories = [
-    "all",
-    "Pentest",
-    "SOC",
-    "Threat Hunting",
-    "Sécurité",
-    "Incident Response",
-    "Malware Analysis"
-  ];
+  useEffect(() => {
+    fetchProjects();
+  }, []);
 
-  const years = ["all", "2024", "2023", "2022"];
+  const fetchProjects = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('projects')
+        .select('*')
+        .eq('is_active', true)
+        .order('featured', { ascending: false })
+        .order('created_at', { ascending: false });
 
-  const filteredProjects = projects.filter(project => {
-    const matchesSearch = project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         project.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         project.technologies.some(tech => tech.toLowerCase().includes(searchTerm.toLowerCase()));
-    
-    const matchesCategory = selectedCategory === "all" || project.category === selectedCategory;
-    const matchesYear = selectedYear === "all" || project.year === selectedYear;
-    
-    return matchesSearch && matchesCategory && matchesYear;
-  });
-
-  const getStatusBadgeVariant = (status: string) => {
-    switch (status) {
-      case "Terminé": return "default";
-      case "En cours": return "secondary";
-      case "Maintenance": return "outline";
-      default: return "default";
+      if (error) throw error;
+      setProjects(data || []);
+    } catch (error) {
+      console.error('Error fetching projects:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
+  if (loading) {
+    return (
+      <div className="container mx-auto px-6 py-20">
+        <div className="text-center">
+          <div className="animate-pulse">
+            <div className="h-8 bg-muted rounded w-1/3 mx-auto mb-4"></div>
+            <div className="h-4 bg-muted rounded w-1/2 mx-auto"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen py-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="text-center mb-16 fade-in">
-          <h1 className="text-4xl md:text-5xl font-orbitron font-bold mb-4">
-            Mes <span className="cyber-text">Projets</span>
-          </h1>
-          <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-            Découvrez mes projets en cybersécurité, du pentesting aux outils de défense,
-            en passant par la recherche de menaces et l'analyse de malware.
+    <div className="container mx-auto px-6 py-20">
+      {/* Header */}
+      <div className="text-center mb-16">
+        <h1 className="text-4xl md:text-6xl font-bold font-orbitron mb-6 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+          Mes Projets
+        </h1>
+        <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+          Découvrez mes réalisations en cybersécurité, développement web et analyse de sécurité
+        </p>
+      </div>
+
+      {/* Projects Grid */}
+      {projects.length === 0 ? (
+        <div className="text-center py-12">
+          <p className="text-muted-foreground text-lg">
+            Aucun projet disponible pour le moment.
           </p>
         </div>
-
-        {/* Filters */}
-        <div className="bg-card/50 cyber-border rounded-lg p-6 mb-12 fade-in fade-in-delay-1">
-          <div className="flex flex-col md:flex-row gap-4">
-            <div className="flex-1">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Rechercher par titre, description ou technologie..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
-            </div>
-            
-            <div className="flex gap-4">
-              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                <SelectTrigger className="w-48">
-                  <Filter className="h-4 w-4 mr-2" />
-                  <SelectValue placeholder="Catégorie" />
-                </SelectTrigger>
-                <SelectContent>
-                  {categories.map(category => (
-                    <SelectItem key={category} value={category}>
-                      {category === "all" ? "Toutes les catégories" : category}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-
-              <Select value={selectedYear} onValueChange={setSelectedYear}>
-                <SelectTrigger className="w-32">
-                  <Calendar className="h-4 w-4 mr-2" />
-                  <SelectValue placeholder="Année" />
-                </SelectTrigger>
-                <SelectContent>
-                  {years.map(year => (
-                    <SelectItem key={year} value={year}>
-                      {year === "all" ? "Toutes" : year}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          <div className="mt-4 text-sm text-muted-foreground">
-            {filteredProjects.length} projet(s) trouvé(s)
-          </div>
-        </div>
-
-        {/* Projects Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredProjects.map((project, index) => (
-            <Card key={project.id} className={`cyber-border hover:cyber-glow transition-all duration-300 fade-in fade-in-delay-${index % 3 + 1} overflow-hidden`}>
-              {/* Project Image */}
-              <div className="relative h-48 overflow-hidden">
-                <img 
-                  src={project.image} 
-                  alt={project.title}
-                  className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-card/80 to-transparent"></div>
-                <div className="absolute top-4 left-4">
-                  <Badge variant={getStatusBadgeVariant(project.status)}>
-                    {project.status}
-                  </Badge>
+      ) : (
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {projects.map((project) => (
+            <Card key={project.id} className="cyber-border hover:shadow-cyber transition-all duration-300 group">
+              {project.image_url && (
+                <div className="relative overflow-hidden rounded-t-lg">
+                  <img 
+                    src={project.image_url} 
+                    alt={project.title}
+                    className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                  {project.featured && (
+                    <Badge className="absolute top-4 left-4 bg-primary/90 text-white">
+                      Mis en avant
+                    </Badge>
+                  )}
                 </div>
-                <Badge className="absolute top-4 right-4 bg-primary/90">
-                  {project.year}
-                </Badge>
-              </div>
-
+              )}
+              
               <CardHeader>
-                <CardTitle className="text-xl">{project.title}</CardTitle>
-                <CardDescription className="line-clamp-3">
-                  {project.description}
-                </CardDescription>
+                <CardTitle className="text-xl font-orbitron text-gradient">
+                  {project.title}
+                </CardTitle>
+                {project.description && (
+                  <p className="text-muted-foreground">
+                    {project.description}
+                  </p>
+                )}
               </CardHeader>
               
-              <CardContent>
-                <div className="space-y-4">
-                  {/* Category */}
-                  <div className="flex items-center text-sm text-muted-foreground">
-                    <Tag className="h-4 w-4 mr-2" />
-                    {project.category}
-                  </div>
-
-                  {/* Technologies */}
+              <CardContent className="space-y-4">
+                {/* Technologies */}
+                {project.technologies && project.technologies.length > 0 && (
                   <div className="flex flex-wrap gap-2">
-                    {project.technologies.map((tech) => (
-                      <Badge key={tech} variant="secondary" className="text-xs">
+                    {project.technologies.map((tech, index) => (
+                      <Badge key={index} variant="outline" className="text-xs">
                         {tech}
                       </Badge>
                     ))}
                   </div>
-
-                  {/* Actions */}
-                  <div className="flex gap-2 pt-8">
-                    <Link to={`/projects/${project.id}`} className="flex-1">
-                      <Button size="sm" className="btn-cyber w-full">
-                        Voir plus
-                        <ExternalLink className="ml-2 h-4 w-4" />
-                      </Button>
+                )}
+                
+                {/* Action Buttons */}
+                <div className="flex gap-2 pt-4">
+                  <Button asChild size="sm" className="flex-1">
+                    <Link to={`/projects/${project.id}`}>
+                      <Eye className="w-4 h-4 mr-2" />
+                      Détails
                     </Link>
-                    
-                    {project.github && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => window.open(project.github, '_blank')}
-                        className="btn-ghost-cyber"
+                  </Button>
+                  
+                  {project.demo_url && (
+                    <Button asChild size="sm" variant="outline">
+                      <a 
+                        href={project.demo_url} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
                       >
-                        <Github className="h-4 w-4" />
-                      </Button>
-                    )}
-                  </div>
+                        <ExternalLink className="w-4 h-4" />
+                      </a>
+                    </Link>
+                  )}
+                  
+                  {project.github_url && (
+                    <Button asChild size="sm" variant="outline">
+                      <a 
+                        href={project.github_url} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                      >
+                        <Github className="w-4 h-4" />
+                      </a>
+                    </Link>
+                  )}
                 </div>
               </CardContent>
             </Card>
           ))}
         </div>
-
-        {/* No results */}
-        {filteredProjects.length === 0 && (
-          <div className="text-center py-20">
-            <div className="max-w-md mx-auto">
-              <div className="text-muted-foreground mb-4">
-                <Search className="h-16 w-16 mx-auto mb-4 opacity-50" />
-              </div>
-              <h3 className="text-lg font-semibold mb-2">Aucun projet trouvé</h3>
-              <p className="text-muted-foreground mb-4">
-                Essayez de modifier vos critères de recherche ou filtres.
-              </p>
-              <Button 
-                variant="outline" 
-                onClick={() => {
-                  setSearchTerm("");
-                  setSelectedCategory("all");
-                  setSelectedYear("all");
-                }}
-                className="btn-ghost-cyber"
-              >
-                Réinitialiser les filtres
-              </Button>
-            </div>
-          </div>
-        )}
-      </div>
+      )}
     </div>
   );
-}
+};
+
+export default Projects;
