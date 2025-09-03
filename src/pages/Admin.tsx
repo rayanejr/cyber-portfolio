@@ -606,7 +606,7 @@ const Admin = () => {
                     </div>
                   )}
                 </div>
-               </CardContent>
+              </CardContent>
             </Card>
           </TabsContent>
         </Tabs>
