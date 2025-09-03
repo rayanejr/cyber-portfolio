@@ -8,3 +8,9 @@ verify_jwt = false
 
 [functions.security-automation]
 verify_jwt = false
+
+[functions.vulnerability-scan]
+verify_jwt = false
+
+[functions.test-encryption]
+verify_jwt = false
