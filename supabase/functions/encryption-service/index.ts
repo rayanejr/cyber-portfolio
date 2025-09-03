@@ -20,8 +20,8 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const url = new URL(req.url);
-    const action = url.pathname.split('/').pop();
+    const body = await req.json();
+    const action = body.action || 'test-encryption';
 
     switch (action) {
       case 'encrypt':
@@ -33,7 +33,7 @@ const handler = async (req: Request): Promise<Response> => {
       case 'test-encryption':
         return await handleTestEncryption(req);
       default:
-        return new Response(JSON.stringify({ error: 'Action not supported' }), {
+        return new Response(JSON.stringify({ error: 'Action not supported', available_actions: ['encrypt', 'decrypt', 'encrypt-sensitive-data', 'test-encryption'] }), {
           status: 400,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });

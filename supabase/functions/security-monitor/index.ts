@@ -34,28 +34,38 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const url = new URL(req.url);
-    const path = url.pathname;
-
-    // Log de sécurité pour toutes les requêtes
     const clientIP = req.headers.get('cf-connecting-ip') || 
                      req.headers.get('x-forwarded-for') || 
                      'unknown';
     const userAgent = req.headers.get('user-agent') || 'unknown';
 
-    console.log(`Security Monitor - Path: ${path}, IP: ${clientIP}, User-Agent: ${userAgent}`);
+    console.log(`Security Monitor - IP: ${clientIP}, User-Agent: ${userAgent}`);
 
-    if (path === '/rate-limit-check') {
-      return await handleRateLimitCheck(req, clientIP);
-    } else if (path === '/log-security-event') {
-      return await handleSecurityLog(req, clientIP, userAgent);
-    } else if (path === '/vulnerability-scan') {
-      return await handleVulnerabilityScan(req);
-    } else if (path === '/anomaly-detection') {
-      return await handleAnomalyDetection(req, clientIP);
+    // Lire le body pour déterminer l'action
+    let body = {};
+    let action = 'vulnerability-scan'; // Action par défaut
+    
+    try {
+      body = await req.json();
+      action = body.action || 'vulnerability-scan';
+    } catch (e) {
+      // Body vide ou invalide, utiliser l'action par défaut
+      console.log('Body vide, utilisation de action par défaut:', action);
+    }
+
+    console.log(`Security Monitor - Action: ${action}`);
+
+    if (action === 'rate-limit-check') {
+      return await handleRateLimitCheck(body, clientIP);
+    } else if (action === 'log-security-event') {
+      return await handleSecurityLog(body, clientIP, userAgent);
+    } else if (action === 'vulnerability-scan') {
+      return await handleVulnerabilityScan();
+    } else if (action === 'anomaly-detection') {
+      return await handleAnomalyDetection(body, clientIP);
     } else {
-      return new Response(JSON.stringify({ error: 'Endpoint not found' }), {
-        status: 404,
+      return new Response(JSON.stringify({ error: 'Action not supported', available_actions: ['rate-limit-check', 'log-security-event', 'vulnerability-scan', 'anomaly-detection'] }), {
+        status: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
@@ -81,8 +91,8 @@ const handler = async (req: Request): Promise<Response> => {
   }
 };
 
-async function handleRateLimitCheck(req: Request, clientIP: string): Promise<Response> {
-  const { ip_address, endpoint, window_minutes = 15, max_requests = 100 }: RateLimitCheck = await req.json();
+async function handleRateLimitCheck(body: any, clientIP: string): Promise<Response> {
+  const { ip_address, endpoint, window_minutes = 15, max_requests = 100 }: RateLimitCheck = body;
   
   const windowStart = new Date(Date.now() - window_minutes * 60 * 1000).toISOString();
   
@@ -131,8 +141,8 @@ async function handleRateLimitCheck(req: Request, clientIP: string): Promise<Res
   });
 }
 
-async function handleSecurityLog(req: Request, clientIP: string, userAgent: string): Promise<Response> {
-  const alert: SecurityAlert = await req.json();
+async function handleSecurityLog(body: any, clientIP: string, userAgent: string): Promise<Response> {
+  const alert: SecurityAlert = body;
   
   const logId = await logSecurityEvent({
     ...alert,
@@ -159,7 +169,7 @@ async function handleSecurityLog(req: Request, clientIP: string, userAgent: stri
   });
 }
 
-async function handleVulnerabilityScan(req: Request): Promise<Response> {
+async function handleVulnerabilityScan(): Promise<Response> {
   // Simulation d'un scan de vulnérabilités basique
   const vulnerabilities = [];
   
@@ -224,8 +234,8 @@ async function handleVulnerabilityScan(req: Request): Promise<Response> {
   });
 }
 
-async function handleAnomalyDetection(req: Request, clientIP: string): Promise<Response> {
-  const { events, timeframe = '1hour' } = await req.json();
+async function handleAnomalyDetection(body: any, clientIP: string): Promise<Response> {
+  const { events, timeframe = '1hour' } = body;
   
   const timeframeMappings = {
     '1hour': 1,
