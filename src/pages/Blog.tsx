@@ -79,7 +79,7 @@ const Blog = () => {
           </p>
         </div>
       ) : (
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
           {posts.map((post) => (
             <Card key={post.id} className="cyber-border hover:shadow-cyber transition-all duration-300 group">
               {post.image_url && (
