@@ -20,18 +20,27 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const body = await req.json();
-    const action = body.action || 'test-encryption';
+    let body = {};
+    let action = 'test-encryption';
+    
+    try {
+      body = await req.json();
+      action = body.action || 'test-encryption';
+    } catch (e) {
+      console.log('Body vide ou invalide, utilisation de action par défaut:', action);
+    }
+
+    console.log(`Encryption Service - Action: ${action}`);
 
     switch (action) {
       case 'encrypt':
-        return await handleEncrypt(req);
+        return await handleEncrypt(body);
       case 'decrypt':
-        return await handleDecrypt(req);
+        return await handleDecrypt(body);
       case 'encrypt-sensitive-data':
-        return await handleEncryptSensitiveData(req);
+        return await handleEncryptSensitiveData();
       case 'test-encryption':
-        return await handleTestEncryption(req);
+        return await handleTestEncryption();
       default:
         return new Response(JSON.stringify({ error: 'Action not supported', available_actions: ['encrypt', 'decrypt', 'encrypt-sensitive-data', 'test-encryption'] }), {
           status: 400,
@@ -103,8 +112,8 @@ async function decryptData(encryptedHex: string, ivHex: string): Promise<string>
   return decoder.decode(decrypted);
 }
 
-async function handleEncrypt(req: Request): Promise<Response> {
-  const { data } = await req.json();
+async function handleEncrypt(body: any): Promise<Response> {
+  const { data } = body;
   
   if (!data) {
     return new Response(JSON.stringify({ error: 'Data field is required' }), {
@@ -125,8 +134,8 @@ async function handleEncrypt(req: Request): Promise<Response> {
   });
 }
 
-async function handleDecrypt(req: Request): Promise<Response> {
-  const { encrypted_data, iv } = await req.json();
+async function handleDecrypt(body: any): Promise<Response> {
+  const { encrypted_data, iv } = body;
   
   if (!encrypted_data || !iv) {
     return new Response(JSON.stringify({ error: 'encrypted_data and iv fields are required' }), {
@@ -155,7 +164,7 @@ async function handleDecrypt(req: Request): Promise<Response> {
   }
 }
 
-async function handleEncryptSensitiveData(req: Request): Promise<Response> {
+async function handleEncryptSensitiveData(): Promise<Response> {
   // Chiffrer des données sensibles existantes dans la base
   const sensitiveFields = [
     'admin_users.email',
@@ -215,7 +224,7 @@ async function handleEncryptSensitiveData(req: Request): Promise<Response> {
   });
 }
 
-async function handleTestEncryption(req: Request): Promise<Response> {
+async function handleTestEncryption(): Promise<Response> {
   const testData = [
     'rayane.jerbi@yahoo.com',
     'Admin Session Token: abc123xyz789',
