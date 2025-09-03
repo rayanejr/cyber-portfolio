@@ -21,7 +21,8 @@ import {
   Eye,
   Trash2,
   Lock,
-  Github
+  Github,
+  Image
 } from "lucide-react";
 import AdminProjects from "@/components/admin/AdminProjects";
 import AdminBlogs from "@/components/admin/AdminBlogs";
@@ -31,6 +32,7 @@ import AdminCertifications from "@/components/admin/AdminCertifications";
 import AdminSkills from "@/components/admin/AdminSkills";
 import AdminTools from "@/components/admin/AdminTools";
 import AdminFiles from "@/components/admin/AdminFiles";
+import AdminIcons from "@/components/admin/AdminIcons";
 import GitHubSync from "@/components/admin/GitHubSync";
 
 const Admin = () => {
@@ -411,7 +413,7 @@ const Admin = () => {
       {/* Main Content */}
       <div className="container mx-auto px-4 py-8">
         <Tabs value={selectedTab} onValueChange={setSelectedTab}>
-          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 lg:grid-cols-9 gap-1">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 lg:grid-cols-10 gap-1">
             <TabsTrigger value="dashboard" className="flex items-center gap-2">
               <BarChart className="w-4 h-4" />
               {!isMobile && <span>Tableau</span>}
@@ -447,6 +449,10 @@ const Admin = () => {
             <TabsTrigger value="files" className="flex items-center gap-2">
               <Upload className="w-4 h-4" />
               {!isMobile && <span>Fichiers</span>}
+            </TabsTrigger>
+            <TabsTrigger value="icons" className="flex items-center gap-2">
+              <Image className="w-4 h-4" />
+              {!isMobile && <span>Icônes</span>}
             </TabsTrigger>
             <TabsTrigger value="messages" className="flex items-center gap-2">
               <MessageSquare className="w-4 h-4" />
@@ -532,6 +538,8 @@ const Admin = () => {
           <TabsContent value="icons">
             <AdminIcons />
           </TabsContent>
+
+          <TabsContent value="messages">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
