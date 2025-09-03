@@ -14,6 +14,53 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_audit_log: {
+        Row: {
+          action: string
+          admin_id: string | null
+          created_at: string | null
+          id: string
+          ip_address: unknown | null
+          new_values: Json | null
+          old_values: Json | null
+          record_id: string | null
+          table_name: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          action: string
+          admin_id?: string | null
+          created_at?: string | null
+          id?: string
+          ip_address?: unknown | null
+          new_values?: Json | null
+          old_values?: Json | null
+          record_id?: string | null
+          table_name?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          action?: string
+          admin_id?: string | null
+          created_at?: string | null
+          id?: string
+          ip_address?: unknown | null
+          new_values?: Json | null
+          old_values?: Json | null
+          record_id?: string | null
+          table_name?: string | null
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "admin_audit_log_admin_id_fkey"
+            columns: ["admin_id"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       admin_files: {
         Row: {
           created_at: string
