@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -17,9 +18,6 @@ import {
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from "recharts";
-import { ReactNode } from "react";
-import { useState, useEffect } from "react";
 
 interface SecurityLog {
   id: string;
@@ -50,7 +48,7 @@ interface Notification {
   created_at: string;
 }
 
-const SecurityDashboard = () => {
+const SecurityDashboard: React.FC = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
   // Requêtes temps réel pour les données de sécurité
@@ -80,20 +78,6 @@ const SecurityDashboard = () => {
       return data as AnomalyDetection[];
     },
     refetchInterval: 3000,
-  });
-
-  const { data: analyticsData } = useQuery({
-    queryKey: ['analytics-events'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('analytics_events')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(1000);
-      if (error) throw error;
-      return data;
-    },
-    refetchInterval: 10000,
   });
 
   // Notifications temps réel
@@ -140,36 +124,6 @@ const SecurityDashboard = () => {
     };
   }, []);
 
-  // Préparer les données pour les graphiques
-  const severityStats = securityLogs?.reduce((acc, log) => {
-    acc[log.severity] = (acc[log.severity] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>) || {};
-
-  const severityData = Object.entries(severityStats).map(([severity, count]) => ({
-    severity,
-    count,
-    color: severity === 'CRITICAL' ? '#ef4444' : 
-           severity === 'HIGH' ? '#f97316' :
-           severity === 'MEDIUM' ? '#eab308' : '#22c55e'
-  }));
-
-  const timelineData = securityLogs?.slice(0, 24).reverse().map((log, index) => ({
-    time: new Date(log.created_at).toLocaleTimeString(),
-    events: 1,
-    severity: log.severity
-  })) || [];
-
-  const eventTypeStats = securityLogs?.reduce((acc, log) => {
-    acc[log.event_type] = (acc[log.event_type] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>) || {};
-
-  const eventTypeData = Object.entries(eventTypeStats).map(([type, count]) => ({
-    type,
-    count
-  }));
-
   const getSeverityBadgeVariant = (severity: string) => {
     switch (severity) {
       case 'CRITICAL': return 'destructive';
@@ -177,15 +131,6 @@ const SecurityDashboard = () => {
       case 'MEDIUM': return 'default';
       case 'LOW': return 'secondary';
       default: return 'secondary';
-    }
-  };
-
-  const getTypeIcon = (type: string) => {
-    switch (type) {
-      case 'SECURITY': return <Shield className="w-4 h-4" />;
-      case 'WARNING': return <AlertTriangle className="w-4 h-4" />;
-      case 'ERROR': return <AlertTriangle className="w-4 h-4" />;
-      default: return <Activity className="w-4 h-4" />;
     }
   };
 
@@ -280,61 +225,11 @@ const SecurityDashboard = () => {
         </Card>
       </div>
 
-      <Tabs defaultValue="overview" className="space-y-4">
+      <Tabs defaultValue="logs" className="space-y-4">
         <TabsList>
-          <TabsTrigger value="overview">Vue d'ensemble</TabsTrigger>
           <TabsTrigger value="logs">Logs Sécurité</TabsTrigger>
           <TabsTrigger value="anomalies">Anomalies</TabsTrigger>
-          <TabsTrigger value="analytics">Analytics</TabsTrigger>
         </TabsList>
-
-        <TabsContent value="overview" className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-2">
-            <Card>
-              <CardHeader>
-                <CardTitle>Événements par Sévérité</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ResponsiveContainer width="100%" height={300}>
-                  <PieChart>
-                    <Pie
-                      data={severityData}
-                      cx="50%"
-                      cy="50%"
-                      labelLine={false}
-                      label={({ severity, count }) => `${severity}: ${count}`}
-                      outerRadius={80}
-                      fill="#8884d8"
-                      dataKey="count"
-                    >
-                      {severityData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Pie>
-                    <Tooltip />
-                  </PieChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Activité Temps Réel</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ResponsiveContainer width="100%" height={300}>
-                  <LineChart data={timelineData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="time" />
-                    <YAxis />
-                    <Tooltip />
-                    <Line type="monotone" dataKey="events" stroke="#8884d8" strokeWidth={2} />
-                  </LineChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
 
         <TabsContent value="logs" className="space-y-4">
           <Card>
@@ -403,27 +298,6 @@ const SecurityDashboard = () => {
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
-
-        <TabsContent value="analytics" className="space-y-4">
-          <div className="grid gap-4">
-            <Card>
-              <CardHeader>
-                <CardTitle>Types d'Événements</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={eventTypeData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="type" />
-                    <YAxis />
-                    <Tooltip />
-                    <Bar dataKey="count" fill="#8884d8" />
-                  </BarChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
-          </div>
         </TabsContent>
       </Tabs>
     </div>

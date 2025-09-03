@@ -1,3 +1,4 @@
+import React from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -18,6 +19,7 @@ import {
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+
 import SecurityDashboard from "../SecurityDashboard";
 
 interface AdminSecurityProps {
@@ -237,9 +239,7 @@ const AdminSecurity = ({ currentUser }: AdminSecurityProps) => {
         </TabsList>
 
         <TabsContent value="dashboard">
-          <div className="w-full">
-            <SecurityDashboard />
-          </div>
+          <SecurityDashboard />
         </TabsContent>
 
         <TabsContent value="sessions" className="space-y-4">
@@ -255,7 +255,7 @@ const AdminSecurity = ({ currentUser }: AdminSecurityProps) => {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {activeSessions?.map((session) => (
+                {activeSessions?.map((session: any) => (
                   <div key={session.id} className="flex items-center justify-between p-4 border rounded-lg">
                     <div className="space-y-1">
                       <p className="font-medium">Session Administrative</p>
