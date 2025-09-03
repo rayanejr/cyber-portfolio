@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Menu, X, Shield, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "./ThemeToggle";
 import { Link, useLocation } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [logoUrl, setLogoUrl] = useState<string | null>(null);
   const location = useLocation();
 
   const navigation = [
@@ -20,13 +22,43 @@ export function Navbar() {
 
   const isActive = (href: string) => location.pathname === href;
 
+  useEffect(() => {
+    fetchLogo();
+  }, []);
+
+  const fetchLogo = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('admin_files')
+        .select('file_url')
+        .eq('file_category', 'icons')
+        .eq('file_type', 'logo')
+        .eq('is_active', true)
+        .single();
+
+      if (!error && data) {
+        setLogoUrl(data.file_url);
+      }
+    } catch (error) {
+      console.error('Error fetching logo:', error);
+    }
+  };
+
   return (
     <nav className="sticky top-0 z-50 cyber-border bg-card/80 backdrop-blur-lg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <Link to="/" className="flex items-center space-x-2">
-              <Shield className="h-8 w-8 text-primary cyber-glow" />
+              {logoUrl ? (
+                <img 
+                  src={logoUrl} 
+                  alt="Logo" 
+                  className="h-8 w-8 object-contain" 
+                />
+              ) : (
+                <Shield className="h-8 w-8 text-primary cyber-glow" />
+              )}
               <span className="font-orbitron font-bold text-xl cyber-text">
                 JERBI Rayane
               </span>

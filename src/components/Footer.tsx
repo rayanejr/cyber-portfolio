@@ -1,7 +1,33 @@
+import { useState, useEffect } from "react";
 import { Shield, Github, Linkedin, Twitter, Mail } from "lucide-react";
 import { Link } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 
 export function Footer() {
+  const [logoUrl, setLogoUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchLogo();
+  }, []);
+
+  const fetchLogo = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('admin_files')
+        .select('file_url')
+        .eq('file_category', 'icons')
+        .eq('file_type', 'logo')
+        .eq('is_active', true)
+        .single();
+
+      if (!error && data) {
+        setLogoUrl(data.file_url);
+      }
+    } catch (error) {
+      console.error('Error fetching logo:', error);
+    }
+  };
+
   return (
     <footer className="cyber-border bg-card/50 backdrop-blur-lg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -9,7 +35,15 @@ export function Footer() {
           {/* Logo and description */}
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center space-x-2 mb-4">
-              <Shield className="h-8 w-8 text-primary cyber-glow" />
+              {logoUrl ? (
+                <img 
+                  src={logoUrl} 
+                  alt="Logo" 
+                  className="h-8 w-8 object-contain" 
+                />
+              ) : (
+                <Shield className="h-8 w-8 text-primary cyber-glow" />
+              )}
               <span className="font-orbitron font-bold text-xl cyber-text">
                 JERBI Rayane
               </span>

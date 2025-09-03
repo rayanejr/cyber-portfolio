@@ -413,50 +413,50 @@ const Admin = () => {
       {/* Main Content */}
       <div className="container mx-auto px-4 py-8">
         <Tabs value={selectedTab} onValueChange={setSelectedTab}>
-          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 lg:grid-cols-10 gap-1">
-            <TabsTrigger value="dashboard" className="flex items-center gap-2">
-              <BarChart className="w-4 h-4" />
-              {!isMobile && <span>Tableau</span>}
+          <TabsList className="grid w-full grid-cols-5 lg:grid-cols-10 gap-1">
+            <TabsTrigger value="dashboard" className="flex items-center gap-1 text-xs">
+              <BarChart className="w-3 h-3" />
+              <span className="hidden sm:inline">Tableau</span>
             </TabsTrigger>
-            <TabsTrigger value="projects" className="flex items-center gap-2">
-              <Briefcase className="w-4 h-4" />
-              {!isMobile && <span>Projets</span>}
+            <TabsTrigger value="projects" className="flex items-center gap-1 text-xs">
+              <Briefcase className="w-3 h-3" />
+              <span className="hidden sm:inline">Projets</span>
             </TabsTrigger>
-            <TabsTrigger value="blogs" className="flex items-center gap-2">
-              <FileText className="w-4 h-4" />
-              {!isMobile && <span>Blog</span>}
+            <TabsTrigger value="blogs" className="flex items-center gap-1 text-xs">
+              <FileText className="w-3 h-3" />
+              <span className="hidden sm:inline">Blog</span>
             </TabsTrigger>
-            <TabsTrigger value="experiences" className="flex items-center gap-2">
-              <Briefcase className="w-4 h-4" />
-              {!isMobile && <span>Expériences</span>}
+            <TabsTrigger value="experiences" className="flex items-center gap-1 text-xs">
+              <Briefcase className="w-3 h-3" />
+              <span className="hidden lg:inline">Expériences</span>
             </TabsTrigger>
-            <TabsTrigger value="formations" className="flex items-center gap-2">
-              <GraduationCap className="w-4 h-4" />
-              {!isMobile && <span>Formations</span>}
+            <TabsTrigger value="formations" className="flex items-center gap-1 text-xs">
+              <GraduationCap className="w-3 h-3" />
+              <span className="hidden lg:inline">Formations</span>
             </TabsTrigger>
-            <TabsTrigger value="skills" className="flex items-center gap-2">
-              <Award className="w-4 h-4" />
-              {!isMobile && <span>Compétences</span>}
+            <TabsTrigger value="skills" className="flex items-center gap-1 text-xs">
+              <Award className="w-3 h-3" />
+              <span className="hidden lg:inline">Compétences</span>
             </TabsTrigger>
-            <TabsTrigger value="certifications" className="flex items-center gap-2">
-              <Award className="w-4 h-4" />
-              {!isMobile && <span>Certifications</span>}
+            <TabsTrigger value="certifications" className="flex items-center gap-1 text-xs">
+              <Award className="w-3 h-3" />
+              <span className="hidden lg:inline">Certifications</span>
             </TabsTrigger>
-            <TabsTrigger value="tools" className="flex items-center gap-2">
-              <Wrench className="w-4 h-4" />
-              {!isMobile && <span>Outils</span>}
+            <TabsTrigger value="tools" className="flex items-center gap-1 text-xs">
+              <Wrench className="w-3 h-3" />
+              <span className="hidden sm:inline">Outils</span>
             </TabsTrigger>
-            <TabsTrigger value="files" className="flex items-center gap-2">
-              <Upload className="w-4 h-4" />
-              {!isMobile && <span>Fichiers</span>}
+            <TabsTrigger value="files" className="flex items-center gap-1 text-xs">
+              <Upload className="w-3 h-3" />
+              <span className="hidden sm:inline">Fichiers</span>
             </TabsTrigger>
-            <TabsTrigger value="icons" className="flex items-center gap-2">
-              <Image className="w-4 h-4" />
-              {!isMobile && <span>Icônes</span>}
+            <TabsTrigger value="icons" className="flex items-center gap-1 text-xs">
+              <Image className="w-3 h-3" />
+              <span className="hidden sm:inline">Logo</span>
             </TabsTrigger>
-            <TabsTrigger value="messages" className="flex items-center gap-2">
-              <MessageSquare className="w-4 h-4" />
-              {!isMobile && <span>Messages</span>}
+            <TabsTrigger value="messages" className="flex items-center gap-1 text-xs">
+              <MessageSquare className="w-3 h-3" />
+              <span className="hidden sm:inline">Messages</span>
             </TabsTrigger>
           </TabsList>
 
