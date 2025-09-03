@@ -266,6 +266,18 @@ const Admin = () => {
             </CardHeader>
             
             <CardContent>
+              {/* Identifiants admin de test */}
+              <div className="mb-6 p-4 bg-primary/10 border border-primary/20 rounded-lg">
+                <div className="flex items-center gap-2 mb-2">
+                  <Shield className="w-4 h-4 text-primary" />
+                  <h3 className="font-semibold text-sm">Identifiants Admin</h3>
+                </div>
+                <div className="text-xs space-y-1">
+                  <p><strong>Email:</strong> admin@test.com</p>
+                  <p><strong>Mot de passe:</strong> admin123</p>
+                </div>
+              </div>
+              
               <form onSubmit={handleLogin} className="space-y-4">
                 <div>
                   <Label htmlFor="email">Email</Label>
