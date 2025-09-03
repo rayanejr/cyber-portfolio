@@ -9,7 +9,6 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { 
-  Users, 
   FileText, 
   Briefcase, 
   GraduationCap, 
@@ -21,8 +20,7 @@ import {
   Mail,
   Eye,
   Trash2,
-  Lock,
-  Shield
+  Lock
 } from "lucide-react";
 import AdminProjects from "@/components/admin/AdminProjects";
 import AdminBlogs from "@/components/admin/AdminBlogs";
@@ -32,14 +30,12 @@ import AdminCertifications from "@/components/admin/AdminCertifications";
 import AdminSkills from "@/components/admin/AdminSkills";
 import AdminTools from "@/components/admin/AdminTools";
 import AdminFiles from "@/components/admin/AdminFiles";
-import AdminUsers from "@/components/admin/AdminUsers";
 
 const Admin = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [currentUser, setCurrentUser] = useState<{
     id: string;
     full_name: string;
-    is_super_admin: boolean;
   } | null>(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -66,13 +62,13 @@ const Admin = () => {
     const checkAuth = async () => {
       const sessionToken = localStorage.getItem('admin_session_token');
       if (sessionToken) {
-        // Ici vous pourriez vérifier la validité du token côté serveur
-        // Pour l'instant, on considère que le token est valide
         try {
           // Récupérer les infos de l'utilisateur connecté
           const { data: userData, error } = await supabase
             .from('admin_users')
-            .select('id, full_name, is_super_admin')
+            .select('id, full_name')
+            .eq('session_token', sessionToken)
+            .eq('is_active', true)
             .single();
 
           if (!error && userData) {
@@ -102,33 +98,37 @@ const Admin = () => {
     setLoginError("");
     
     try {
-      // Utiliser la fonction simple qui existe maintenant
-      const { data, error } = await supabase.rpc('simple_admin_login', {
+      // Utiliser la nouvelle fonction sécurisée ANSSI
+      const { data, error } = await supabase.rpc('secure_admin_login', {
         p_email: email,
-        p_password: password
+        p_password: password,
+        p_ip: '127.0.0.1'
       });
 
       if (error) throw error;
 
       if (data && Array.isArray(data) && data.length > 0) {
         const userData = data[0];
-        setCurrentUser({
-          id: userData.admin_id,
-          full_name: userData.full_name,
-          is_super_admin: userData.is_super_admin
-        });
-        setIsAuthenticated(true);
-        
-        // Stocker en local
-        localStorage.setItem('admin_session', JSON.stringify(userData));
-        
-        toast({
-          title: "Connexion réussie",
-          description: `Bienvenue ${userData.full_name}!`,
-        });
-        
-        await fetchStats();
-        await fetchContactMessages();
+        if (userData.success) {
+          setCurrentUser({
+            id: userData.admin_id,
+            full_name: userData.full_name
+          });
+          setIsAuthenticated(true);
+          
+          // Stocker le token de session sécurisé
+          localStorage.setItem('admin_session_token', userData.session_token);
+          
+          toast({
+            title: "Connexion réussie",
+            description: `Bienvenue ${userData.full_name}!`,
+          });
+          
+          await fetchStats();
+          await fetchContactMessages();
+        } else {
+          setLoginError("Email ou mot de passe incorrect");
+        }
       } else {
         setLoginError("Email ou mot de passe incorrect");
       }
@@ -274,12 +274,13 @@ const Admin = () => {
               {/* Identifiants admin de test */}
               <div className="mb-6 p-4 bg-primary/10 border border-primary/20 rounded-lg">
                 <div className="flex items-center gap-2 mb-2">
-                  <Shield className="w-4 h-4 text-primary" />
+                  <Lock className="w-4 h-4 text-primary" />
                   <h3 className="font-semibold text-sm">Identifiants Admin</h3>
                 </div>
                 <div className="text-xs space-y-1">
                   <p><strong>Email:</strong> admin@test.com</p>
-                  <p><strong>Mot de passe:</strong> admin123</p>
+                  <p><strong>Mot de passe:</strong> AdminSecure123!</p>
+                  <p className="text-red-600 text-xs mt-1">⚠️ Mot de passe fort requis selon ANSSI</p>
                 </div>
               </div>
               
@@ -386,14 +387,8 @@ const Admin = () => {
                 Administration
               </h1>
               {currentUser && (
-                <p className="text-sm text-muted-foreground mt-1 flex items-center gap-2">
+                <p className="text-sm text-muted-foreground mt-1">
                   Connecté en tant que {currentUser.full_name}
-                  {currentUser.is_super_admin && (
-                    <Badge variant="default" className="flex items-center gap-1">
-                      <Shield className="w-3 h-3" />
-                      Super Admin
-                    </Badge>
-                  )}
                 </p>
               )}
             </div>
@@ -414,14 +409,10 @@ const Admin = () => {
       {/* Main Content */}
       <div className="container mx-auto px-4 py-8">
         <Tabs value={selectedTab} onValueChange={setSelectedTab}>
-          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-5 lg:grid-cols-10 gap-1">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 lg:grid-cols-9 gap-1">
             <TabsTrigger value="dashboard" className="flex items-center gap-2">
               <BarChart className="w-4 h-4" />
               {!isMobile && <span>Tableau</span>}
-            </TabsTrigger>
-            <TabsTrigger value="users" className="flex items-center gap-2">
-              <Users className="w-4 h-4" />
-              {!isMobile && <span>Utilisateurs</span>}
             </TabsTrigger>
             <TabsTrigger value="projects" className="flex items-center gap-2">
               <Briefcase className="w-4 h-4" />
@@ -486,13 +477,7 @@ const Admin = () => {
                 <CardTitle>Actions rapides</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-                  {currentUser?.is_super_admin && (
-                    <Button onClick={() => setSelectedTab("users")} variant="outline">
-                      <Users className="w-4 h-4 mr-2" />
-                      Gérer les utilisateurs
-                    </Button>
-                  )}
+                <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                   <Button onClick={() => setSelectedTab("projects")} variant="outline">
                     <Briefcase className="w-4 h-4 mr-2" />
                     Gérer les projets
@@ -508,10 +493,6 @@ const Admin = () => {
                 </div>
               </CardContent>
             </Card>
-          </TabsContent>
-
-          <TabsContent value="users">
-            <AdminUsers currentUser={currentUser} />
           </TabsContent>
 
           <TabsContent value="projects">
@@ -551,9 +532,10 @@ const Admin = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <MessageSquare className="w-5 h-5" />
-                  Messages de Contact ({contactMessages.length})
+                  Messages de Contact ({contactMessages.filter((m: any) => !m.is_read).length} non lus)
                 </CardTitle>
               </CardHeader>
+              
               <CardContent>
                 <div className="space-y-4">
                   {contactMessages.length === 0 ? (
@@ -561,61 +543,63 @@ const Admin = () => {
                       Aucun message pour le moment.
                     </p>
                   ) : (
-                    contactMessages.map((message: any) => (
-                      <Card key={message.id} className={`transition-all duration-300 ${!message.is_read ? 'border-primary/50 bg-primary/5' : ''}`}>
-                        <CardContent className="p-4">
-                          <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-                            <div className="flex-1">
-                              <div className="flex items-center gap-2 mb-2">
-                                <span className="font-semibold">{message.name}</span>
-                                <span className="text-sm text-muted-foreground">({message.email})</span>
-                                {!message.is_read && (
-                                  <Badge variant="secondary" className="text-xs">Nouveau</Badge>
+                    <div className="grid gap-4">
+                      {contactMessages.map((message: any) => (
+                        <Card key={message.id} className={`transition-all duration-300 hover:shadow-md ${!message.is_read ? 'ring-2 ring-primary/20' : ''}`}>
+                          <CardContent className="p-4">
+                            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2 mb-2">
+                                  <span className="font-semibold">{message.name}</span>
+                                  <span className="text-sm text-muted-foreground">({message.email})</span>
+                                  {!message.is_read && (
+                                    <Badge variant="secondary" className="text-xs">Nouveau</Badge>
+                                  )}
+                                </div>
+                                {message.subject && (
+                                  <p className="text-sm font-medium mb-2">{message.subject}</p>
                                 )}
+                                <p className="text-sm text-muted-foreground mb-3">{message.message}</p>
+                                <p className="text-xs text-muted-foreground">
+                                  {new Date(message.created_at).toLocaleDateString('fr-FR', {
+                                    day: 'numeric',
+                                    month: 'long',
+                                    year: 'numeric',
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                  })}
+                                </p>
                               </div>
-                              {message.subject && (
-                                <p className="text-sm font-medium mb-2">{message.subject}</p>
-                              )}
-                              <p className="text-sm text-muted-foreground mb-3">{message.message}</p>
-                              <p className="text-xs text-muted-foreground">
-                                {new Date(message.created_at).toLocaleDateString('fr-FR', {
-                                  day: 'numeric',
-                                  month: 'long',
-                                  year: 'numeric',
-                                  hour: '2-digit',
-                                  minute: '2-digit'
-                                })}
-                              </p>
-                            </div>
-                            <div className="flex gap-2">
-                              {!message.is_read && (
+                              <div className="flex gap-2">
+                                {!message.is_read && (
+                                  <Button 
+                                    size="sm" 
+                                    variant="outline"
+                                    onClick={() => markMessageAsRead(message.id)}
+                                  >
+                                    <Eye className="w-4 h-4" />
+                                  </Button>
+                                )}
                                 <Button 
                                   size="sm" 
                                   variant="outline"
-                                  onClick={() => markMessageAsRead(message.id)}
+                                  onClick={() => window.open(`mailto:${message.email}`)}
                                 >
-                                  <Eye className="w-4 h-4" />
+                                  <Mail className="w-4 h-4" />
                                 </Button>
-                              )}
-                              <Button 
-                                size="sm" 
-                                variant="outline"
-                                onClick={() => window.open(`mailto:${message.email}`)}
-                              >
-                                <Mail className="w-4 h-4" />
-                              </Button>
-                              <Button 
-                                size="sm" 
-                                variant="destructive"
-                                onClick={() => deleteMessage(message.id)}
-                              >
-                                <Trash2 className="w-4 h-4" />
-                              </Button>
+                                <Button 
+                                  size="sm" 
+                                  variant="destructive"
+                                  onClick={() => deleteMessage(message.id)}
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </Button>
+                              </div>
                             </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
                   )}
                 </div>
               </CardContent>

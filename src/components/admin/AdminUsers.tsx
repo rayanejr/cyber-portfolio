@@ -1,7 +1,4 @@
-import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
 import { Users, Lock } from "lucide-react";
 
 interface AdminUsersProps {
@@ -12,8 +9,6 @@ interface AdminUsersProps {
 }
 
 const AdminUsers = ({ currentUser }: AdminUsersProps) => {
-  const { toast } = useToast();
-
   if (!currentUser) {
     return (
       <Card>
@@ -26,7 +21,6 @@ const AdminUsers = ({ currentUser }: AdminUsersProps) => {
 
   return (
     <div className="space-y-6">
-      {/* Section changement de mot de passe personnel */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
