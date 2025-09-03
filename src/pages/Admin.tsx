@@ -529,7 +529,9 @@ const Admin = () => {
             <AdminFiles />
           </TabsContent>
 
-          <TabsContent value="messages">
+          <TabsContent value="icons">
+            <AdminIcons />
+          </TabsContent>
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
