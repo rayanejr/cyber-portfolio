@@ -33,7 +33,6 @@ import AdminSkills from "@/components/admin/AdminSkills";
 import AdminTools from "@/components/admin/AdminTools";
 import AdminFiles from "@/components/admin/AdminFiles";
 import AdminUsers from "@/components/admin/AdminUsers";
-import AdminAuditLog from "@/components/admin/AdminAuditLog";
 
 const Admin = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
