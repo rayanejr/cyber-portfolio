@@ -14,39 +14,6 @@ export type Database = {
   }
   public: {
     Tables: {
-      admin_accounts: {
-        Row: {
-          created_at: string
-          email: string
-          full_name: string
-          is_active: boolean
-          last_login_at: string | null
-          role: string
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          email: string
-          full_name: string
-          is_active?: boolean
-          last_login_at?: string | null
-          role?: string
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          email?: string
-          full_name?: string
-          is_active?: boolean
-          last_login_at?: string | null
-          role?: string
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
       admin_files: {
         Row: {
           created_at: string
@@ -79,32 +46,6 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
-      }
-      admin_secrets: {
-        Row: {
-          last_password_change: string
-          password_hash: string
-          user_id: string
-        }
-        Insert: {
-          last_password_change?: string
-          password_hash: string
-          user_id: string
-        }
-        Update: {
-          last_password_change?: string
-          password_hash?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "admin_secrets_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: true
-            referencedRelation: "admin_accounts"
-            referencedColumns: ["user_id"]
-          },
-        ]
       }
       admin_users: {
         Row: {
@@ -488,10 +429,6 @@ export type Database = {
         Args: { p_current_password: string; p_new_password: string }
         Returns: boolean
       }
-      check_admin_password: {
-        Args: { p_email: string; p_plain: string }
-        Returns: boolean
-      }
       check_rate_limit: {
         Args: { p_email?: string; p_ip: unknown }
         Returns: boolean
@@ -541,12 +478,12 @@ export type Database = {
         Args: { p_email: string; p_full_name: string; p_password: string }
         Returns: string
       }
-      is_admin: {
-        Args: { uid: string }
-        Returns: boolean
-      }
       is_authenticated_admin: {
         Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
+      is_bcrypt: {
+        Args: { p: string }
         Returns: boolean
       }
       safe_authenticate_admin: {
@@ -557,10 +494,6 @@ export type Database = {
           is_super_admin: boolean
           session_token: string
         }[]
-      }
-      set_admin_password: {
-        Args: { p_plain: string; p_user_id: string }
-        Returns: undefined
       }
     }
     Enums: {
