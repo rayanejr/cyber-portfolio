@@ -536,9 +536,7 @@ export type Database = {
         Returns: boolean
       }
       safe_authenticate_admin: {
-        Args:
-          | { p_email: string; p_ip?: unknown; p_password: string }
-          | { p_email: string; p_ip?: unknown; p_password: string }
+        Args: { p_email: string; p_ip?: unknown; p_password: string }
         Returns: {
           admin_id: string
           full_name: string
