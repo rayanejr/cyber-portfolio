@@ -35,9 +35,22 @@ export function SecurityTestPanel() {
           break;
           
         case 'test-encryption':
-          response = await supabase.functions.invoke('encryption-service/test-encryption', {
-            body: {}
+          // Appeler l'URL avec le bon chemin pour le test de chiffrement
+          const encryptResponse = await fetch('https://pcpjqxuuuawwqxrecexm.supabase.co/functions/v1/encryption-service/test-encryption', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBjcGpxeHV1dWF3d3F4cmVjZXhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU3NjkwOTMsImV4cCI6MjA3MTM0NTA5M30.8foPf8AqHmaux2vTEYM_g8E2EAtIUzFhGE_Uf7Sv4yk'}`,
+              'Content-Type': 'application/json',
+              'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBjcGpxeHV1dWF3d3F4cmVjZXhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU3NjkwOTMsImV4cCI6MjA3MTM0NTA5M30.8foPf8AqHmaux2vTEYM_g8E2EAtIUzFhGE_Uf7Sv4yk'
+            },
+            body: JSON.stringify({})
           });
+          
+          if (!encryptResponse.ok) {
+            throw new Error(`Encryption test failed: ${encryptResponse.status}`);
+          }
+          
+          response = { data: await encryptResponse.json(), error: null };
           break;
           
         case 'test-email-alerts':
@@ -53,9 +66,22 @@ export function SecurityTestPanel() {
           break;
           
         case 'vulnerability-scan':
-          response = await supabase.functions.invoke('security-monitor/vulnerability-scan', {
-            body: {}
+          // Appeler l'URL avec le bon chemin pour le scan de vulnérabilités
+          const scanResponse = await fetch('https://pcpjqxuuuawwqxrecexm.supabase.co/functions/v1/security-monitor/vulnerability-scan', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBjcGpxeHV1dWF3d3F4cmVjZXhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU3NjkwOTMsImV4cCI6MjA3MTM0NTA5M30.8foPf8AqHmaux2vTEYM_g8E2EAtIUzFhGE_Uf7Sv4yk'}`,
+              'Content-Type': 'application/json',
+              'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBjcGpxeHV1dWF3d3F4cmVjZXhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU3NjkwOTMsImV4cCI6MjA3MTM0NTA5M30.8foPf8AqHmaux2vTEYM_g8E2EAtIUzFhGE_Uf7Sv4yk'
+            },
+            body: JSON.stringify({})
           });
+          
+          if (!scanResponse.ok) {
+            throw new Error(`Scan failed: ${scanResponse.status}`);
+          }
+          
+          response = { data: await scanResponse.json(), error: null };
           break;
           
         default:
