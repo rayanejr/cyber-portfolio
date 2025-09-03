@@ -35,9 +35,8 @@ export function SecurityTestPanel() {
           break;
           
         case 'test-encryption':
-          response = await supabase.functions.invoke('encryption-service', {
-            body: {},
-            headers: { 'Content-Type': 'application/json' }
+          response = await supabase.functions.invoke('encryption-service/test-encryption', {
+            body: {}
           });
           break;
           
@@ -54,9 +53,8 @@ export function SecurityTestPanel() {
           break;
           
         case 'vulnerability-scan':
-          response = await supabase.functions.invoke('security-monitor', {
-            body: {},
-            headers: { 'Content-Type': 'application/json' }
+          response = await supabase.functions.invoke('security-monitor/vulnerability-scan', {
+            body: {}
           });
           break;
           
