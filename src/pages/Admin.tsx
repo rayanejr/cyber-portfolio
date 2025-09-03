@@ -76,7 +76,10 @@ const Admin = () => {
             .single();
 
           if (!error && userData) {
-            setCurrentUser(userData);
+            setCurrentUser({
+              id: userData.id,
+              full_name: userData.full_name
+            });
             setIsAuthenticated(true);
             await fetchStats();
             await fetchContactMessages();

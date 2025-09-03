@@ -90,34 +90,46 @@ export type Database = {
         Row: {
           created_at: string | null
           email: string
+          failed_login_attempts: number | null
           full_name: string
           id: string
           is_active: boolean | null
-          is_super_admin: boolean | null
           last_login_at: string | null
-          password: string
+          locked_until: string | null
+          password_changed_at: string | null
+          password_hash: string
+          session_expires_at: string | null
+          session_token: string | null
           updated_at: string | null
         }
         Insert: {
           created_at?: string | null
           email: string
+          failed_login_attempts?: number | null
           full_name: string
           id?: string
           is_active?: boolean | null
-          is_super_admin?: boolean | null
           last_login_at?: string | null
-          password: string
+          locked_until?: string | null
+          password_changed_at?: string | null
+          password_hash: string
+          session_expires_at?: string | null
+          session_token?: string | null
           updated_at?: string | null
         }
         Update: {
           created_at?: string | null
           email?: string
+          failed_login_attempts?: number | null
           full_name?: string
           id?: string
           is_active?: boolean | null
-          is_super_admin?: boolean | null
           last_login_at?: string | null
-          password?: string
+          locked_until?: string | null
+          password_changed_at?: string | null
+          password_hash?: string
+          session_expires_at?: string | null
+          session_token?: string | null
           updated_at?: string | null
         }
         Relationships: []
@@ -445,6 +457,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      change_admin_password: {
+        Args: {
+          p_admin_id: string
+          p_current_password: string
+          p_new_password: string
+        }
+        Returns: boolean
+      }
       change_own_password: {
         Args: { p_current_password: string; p_new_password: string }
         Returns: boolean
@@ -502,6 +522,15 @@ export type Database = {
         Args: { p: string }
         Returns: boolean
       }
+      secure_admin_login: {
+        Args: { p_email: string; p_ip?: unknown; p_password: string }
+        Returns: {
+          admin_id: string
+          full_name: string
+          session_token: string
+          success: boolean
+        }[]
+      }
       simple_admin_login: {
         Args: { p_email: string; p_password: string }
         Returns: {
@@ -509,6 +538,10 @@ export type Database = {
           full_name: string
           is_super_admin: boolean
         }[]
+      }
+      validate_password_strength: {
+        Args: { password: string }
+        Returns: boolean
       }
     }
     Enums: {
