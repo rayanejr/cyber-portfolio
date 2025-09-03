@@ -13,7 +13,7 @@ export function Navbar() {
   const navigation = [
     { name: "Accueil", href: "/" },
     { name: "Projets", href: "/projects" },
-    { name: "Blog", href: "/blog" },
+    { name: "Veille Techno", href: "/veille" },
     { name: "Formation", href: "/formation" },
     { name: "Expérience", href: "/experience" },
     { name: "Outils", href: "/tools" },

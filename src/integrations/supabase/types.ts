@@ -452,6 +452,102 @@ export type Database = {
         }
         Relationships: []
       }
+      veille_sources: {
+        Row: {
+          config: Json | null
+          created_at: string
+          id: string
+          is_active: boolean | null
+          keywords: string[] | null
+          last_sync: string | null
+          name: string
+          type: string
+          updated_at: string
+          url: string
+        }
+        Insert: {
+          config?: Json | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          keywords?: string[] | null
+          last_sync?: string | null
+          name: string
+          type: string
+          updated_at?: string
+          url: string
+        }
+        Update: {
+          config?: Json | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          keywords?: string[] | null
+          last_sync?: string | null
+          name?: string
+          type?: string
+          updated_at?: string
+          url?: string
+        }
+        Relationships: []
+      }
+      veille_techno: {
+        Row: {
+          category: string
+          content: string | null
+          created_at: string
+          cve_id: string | null
+          excerpt: string | null
+          id: string
+          imported_at: string
+          is_active: boolean | null
+          is_featured: boolean | null
+          keywords: string[] | null
+          published_at: string
+          severity: string | null
+          source: string
+          title: string
+          updated_at: string
+          url: string
+        }
+        Insert: {
+          category: string
+          content?: string | null
+          created_at?: string
+          cve_id?: string | null
+          excerpt?: string | null
+          id?: string
+          imported_at?: string
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          keywords?: string[] | null
+          published_at: string
+          severity?: string | null
+          source: string
+          title: string
+          updated_at?: string
+          url: string
+        }
+        Update: {
+          category?: string
+          content?: string | null
+          created_at?: string
+          cve_id?: string | null
+          excerpt?: string | null
+          id?: string
+          imported_at?: string
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          keywords?: string[] | null
+          published_at?: string
+          severity?: string | null
+          source?: string
+          title?: string
+          updated_at?: string
+          url?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
