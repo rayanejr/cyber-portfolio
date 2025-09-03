@@ -236,13 +236,8 @@ export default function Home() {
 
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_2fr] xl:grid-cols-[320px_1fr] gap-8 lg:gap-10 items-start">
             {/* Colonne gauche : portrait */}
-            <div className="space-y-6">
-              <div className="relative">
-                {/* <img
-                  src={profilePhoto}
-                  alt="Rayane – cybersécurité"
-                  className="w-full h-[360px] object-cover rounded-xl cyber-border hover:cyber-glow transition"
-                /> */}
+            <div className="space-y-6 flex justify-center lg:justify-start">
+              <div className="relative w-full max-w-sm lg:max-w-none">
                 <AspectRatio ratio={3/4} className="rounded-xl overflow-hidden">
                   <img
                     src={profilePhoto}
@@ -276,28 +271,28 @@ export default function Home() {
                 </CardContent>
               </Card>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 <Card className="cyber-border hover:cyber-glow transition">
-                  <CardHeader>
-                    <Shield className="h-8 w-8 text-primary mb-2" />
-                    <CardTitle className="text-base">Sécurité défensive</CardTitle>
-                    <CardDescription>SIEM, use-cases, réponse à incident</CardDescription>
+                  <CardHeader className="p-4">
+                    <Shield className="h-6 w-6 sm:h-8 sm:w-8 text-primary mb-2" />
+                    <CardTitle className="text-sm sm:text-base">Sécurité défensive</CardTitle>
+                    <CardDescription className="text-xs sm:text-sm">SIEM, use-cases, réponse à incident</CardDescription>
                   </CardHeader>
                 </Card>
 
                 <Card className="cyber-border hover:cyber-glow transition">
-                  <CardHeader>
-                    <Target className="h-8 w-8 text-secondary mb-2" />
-                    <CardTitle className="text-base">Sécurité offensive</CardTitle>
-                    <CardDescription>Pentest, red team, vulnérabilités</CardDescription>
+                  <CardHeader className="p-4">
+                    <Target className="h-6 w-6 sm:h-8 sm:w-8 text-secondary mb-2" />
+                    <CardTitle className="text-sm sm:text-base">Sécurité offensive</CardTitle>
+                    <CardDescription className="text-xs sm:text-sm">Pentest, red team, vulnérabilités</CardDescription>
                   </CardHeader>
                 </Card>
 
-                <Card className="cyber-border hover:cyber-glow transition">
-                  <CardHeader>
-                    <Code className="h-8 w-8 text-accent mb-2" />
-                    <CardTitle className="text-base">Dev sécurisé</CardTitle>
-                    <CardDescription>Outils, CI/CD, bonnes pratiques</CardDescription>
+                <Card className="cyber-border hover:cyber-glow transition sm:col-span-2 lg:col-span-1">
+                  <CardHeader className="p-4">
+                    <Code className="h-6 w-6 sm:h-8 sm:w-8 text-accent mb-2" />
+                    <CardTitle className="text-sm sm:text-base">Dev sécurisé</CardTitle>
+                    <CardDescription className="text-xs sm:text-sm">Outils, CI/CD, bonnes pratiques</CardDescription>
                   </CardHeader>
                 </Card>
               </div>

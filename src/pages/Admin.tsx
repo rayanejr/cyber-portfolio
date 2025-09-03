@@ -411,57 +411,60 @@ const Admin = () => {
       </div>
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-8">
         <Tabs value={selectedTab} onValueChange={setSelectedTab}>
-          <TabsList className="grid w-full grid-cols-5 lg:grid-cols-10 gap-1">
-            <TabsTrigger value="dashboard" className="flex items-center gap-1 text-xs">
-              <BarChart className="w-3 h-3" />
-              <span className="hidden sm:inline">Tableau</span>
-            </TabsTrigger>
-            <TabsTrigger value="projects" className="flex items-center gap-1 text-xs">
-              <Briefcase className="w-3 h-3" />
-              <span className="hidden sm:inline">Projets</span>
-            </TabsTrigger>
-            <TabsTrigger value="blogs" className="flex items-center gap-1 text-xs">
-              <FileText className="w-3 h-3" />
-              <span className="hidden sm:inline">Blog</span>
-            </TabsTrigger>
-            <TabsTrigger value="experiences" className="flex items-center gap-1 text-xs">
-              <Briefcase className="w-3 h-3" />
-              <span className="hidden lg:inline">Expériences</span>
-            </TabsTrigger>
-            <TabsTrigger value="formations" className="flex items-center gap-1 text-xs">
-              <GraduationCap className="w-3 h-3" />
-              <span className="hidden lg:inline">Formations</span>
-            </TabsTrigger>
-            <TabsTrigger value="skills" className="flex items-center gap-1 text-xs">
-              <Award className="w-3 h-3" />
-              <span className="hidden lg:inline">Compétences</span>
-            </TabsTrigger>
-            <TabsTrigger value="certifications" className="flex items-center gap-1 text-xs">
-              <Award className="w-3 h-3" />
-              <span className="hidden lg:inline">Certifications</span>
-            </TabsTrigger>
-            <TabsTrigger value="tools" className="flex items-center gap-1 text-xs">
-              <Wrench className="w-3 h-3" />
-              <span className="hidden sm:inline">Outils</span>
-            </TabsTrigger>
-            <TabsTrigger value="files" className="flex items-center gap-1 text-xs">
-              <Upload className="w-3 h-3" />
-              <span className="hidden sm:inline">Fichiers</span>
-            </TabsTrigger>
-            <TabsTrigger value="icons" className="flex items-center gap-1 text-xs">
-              <Image className="w-3 h-3" />
-              <span className="hidden sm:inline">Logo</span>
-            </TabsTrigger>
-            <TabsTrigger value="messages" className="flex items-center gap-1 text-xs">
-              <MessageSquare className="w-3 h-3" />
-              <span className="hidden sm:inline">Messages</span>
-            </TabsTrigger>
-          </TabsList>
+          {/* Mobile ScrollArea pour les tabs */}
+          <div className="w-full overflow-x-auto pb-2">
+            <TabsList className="inline-flex h-9 items-center justify-start rounded-lg bg-muted p-1 text-muted-foreground min-w-max">
+              <TabsTrigger value="dashboard" className="flex items-center gap-1 text-xs px-2 py-1">
+                <BarChart className="w-3 h-3" />
+                <span className="hidden xs:inline">Tableau</span>
+              </TabsTrigger>
+              <TabsTrigger value="projects" className="flex items-center gap-1 text-xs px-2 py-1">
+                <Briefcase className="w-3 h-3" />
+                <span className="hidden xs:inline">Projets</span>
+              </TabsTrigger>
+              <TabsTrigger value="blogs" className="flex items-center gap-1 text-xs px-2 py-1">
+                <FileText className="w-3 h-3" />
+                <span className="hidden xs:inline">Blog</span>
+              </TabsTrigger>
+              <TabsTrigger value="experiences" className="flex items-center gap-1 text-xs px-2 py-1">
+                <Briefcase className="w-3 h-3" />
+                <span className="hidden sm:inline">Exp.</span>
+              </TabsTrigger>
+              <TabsTrigger value="formations" className="flex items-center gap-1 text-xs px-2 py-1">
+                <GraduationCap className="w-3 h-3" />
+                <span className="hidden sm:inline">Form.</span>
+              </TabsTrigger>
+              <TabsTrigger value="skills" className="flex items-center gap-1 text-xs px-2 py-1">
+                <Award className="w-3 h-3" />
+                <span className="hidden sm:inline">Compét.</span>
+              </TabsTrigger>
+              <TabsTrigger value="certifications" className="flex items-center gap-1 text-xs px-2 py-1">
+                <Award className="w-3 h-3" />
+                <span className="hidden sm:inline">Certif.</span>
+              </TabsTrigger>
+              <TabsTrigger value="tools" className="flex items-center gap-1 text-xs px-2 py-1">
+                <Wrench className="w-3 h-3" />
+                <span className="hidden xs:inline">Outils</span>
+              </TabsTrigger>
+              <TabsTrigger value="files" className="flex items-center gap-1 text-xs px-2 py-1">
+                <Upload className="w-3 h-3" />
+                <span className="hidden xs:inline">Fichiers</span>
+              </TabsTrigger>
+              <TabsTrigger value="icons" className="flex items-center gap-1 text-xs px-2 py-1">
+                <Image className="w-3 h-3" />
+                <span className="hidden xs:inline">Logo</span>
+              </TabsTrigger>
+              <TabsTrigger value="messages" className="flex items-center gap-1 text-xs px-2 py-1">
+                <MessageSquare className="w-3 h-3" />
+                <span className="hidden xs:inline">Messages</span>
+              </TabsTrigger>
+            </TabsList>
+          </div>
 
-          <TabsContent value="dashboard">
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <TabsContent value="dashboard" className="mt-4">
+            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
               {/* Statistiques */}
               {dashboardStats.map((stat) => (
                 <Card key={stat.title}>
@@ -470,7 +473,7 @@ const Admin = () => {
                     <stat.icon className="h-4 w-4 text-muted-foreground" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold">{stat.value}</div>
+                    <div className="text-xl sm:text-2xl font-bold">{stat.value}</div>
                     <p className="text-xs text-muted-foreground">
                       {stat.description}
                     </p>
@@ -482,11 +485,11 @@ const Admin = () => {
             {/* Actions rapides */}
             <Card className="mt-6">
               <CardHeader>
-                <CardTitle>Actions rapides</CardTitle>
+                <CardTitle className="text-base sm:text-lg">Actions rapides</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-                  <Button onClick={() => setSelectedTab("projects")} variant="outline">
+                <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+                  <Button onClick={() => setSelectedTab("projects")} variant="outline" size="sm">
                     <Briefcase className="w-4 h-4 mr-2" />
                     Gérer les projets
                   </Button>

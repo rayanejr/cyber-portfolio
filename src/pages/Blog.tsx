@@ -79,7 +79,7 @@ const Blog = () => {
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {posts.map((post) => (
             <Card key={post.id} className="cyber-border hover:cyber-glow transition-all duration-300 group h-full flex flex-col">
               {post.image_url && (
@@ -87,18 +87,18 @@ const Blog = () => {
                   <img 
                     src={post.image_url} 
                     alt={post.title}
-                    className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                    className="w-full h-48 sm:h-56 object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                   {post.featured && (
-                    <Badge className="absolute top-4 left-4 bg-primary/90 text-white">
+                    <Badge className="absolute top-2 sm:top-4 left-2 sm:left-4 bg-primary/90 text-white text-xs">
                       Article vedette
                     </Badge>
                   )}
                 </div>
               )}
               
-              <CardHeader>
-                <CardTitle className="text-xl font-orbitron text-gradient line-clamp-2">
+              <CardHeader className="p-4 sm:p-6">
+                <CardTitle className="text-lg sm:text-xl font-orbitron text-gradient line-clamp-2">
                   {post.title}
                 </CardTitle>
                 {post.excerpt && (
@@ -108,10 +108,10 @@ const Blog = () => {
                 )}
               </CardHeader>
               
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-4 p-4 sm:p-6 pt-0 mt-auto">
                 {/* Tags */}
                 {post.tags && post.tags.length > 0 && (
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-1 sm:gap-2">
                     {post.tags.slice(0, 3).map((tag, index) => (
                       <Badge key={index} variant="outline" className="text-xs">
                         {tag}
@@ -126,7 +126,7 @@ const Blog = () => {
                 )}
 
                 {/* Meta Info */}
-                <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 text-xs text-muted-foreground">
                   <div className="flex items-center gap-1">
                     <CalendarDays className="w-3 h-3" />
                     {new Date(post.created_at).toLocaleDateString('fr-FR', {
