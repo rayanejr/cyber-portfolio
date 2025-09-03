@@ -22,10 +22,12 @@ import {
   Trash2,
   Lock,
   Github,
-  Image
+  Image,
+  Database
 } from "lucide-react";
 import AdminProjects from "@/components/admin/AdminProjects";
 import AdminBlogs from "@/components/admin/AdminBlogs";
+import AdminVeille from "@/components/admin/AdminVeille";
 import AdminExperiences from "@/components/admin/AdminExperiences";
 import AdminFormations from "@/components/admin/AdminFormations";
 import AdminCertifications from "@/components/admin/AdminCertifications";
@@ -47,6 +49,7 @@ const Admin = () => {
   const [stats, setStats] = useState({
     projects: 0,
     blogs: 0,
+    veille: 0,
     experiences: 0,
     skills: 0,
     certifications: 0,
@@ -147,6 +150,7 @@ const Admin = () => {
       const [
         { count: projectsCount },
         { count: blogsCount },
+        { count: veilleCount },
         { count: experiencesCount },
         { count: skillsCount },
         { count: certificationsCount },
@@ -157,6 +161,7 @@ const Admin = () => {
       ] = await Promise.all([
         supabase.from('projects').select('*', { count: 'exact', head: true }),
         supabase.from('blogs').select('*', { count: 'exact', head: true }),
+        supabase.from('veille_techno').select('*', { count: 'exact', head: true }),
         supabase.from('experiences').select('*', { count: 'exact', head: true }),
         supabase.from('skills').select('*', { count: 'exact', head: true }),
         supabase.from('certifications').select('*', { count: 'exact', head: true }),
@@ -169,6 +174,7 @@ const Admin = () => {
       setStats({
         projects: projectsCount || 0,
         blogs: blogsCount || 0,
+        veille: veilleCount || 0,
         experiences: experiencesCount || 0,
         skills: skillsCount || 0,
         certifications: certificationsCount || 0,
@@ -354,6 +360,12 @@ const Admin = () => {
       description: "articles publiés"
     },
     {
+      title: "Veille Techno",
+      value: stats.veille,
+      icon: Database,
+      description: "éléments de veille"
+    },
+    {
       title: "Expériences",
       value: stats.experiences,
       icon: Briefcase,
@@ -424,9 +436,9 @@ const Admin = () => {
                 <Briefcase className="w-3 h-3" />
                 <span className="hidden xs:inline">Projets</span>
               </TabsTrigger>
-              <TabsTrigger value="blogs" className="flex items-center gap-1 text-xs px-2 py-1">
-                <FileText className="w-3 h-3" />
-                <span className="hidden xs:inline">Blog</span>
+              <TabsTrigger value="veille" className="flex items-center gap-1 text-xs px-2 py-1">
+                <Database className="w-3 h-3" />
+                <span className="hidden xs:inline">Veille</span>
               </TabsTrigger>
               <TabsTrigger value="experiences" className="flex items-center gap-1 text-xs px-2 py-1">
                 <Briefcase className="w-3 h-3" />
@@ -508,6 +520,10 @@ const Admin = () => {
 
           <TabsContent value="projects">
             <AdminProjects />
+          </TabsContent>
+
+          <TabsContent value="veille">
+            <AdminVeille />
           </TabsContent>
 
           <TabsContent value="blogs">
