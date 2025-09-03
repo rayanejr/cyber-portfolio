@@ -99,7 +99,7 @@ const Admin = () => {
     setLoginError("");
     
     try {
-      // Utiliser la nouvelle fonction simple
+      // Utiliser la fonction simple qui existe maintenant
       const { data, error } = await supabase.rpc('simple_admin_login', {
         p_email: email,
         p_password: password
@@ -107,7 +107,7 @@ const Admin = () => {
 
       if (error) throw error;
 
-      if (data && data.length > 0) {
+      if (data && Array.isArray(data) && data.length > 0) {
         const userData = data[0];
         setCurrentUser({
           id: userData.admin_id,
