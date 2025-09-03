@@ -61,12 +61,12 @@ const ProjectDetail = () => {
 
   if (loading) {
     return (
-      <div className="container mx-auto px-6 py-20">
-        <div className="animate-pulse">
-          <div className="h-8 bg-muted rounded w-1/4 mb-8"></div>
-          <div className="h-64 bg-muted rounded mb-8"></div>
-          <div className="h-4 bg-muted rounded w-3/4 mb-4"></div>
-          <div className="h-4 bg-muted rounded w-1/2"></div>
+      <div className="container mx-auto px-4 sm:px-6 py-12 sm:py-20">
+        <div className="animate-pulse space-y-4">
+          <div className="h-8 bg-muted rounded w-3/4 sm:w-1/4 mb-6 sm:mb-8"></div>
+          <div className="h-48 sm:h-64 bg-muted rounded mb-6 sm:mb-8"></div>
+          <div className="h-4 bg-muted rounded w-full sm:w-3/4 mb-4"></div>
+          <div className="h-4 bg-muted rounded w-3/4 sm:w-1/2"></div>
         </div>
       </div>
     );
@@ -74,13 +74,13 @@ const ProjectDetail = () => {
 
   if (notFound || !project) {
     return (
-      <div className="container mx-auto px-6 py-20">
-        <div className="text-center">
-          <h1 className="text-4xl font-bold mb-4">Projet non trouvé</h1>
-          <p className="text-muted-foreground mb-8">
+      <div className="container mx-auto px-4 sm:px-6 py-12 sm:py-20">
+        <div className="text-center max-w-2xl mx-auto">
+          <h1 className="text-3xl sm:text-4xl font-bold mb-4 cyber-text">Projet non trouvé</h1>
+          <p className="text-muted-foreground mb-6 sm:mb-8 text-base sm:text-lg">
             Le projet que vous recherchez n'existe pas ou n'est pas disponible.
           </p>
-          <Button asChild>
+          <Button asChild className="btn-cyber">
             <Link to="/projects">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Retour aux projets
@@ -92,70 +92,75 @@ const ProjectDetail = () => {
   }
 
   return (
-    <div className="container mx-auto px-6 py-20">
+    <div className="container mx-auto px-4 sm:px-6 py-12 sm:py-20">
       {/* Back Button */}
-      <Button asChild variant="ghost" className="mb-8">
+      <Button asChild variant="ghost" className="mb-6 sm:mb-8 cyber-border">
         <Link to="/projects">
           <ArrowLeft className="w-4 h-4 mr-2" />
-          Retour aux projets
+          <span className="hidden sm:inline">Retour aux projets</span>
+          <span className="sm:hidden">Retour</span>
         </Link>
       </Button>
 
       <div className="max-w-4xl mx-auto">
         {/* Project Header */}
-        <div className="mb-12">
-          <div className="flex items-center gap-2 mb-4">
-            <h1 className="text-4xl md:text-5xl font-bold font-orbitron text-gradient">
+        <div className="mb-8 sm:mb-12">
+          <div className="flex flex-col sm:flex-row sm:items-start sm:gap-2 mb-4">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold font-orbitron cyber-text mb-2 sm:mb-0 flex-1">
               {project.title}
             </h1>
             {project.featured && (
-              <Badge className="bg-primary/90 text-white">
+              <Badge className="bg-primary/90 text-white self-start">
                 Projet vedette
               </Badge>
             )}
           </div>
           
           {project.description && (
-            <p className="text-xl text-muted-foreground mb-6">
+            <p className="text-lg sm:text-xl text-muted-foreground mb-4 sm:mb-6">
               {project.description}
             </p>
           )}
 
-          <div className="flex items-center gap-4 text-sm text-muted-foreground mb-8">
+          <div className="flex items-center gap-4 text-sm text-muted-foreground mb-6 sm:mb-8">
             <div className="flex items-center gap-2">
               <Calendar className="w-4 h-4" />
-              {new Date(project.created_at).toLocaleDateString('fr-FR', {
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric'
-              })}
+              <span className="text-xs sm:text-sm">
+                {new Date(project.created_at).toLocaleDateString('fr-FR', {
+                  day: 'numeric',
+                  month: 'long',
+                  year: 'numeric'
+                })}
+              </span>
             </div>
           </div>
 
           {/* Action Buttons */}
-          <div className="flex gap-4 mb-8">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-6 sm:mb-8">
             {project.demo_url && (
-              <Button asChild>
+              <Button asChild className="btn-cyber">
                 <a 
                   href={project.demo_url} 
                   target="_blank" 
                   rel="noopener noreferrer"
                 >
                   <ExternalLink className="w-4 h-4 mr-2" />
-                  Voir la démonstration
+                  <span className="hidden sm:inline">Voir la démonstration</span>
+                  <span className="sm:hidden">Démo</span>
                 </a>
               </Button>
             )}
             
             {project.github_url && (
-              <Button asChild variant="outline">
+              <Button asChild variant="outline" className="cyber-border">
                 <a 
                   href={project.github_url} 
                   target="_blank" 
                   rel="noopener noreferrer"
                 >
                   <Github className="w-4 h-4 mr-2" />
-                  Code source
+                  <span className="hidden sm:inline">Code source</span>
+                  <span className="sm:hidden">Code</span>
                 </a>
               </Button>
             )}
@@ -164,25 +169,25 @@ const ProjectDetail = () => {
 
         {/* Project Image */}
         {project.image_url && (
-          <div className="mb-12">
+          <div className="mb-8 sm:mb-12">
             <img 
               src={project.image_url} 
               alt={project.title}
-              className="w-full rounded-lg shadow-lg"
+              className="w-full rounded-lg shadow-lg cyber-border"
             />
           </div>
         )}
 
         {/* Technologies */}
         {project.technologies && project.technologies.length > 0 && (
-          <Card className="mb-12">
+          <Card className="mb-8 sm:mb-12 cyber-border">
             <CardHeader>
-              <CardTitle>Technologies utilisées</CardTitle>
+              <CardTitle className="text-lg sm:text-xl">Technologies utilisées</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex flex-wrap gap-2">
                 {project.technologies.map((tech, index) => (
-                  <Badge key={index} variant="outline">
+                  <Badge key={index} variant="outline" className="text-xs sm:text-sm cyber-border">
                     {tech}
                   </Badge>
                 ))}
@@ -193,15 +198,15 @@ const ProjectDetail = () => {
 
         {/* Project Content */}
         {project.content && (
-          <Card>
+          <Card className="cyber-border">
             <CardHeader>
-              <CardTitle>Description détaillée</CardTitle>
+              <CardTitle className="text-lg sm:text-xl">Description détaillée</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="prose prose-neutral dark:prose-invert max-w-none">
                 {project.content.split('\n').map((paragraph, index) => (
                   paragraph.trim() ? (
-                    <p key={index} className="mb-4">
+                    <p key={index} className="mb-4 text-sm sm:text-base">
                       {paragraph}
                     </p>
                   ) : null

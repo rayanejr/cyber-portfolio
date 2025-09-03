@@ -230,11 +230,11 @@ export default function Home() {
       </section>
 
       {/* ===== À PROPOS ===== */}
-      <section className="py-20 bg-card/30">
+      <section className="py-12 sm:py-20 bg-card/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl md:text-4xl font-orbitron font-bold text-center mb-12">À propos</h2>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-orbitron font-bold text-center mb-8 sm:mb-12">À propos</h2>
 
-          <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-10 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_2fr] xl:grid-cols-[320px_1fr] gap-8 lg:gap-10 items-start">
             {/* Colonne gauche : portrait */}
             <div className="space-y-6">
               <div className="relative">
