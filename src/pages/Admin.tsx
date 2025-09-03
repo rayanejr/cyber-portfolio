@@ -36,6 +36,8 @@ import AdminTools from "@/components/admin/AdminTools";
 import AdminFiles from "@/components/admin/AdminFiles";
 import AdminIcons from "@/components/admin/AdminIcons";
 import GitHubSync from "@/components/admin/GitHubSync";
+import AdminUsers from "@/components/admin/AdminUsers";
+import AdminSecurity from "@/components/admin/AdminSecurity";
 
 const Admin = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -472,6 +474,14 @@ const Admin = () => {
                 <MessageSquare className="w-3 h-3" />
                 <span className="hidden xs:inline">Messages</span>
               </TabsTrigger>
+              <TabsTrigger value="users" className="flex items-center gap-1 text-xs px-2 py-1">
+                <Lock className="w-3 h-3" />
+                <span className="hidden xs:inline">Users</span>
+              </TabsTrigger>
+              <TabsTrigger value="security" className="flex items-center gap-1 text-xs px-2 py-1">
+                <Lock className="w-3 h-3" />
+                <span className="hidden xs:inline">Sécurité</span>
+              </TabsTrigger>
             </TabsList>
           </div>
 
@@ -635,6 +645,14 @@ const Admin = () => {
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="users">
+            <AdminUsers currentUser={currentUser} />
+          </TabsContent>
+
+          <TabsContent value="security">
+            <AdminSecurity currentUser={currentUser} />
           </TabsContent>
         </Tabs>
       </div>
