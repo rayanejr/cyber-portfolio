@@ -207,10 +207,11 @@ const VeilleTechno = () => {
           <Button 
             onClick={handleManualImport} 
             disabled={importing}
-            className="cyber-border"
+            variant="default"
+            className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground cyber-border"
           >
             <RefreshCw className={`h-4 w-4 mr-2 ${importing ? 'animate-spin' : ''}`} />
-            {importing ? 'Import...' : 'Importer maintenant'}
+            {importing ? 'Synchronisation...' : 'Actualiser les données'}
           </Button>
         </div>
 
