@@ -1,1 +1,10 @@
 project_id = "pcpjqxuuuawwqxrecexm"
+
+[functions.security-test-data]
+verify_jwt = false
+
+[functions.encryption-service]
+verify_jwt = false
+
+[functions.security-automation]
+verify_jwt = false
