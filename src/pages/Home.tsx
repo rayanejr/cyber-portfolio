@@ -336,7 +336,7 @@ export default function Home() {
                   <div className="space-y-3">
                     {skillGroup.items.map((skill: string, skillIndex: number) => (
                       <div
-                        key={skill}
+                        key={`${skillGroup.category}-${skill}-${skillIndex}`}
                         className={`flex items-center p-3 rounded-lg bg-card/50 hover:bg-card/80 transition-all duration-300 fade-in fade-in-delay-${skillIndex + 2}`}
                       >
                         {/* Badge VERT (pill) */}
