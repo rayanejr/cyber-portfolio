@@ -276,7 +276,7 @@ export default function Home() {
                 </CardContent>
               </Card>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
                 <Card className="cyber-border hover:cyber-glow transition">
                   <CardHeader>
                     <Shield className="h-8 w-8 text-primary mb-2" />
@@ -318,7 +318,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {skills.map((skillGroup, index) => (
               <Card
                 key={skillGroup.category}
@@ -395,7 +395,7 @@ export default function Home() {
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {recentProjects.length === 0 ? (
               <Card className="cyber-border col-span-full text-center">
                 <CardContent className="p-10">
@@ -474,7 +474,7 @@ export default function Home() {
             <p className="text-lg text-muted-foreground">Consultation disponible en PDF ou JPG uniquement</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
             {certifications.map((cert) => {
               const canView = isAllowedAsset(cert.pdf_url) || isAllowedAsset(cert.image_url);
               return (
@@ -535,7 +535,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8 mb-10">
             <Card className="cyber-border hover:cyber-glow transition">
               <CardContent className="p-6 text-center">
                 <Mail className="h-10 w-10 text-primary mx-auto mb-3" />

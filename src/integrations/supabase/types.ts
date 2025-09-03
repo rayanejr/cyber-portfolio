@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_accounts: {
+        Row: {
+          created_at: string
+          email: string
+          full_name: string
+          is_active: boolean
+          last_login_at: string | null
+          role: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          full_name: string
+          is_active?: boolean
+          last_login_at?: string | null
+          role?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          full_name?: string
+          is_active?: boolean
+          last_login_at?: string | null
+          role?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       admin_files: {
         Row: {
           created_at: string
@@ -46,6 +79,79 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      admin_secrets: {
+        Row: {
+          last_password_change: string
+          password_hash: string
+          user_id: string
+        }
+        Insert: {
+          last_password_change?: string
+          password_hash: string
+          user_id: string
+        }
+        Update: {
+          last_password_change?: string
+          password_hash?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "admin_secrets_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "admin_accounts"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      admin_users: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          email: string
+          full_name: string
+          id: string
+          is_active: boolean | null
+          is_super_admin: boolean | null
+          last_login_at: string | null
+          password_hash: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          email: string
+          full_name: string
+          id?: string
+          is_active?: boolean | null
+          is_super_admin?: boolean | null
+          last_login_at?: string | null
+          password_hash: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          email?: string
+          full_name?: string
+          id?: string
+          is_active?: boolean | null
+          is_super_admin?: boolean | null
+          last_login_at?: string | null
+          password_hash?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "admin_users_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       blogs: {
         Row: {
@@ -370,7 +476,92 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      authenticate_admin: {
+        Args: { p_email: string; p_password: string }
+        Returns: {
+          admin_id: string
+          full_name: string
+          is_super_admin: boolean
+        }[]
+      }
+      change_own_password: {
+        Args: { p_current_password: string; p_new_password: string }
+        Returns: boolean
+      }
+      check_admin_password: {
+        Args: { p_email: string; p_plain: string }
+        Returns: boolean
+      }
+      check_rate_limit: {
+        Args: { p_email?: string; p_ip: unknown }
+        Returns: boolean
+      }
+      citext: {
+        Args: { "": boolean } | { "": string } | { "": unknown }
+        Returns: string
+      }
+      citext_hash: {
+        Args: { "": string }
+        Returns: number
+      }
+      citextin: {
+        Args: { "": unknown }
+        Returns: string
+      }
+      citextout: {
+        Args: { "": string }
+        Returns: unknown
+      }
+      citextrecv: {
+        Args: { "": unknown }
+        Returns: string
+      }
+      citextsend: {
+        Args: { "": string }
+        Returns: string
+      }
+      cleanup_expired_sessions: {
+        Args: Record<PropertyKey, never>
+        Returns: number
+      }
+      create_admin_session: {
+        Args: { p_admin_id: string }
+        Returns: string
+      }
+      create_admin_user: {
+        Args: {
+          p_email: string
+          p_full_name: string
+          p_is_super_admin?: boolean
+          p_password: string
+        }
+        Returns: string
+      }
+      create_first_super_admin: {
+        Args: { p_email: string; p_full_name: string; p_password: string }
+        Returns: string
+      }
+      is_admin: {
+        Args: { uid: string }
+        Returns: boolean
+      }
+      is_authenticated_admin: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
+      safe_authenticate_admin: {
+        Args: { p_email: string; p_ip?: unknown; p_password: string }
+        Returns: {
+          admin_id: string
+          full_name: string
+          is_super_admin: boolean
+          session_token: string
+        }[]
+      }
+      set_admin_password: {
+        Args: { p_plain: string; p_user_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never
