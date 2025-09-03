@@ -38,6 +38,7 @@ import AdminIcons from "@/components/admin/AdminIcons";
 import GitHubSync from "@/components/admin/GitHubSync";
 import AdminUsers from "@/components/admin/AdminUsers";
 import AdminSecurity from "@/components/admin/AdminSecurity";
+import { SecurityTestPanel } from "@/components/admin/SecurityTestPanel";
 
 const Admin = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -482,6 +483,10 @@ const Admin = () => {
                 <Lock className="w-3 h-3" />
                 <span className="hidden xs:inline">Sécurité</span>
               </TabsTrigger>
+              <TabsTrigger value="security-tests" className="flex items-center gap-1 text-xs px-2 py-1">
+                <FileText className="w-3 h-3" />
+                <span className="hidden xs:inline">Tests</span>
+              </TabsTrigger>
             </TabsList>
           </div>
 
@@ -653,6 +658,10 @@ const Admin = () => {
 
           <TabsContent value="security">
             <AdminSecurity currentUser={currentUser} />
+          </TabsContent>
+
+          <TabsContent value="security-tests">
+            <SecurityTestPanel />
           </TabsContent>
         </Tabs>
       </div>
