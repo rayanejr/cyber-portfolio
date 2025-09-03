@@ -20,7 +20,8 @@ import {
   Mail,
   Eye,
   Trash2,
-  Lock
+  Lock,
+  Github
 } from "lucide-react";
 import AdminProjects from "@/components/admin/AdminProjects";
 import AdminBlogs from "@/components/admin/AdminBlogs";
