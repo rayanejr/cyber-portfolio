@@ -1,0 +1,298 @@
+3) Migrations SQL (DDL + RLS)
+
+Colle ces blocs dans SQL Editor (Supabase). Adapte les noms si besoin.
+
+A.1 Admins (whitelist d’admins)
+create table if not exists public.admins (
+  user_id uuid primary key references auth.users(id) on delete cascade,
+  created_at timestamptz not null default now()
+);
+
+-- RLS pas nécessaire si on ne lit pas publiquement; si besoin:
+alter table public.admins enable row level security;
+
+-- Politique: seuls les admins peuvent voir la liste des admins (optionnel)
+create policy "admins can read admins" on public.admins
+for select to authenticated
+using (exists (select 1 from public.admins a where a.user_id = auth.uid()));
+
+A.2 Helper: est-ce admin ?
+create or replace function public.is_admin(uid uuid)
+returns boolean language sql stable as $$
+  select exists (select 1 from public.admins where user_id = uid)
+$$;
+
+B. Blog
+create table if not exists public.blog_posts (
+  id uuid primary key default gen_random_uuid(),
+  title text not null,
+  slug text unique not null,
+  excerpt text,
+  content text, -- ou JSON/MDX selon ton rendu
+  cover_image_url text,
+  tags text[] default '{}',
+  is_published boolean not null default false,
+  published_at timestamptz,
+  author_id uuid references auth.users(id),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create index on public.blog_posts (is_published, published_at desc);
+create index on public.blog_posts (created_at desc);
+
+alter table public.blog_posts enable row level security;
+
+-- Lecture publique seulement si publié et publié dans le passé
+create policy "public can read published blog" on public.blog_posts
+for select to anon
+using (is_published = true and coalesce(published_at, now()) <= now());
+
+-- Admin CRUD
+create policy "admin manage blog" on public.blog_posts
+for all to authenticated
+using (public.is_admin(auth.uid()))
+with check (public.is_admin(auth.uid()));
+
+
+Triggers (slug + updated_at) :
+
+create or replace function public.slugify(txt text)
+returns text language plpgsql immutable as $$
+begin
+  return lower(regexp_replace(trim(txt), '[^a-zA-Z0-9]+', '-', 'g'));
+end; $$;
+
+create or replace function public.blog_posts_set_slug()
+returns trigger language plpgsql as $$
+begin
+  if new.slug is null or new.slug = '' then
+    new.slug := public.slugify(new.title);
+  end if;
+  new.updated_at := now();
+  return new;
+end; $$;
+
+drop trigger if exists trg_blog_posts_ins_upd on public.blog_posts;
+create trigger trg_blog_posts_ins_upd
+before insert or update on public.blog_posts
+for each row execute function public.blog_posts_set_slug();
+
+C. Contacts
+create table if not exists public.contacts (
+  id bigint primary key generated always as identity,
+  name text,
+  email text,
+  subject text,
+  message text not null,
+  status text not null default 'new', -- new | replied | archived
+  created_at timestamptz not null default now(),
+  replied_at timestamptz,
+  responder_id uuid references auth.users(id),
+  response_preview text
+);
+
+create index on public.contacts (created_at desc);
+
+alter table public.contacts enable row level security;
+
+-- Public: peut créer un contact (formulaire)
+create policy "public can insert contact" on public.contacts
+for insert to anon
+with check (true);
+
+-- Admin: lire / mettre à jour / supprimer
+create policy "admin read contacts" on public.contacts
+for select to authenticated
+using (public.is_admin(auth.uid()));
+
+create policy "admin update contacts" on public.contacts
+for update to authenticated
+using (public.is_admin(auth.uid()))
+with check (public.is_admin(auth.uid()));
+
+create policy "admin delete contacts" on public.contacts
+for delete to authenticated
+using (public.is_admin(auth.uid()));
+
+D. Projets (si ce n’est pas déjà fait)
+
+Assure-toi d’avoir featured boolean, is_active boolean, created_at timestamptz default now().
+
+alter table public.projects
+  add column if not exists featured boolean not null default false,
+  add column if not exists is_active boolean not null default true,
+  add column if not exists created_at timestamptz not null default now();
+
+alter table public.projects enable row level security;
+
+-- Public read only active
+create policy "public read active projects" on public.projects
+for select to anon
+using (is_active = true);
+
+-- Admin manage projects
+create policy "admin manage projects" on public.projects
+for all to authenticated
+using (public.is_admin(auth.uid()))
+with check (public.is_admin(auth.uid()));
+
+E. Certifications (lecture publique, écrit admin)
+alter table public.certifications enable row level security;
+
+create policy "public read active certs" on public.certifications
+for select to anon
+using (coalesce(is_active, true) = true);
+
+create policy "admin manage certs" on public.certifications
+for all to authenticated
+using (public.is_admin(auth.uid()))
+with check (public.is_admin(auth.uid()));
+
+4) Storage policies (certifs / images)
+
+Crée 2 buckets (ex.) :
+
+certs (PDF/JPG des certifs)
+
+blog_images (images d’articles)
+
+Policies :
+
+-- STORAGES: activer RLS
+-- (dans Supabase Storage, chaque bucket a ses policies sur table storage.objects)
+-- Lecture publique
+create policy "public read certs" on storage.objects
+for select to anon
+using (bucket_id = 'certs');
+
+create policy "public read blog_images" on storage.objects
+for select to anon
+using (bucket_id = 'blog_images');
+
+-- Écriture uniquement admin
+create policy "admin write certs" on storage.objects
+for insert to authenticated
+with check (bucket_id = 'certs' and public.is_admin(auth.uid()));
+
+create policy "admin update certs" on storage.objects
+for update to authenticated
+using (bucket_id = 'certs' and public.is_admin(auth.uid()))
+with check (bucket_id = 'certs' and public.is_admin(auth.uid()));
+
+create policy "admin delete certs" on storage.objects
+for delete to authenticated
+using (bucket_id = 'certs' and public.is_admin(auth.uid()));
+
+-- idem pour blog_images
+create policy "admin write blog_images" on storage.objects
+for insert to authenticated
+with check (bucket_id = 'blog_images' and public.is_admin(auth.uid()));
+
+create policy "admin update blog_images" on storage.objects
+for update to authenticated
+using (bucket_id = 'blog_images' and public.is_admin(auth.uid()))
+with check (bucket_id = 'blog_images' and public.is_admin(auth.uid()));
+
+create policy "admin delete blog_images" on storage.objects
+for delete to authenticated
+using (bucket_id = 'blog_images' and public.is_admin(auth.uid()));
+
+
+Côté UI, filtre les extensions (PDF/JPG) avant upload. Si tu veux durcir côté DB, ajoute un trigger sur certifications qui refuse une URL ne finissant pas par .pdf|.jpg|.jpeg.
+
+5) Snippets front
+5.1 Home — “3 projets mis en avant sinon les plus récents”
+
+(identique à ta page Projects, avec limit(3), aucun changement de style)
+
+const { data: projData, error: projErr } = await supabase
+  .from("projects")
+  .select("*")
+  .eq("is_active", true)
+  .order("featured", { ascending: false })
+  .order("created_at", { ascending: false })
+  .limit(3);
+
+if (projErr) throw projErr;
+
+const normalized: ProjectRow[] = (projData ?? []).map((p, i) => ({
+  ...p,
+  technologies: Array.isArray(p.technologies)
+    ? p.technologies
+    : (typeof p.technologies === "string" ? safeParseArray(p.technologies) : []),
+  image_url: p.image_url || projectFallbacks[i % projectFallbacks.length],
+}));
+
+setRecentProjects(normalized);
+
+5.2 Upload depuis l’admin (certifs/blog)
+// uploadFile(bucket: 'certs' | 'blog_images', file: File) → public URL
+async function uploadFile(bucket: string, file: File) {
+  // Sécurité basique côté client
+  const okExt = /\.(pdf|jpg|jpeg|png)$/i.test(file.name);
+  if (!okExt) throw new Error("Extension non autorisée");
+  const path = `${crypto.randomUUID()}-${file.name}`;
+
+  const { data, error } = await supabase.storage.from(bucket).upload(path, file, {
+    upsert: false,
+    contentType: file.type || undefined,
+  });
+  if (error) throw error;
+
+  const { data: pub } = supabase.storage.from(bucket).getPublicUrl(path);
+  return pub?.publicUrl;
+}
+
+
+Pour certifications, après upload, fais un update/insert de la ligne avec l’URL retournée.
+Pour blog, stocke la cover_image_url.
+
+6) Heures & fuseau horaire (France)
+
+Recommandé (best-practice) : stocker tout en UTC (timestamptz) et convertir à l’affichage.
+
+Vérifie que toutes tes colonnes dates sont timestamptz avec default now().
+
+Côté front :
+
+const dt = new Date(p.created_at!);
+const formatted = new Intl.DateTimeFormat('fr-FR', {
+  timeZone: 'Europe/Paris',
+  year: 'numeric', month: 'long', day: '2-digit',
+  hour: '2-digit', minute: '2-digit'
+}).format(dt);
+
+
+Option si tu veux que Postgres renvoie déjà en heure de Paris :
+
+alter role anon set timezone to 'Europe/Paris';
+alter role authenticated set timezone to 'Europe/Paris';
+-- (facultatif)
+alter database postgres set timezone to 'Europe/Paris';
+
+
+Même avec ça, garde timestamptz et pense “UTC en stockage, TZ à l’affichage”.
+
+7) Checklist sécurité (résumé rapide)
+
+ RLS ON partout (+ policies “public read published/active”, “admin CRUD”).
+
+ Aucune clé service côté client.
+
+ Storage policies : public read + write admin only.
+
+ Validation d’extensions à l’upload (UI) + (option) trigger côté DB.
+
+ Rate-limit contact : Turnstile côté form + vérif côté Edge Function avant insert/send mail.
+
+ CSP/Headers (si tu peux via hosting) : default-src 'self'; img-src 'self' data: https://*.supabase.co ...
+
+ Désérialisation safe : si blog en HTML, sanitiser (DOMPurify) avant rendu.
+
+ Logs (Edge Functions) + alerting basique (mail sur erreurs critiques).
+
+On commence par quoi ?
+
+Envoie-moi le DDL de tes tables actuelles (sans données, pas de secrets) + noms de buckets (s’il y en a).
+Je te renvoie ensuite les migrations adaptées pile à ton schéma, et les endpoints admin (upload certifs, blog, contacts/reply) — étape par étape.

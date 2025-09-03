@@ -11,7 +11,7 @@ export function Footer() {
             <div className="flex items-center space-x-2 mb-4">
               <Shield className="h-8 w-8 text-primary cyber-glow" />
               <span className="font-orbitron font-bold text-xl cyber-text">
-                CyberSecPro
+                JERBI Rayane
               </span>
             </div>
             <p className="text-muted-foreground mb-4 max-w-md">
@@ -28,7 +28,7 @@ export function Footer() {
               <a href="https://twitter.com" className="text-muted-foreground hover:text-primary transition-colors">
                 <Twitter className="h-5 w-5" />
               </a>
-              <a href="mailto:contact@cybersecpro.com" className="text-muted-foreground hover:text-primary transition-colors">
+              <a href="mailto:rayane.jerbi@yahoo.fr" className="text-muted-foreground hover:text-primary transition-colors">
                 <Mail className="h-5 w-5" />
               </a>
             </div>
@@ -59,7 +59,7 @@ export function Footer() {
 
         <div className="border-t border-border mt-8 pt-8 text-center">
           <p className="text-muted-foreground">
-            © 2024 CyberSecPro. Tous droits réservés. | 
+            © 2025 JERBI Rayane. Tous droits réservés. | 
             <span className="text-primary"> Sécurité • Expertise • Innovation</span>
           </p>
         </div>

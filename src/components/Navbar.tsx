@@ -28,7 +28,7 @@ export function Navbar() {
             <Link to="/" className="flex items-center space-x-2">
               <Shield className="h-8 w-8 text-primary cyber-glow" />
               <span className="font-orbitron font-bold text-xl cyber-text">
-                CyberSecPro
+                JERBI Rayane
               </span>
             </Link>
           </div>
