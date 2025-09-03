@@ -51,15 +51,7 @@ export type Database = {
           table_name?: string | null
           user_agent?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "admin_audit_log_admin_id_fkey"
-            columns: ["admin_id"]
-            isOneToOne: false
-            referencedRelation: "admin_users"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       admin_files: {
         Row: {
@@ -97,49 +89,38 @@ export type Database = {
       admin_users: {
         Row: {
           created_at: string | null
-          created_by: string | null
           email: string
           full_name: string
           id: string
           is_active: boolean | null
           is_super_admin: boolean | null
           last_login_at: string | null
-          password_hash: string
+          password: string
           updated_at: string | null
         }
         Insert: {
           created_at?: string | null
-          created_by?: string | null
           email: string
           full_name: string
           id?: string
           is_active?: boolean | null
           is_super_admin?: boolean | null
           last_login_at?: string | null
-          password_hash: string
+          password: string
           updated_at?: string | null
         }
         Update: {
           created_at?: string | null
-          created_by?: string | null
           email?: string
           full_name?: string
           id?: string
           is_active?: boolean | null
           is_super_admin?: boolean | null
           last_login_at?: string | null
-          password_hash?: string
+          password?: string
           updated_at?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "admin_users_created_by_fkey"
-            columns: ["created_by"]
-            isOneToOne: false
-            referencedRelation: "admin_users"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       blogs: {
         Row: {
@@ -464,22 +445,12 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      authenticate_admin: {
-        Args: { p_email: string; p_password: string }
-        Returns: {
-          admin_id: string
-          full_name: string
-          is_super_admin: boolean
-        }[]
-      }
       change_own_password: {
         Args: { p_current_password: string; p_new_password: string }
         Returns: boolean
       }
       check_rate_limit: {
-        Args:
-          | { p_email?: string; p_ip: unknown }
-          | { p_email?: string; p_ip: unknown }
+        Args: { p_email?: string; p_ip: unknown }
         Returns: boolean
       }
       citext: {
@@ -510,10 +481,6 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: number
       }
-      create_admin_session: {
-        Args: { p_admin_id: string }
-        Returns: string
-      }
       create_admin_user: {
         Args: {
           p_email: string
@@ -535,13 +502,12 @@ export type Database = {
         Args: { p: string }
         Returns: boolean
       }
-      safe_authenticate_admin: {
-        Args: { p_email: string; p_ip?: unknown; p_password: string }
+      simple_admin_login: {
+        Args: { p_email: string; p_password: string }
         Returns: {
           admin_id: string
           full_name: string
           is_super_admin: boolean
-          session_token: string
         }[]
       }
     }

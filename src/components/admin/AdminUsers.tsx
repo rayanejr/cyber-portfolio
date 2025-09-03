@@ -19,7 +19,7 @@ interface AdminUser {
   last_login_at: string | null;
   created_at: string;
   updated_at: string;
-  created_by: string | null;
+  password: string;
 }
 
 interface AdminUsersProps {

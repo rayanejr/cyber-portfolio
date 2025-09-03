@@ -99,11 +99,10 @@ const Admin = () => {
     setLoginError("");
     
     try {
-      // Utiliser la nouvelle fonction d'authentification sécurisée
-      const { data, error } = await supabase.rpc('safe_authenticate_admin', {
+      // Utiliser la nouvelle fonction simple
+      const { data, error } = await supabase.rpc('simple_admin_login', {
         p_email: email,
-        p_password: password,
-        p_ip: '127.0.0.1' // En production, récupérer la vraie IP
+        p_password: password
       });
 
       if (error) throw error;
@@ -117,13 +116,16 @@ const Admin = () => {
         });
         setIsAuthenticated(true);
         
-        // Stocker le token de session
-        localStorage.setItem('admin_session_token', userData.session_token);
+        // Stocker en local
+        localStorage.setItem('admin_session', JSON.stringify(userData));
         
         toast({
           title: "Connexion réussie",
           description: `Bienvenue ${userData.full_name}!`,
         });
+        
+        await fetchStats();
+        await fetchContactMessages();
       } else {
         setLoginError("Email ou mot de passe incorrect");
       }
