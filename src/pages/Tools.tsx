@@ -784,30 +784,35 @@ const Tools = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background py-20">
-        <div className="container mx-auto px-6">
-          <div className="text-center">Chargement...</div>
+      <div className="min-h-screen bg-background py-12 sm:py-20">
+        <div className="container mx-auto px-4 sm:px-6">
+          <div className="text-center">
+            <div className="animate-pulse space-y-4">
+              <div className="h-8 bg-muted rounded w-2/3 sm:w-1/3 mx-auto"></div>
+              <div className="h-4 bg-muted rounded w-4/5 sm:w-1/2 mx-auto"></div>
+            </div>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background py-20">
-      <div className="container mx-auto px-6">
-        <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-primary bg-clip-text text-transparent">
+    <div className="min-h-screen bg-background py-12 sm:py-20">
+      <div className="container mx-auto px-4 sm:px-6">
+        <div className="text-center mb-12 sm:mb-16">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6 cyber-text">
             Outils Cybersécurité
           </h1>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+          <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto px-4">
             Collection d'outils gratuits pour tester et améliorer votre sécurité
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {tools.map((tool) => (
-            <Card key={tool.id} className="hover:shadow-cyber transition-all duration-300">
-              <CardHeader>
+            <Card key={tool.id} className="cyber-border hover:cyber-glow transition-all duration-300 h-full flex flex-col">
+              <CardHeader className="pb-3">
                 <div className="flex items-center gap-3">
                   <div className={`p-2 rounded-lg ${getCategoryColor(tool.category)}`}>
                     {getCategoryIcon(tool.category)}
