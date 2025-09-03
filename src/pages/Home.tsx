@@ -199,7 +199,7 @@ export default function Home() {
         />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           {/* Titre rotatif typewriter + dégradé violet */}
-          <h1 className="text-4xl md:text-6xl font-orbitron font-bold mb-6">
+          <h1 className="text-3xl sm:text-4xl md:text-6xl font-orbitron font-bold mb-4 sm:mb-6">
             <span className="sr-only">Rôle : </span>
             <span className="cyber-text">—</span>
             <span aria-live="polite" className="whitespace-nowrap">
@@ -209,18 +209,18 @@ export default function Home() {
               <span className="inline-block w-[2px] h-[1em] align-[-0.15em] bg-fuchsia-400 ml-1 animate-pulse" />
             </span>{" "}
           </h1>
-          <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto">
+          <p className="text-lg sm:text-xl md:text-2xl text-muted-foreground mb-6 sm:mb-8 max-w-3xl mx-auto px-4">
             Sécurité offensive & défensive — je protège vos infrastructures contre les menaces modernes.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
             <Link to="/projects">
-              <Button size="lg" className="btn-cyber group">
+              <Button size="lg" className="btn-cyber group w-full sm:w-auto">
                 Découvrir mes projets
                 <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
               </Button>
             </Link>
             <Link to="/contact">
-              <Button variant="outline" size="lg" className="btn-ghost-cyber">
+              <Button variant="outline" size="lg" className="btn-ghost-cyber w-full sm:w-auto">
                 Me contacter
               </Button>
             </Link>

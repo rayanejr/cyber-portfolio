@@ -48,11 +48,11 @@ const Blog = () => {
 
   if (loading) {
     return (
-      <div className="container mx-auto px-6 py-20">
+      <div className="container mx-auto px-4 sm:px-6 py-12 sm:py-20">
         <div className="text-center">
-          <div className="animate-pulse">
-            <div className="h-8 bg-muted rounded w-1/3 mx-auto mb-4"></div>
-            <div className="h-4 bg-muted rounded w-1/2 mx-auto"></div>
+          <div className="animate-pulse space-y-4">
+            <div className="h-8 bg-muted rounded w-2/3 sm:w-1/3 mx-auto"></div>
+            <div className="h-4 bg-muted rounded w-4/5 sm:w-1/2 mx-auto"></div>
           </div>
         </div>
       </div>
@@ -60,13 +60,13 @@ const Blog = () => {
   }
 
   return (
-    <div className="container mx-auto px-6 py-20">
+    <div className="container mx-auto px-4 sm:px-6 py-12 sm:py-20">
       {/* Header */}
-      <div className="text-center mb-16">
-        <h1 className="text-4xl md:text-6xl font-bold font-orbitron mb-6 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+      <div className="text-center mb-12 sm:mb-16">
+        <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold font-orbitron mb-4 sm:mb-6 cyber-text">
           Blog Cybersécurité
         </h1>
-        <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+        <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto px-4">
           Articles, tutorials et analyses sur la cybersécurité, le hacking éthique et les dernières menaces
         </p>
       </div>
@@ -79,9 +79,9 @@ const Blog = () => {
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
           {posts.map((post) => (
-            <Card key={post.id} className="cyber-border hover:shadow-cyber transition-all duration-300 group">
+            <Card key={post.id} className="cyber-border hover:cyber-glow transition-all duration-300 group h-full flex flex-col">
               {post.image_url && (
                 <div className="relative overflow-hidden rounded-t-lg">
                   <img 

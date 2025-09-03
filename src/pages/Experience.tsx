@@ -50,22 +50,27 @@ const Experience = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background py-20">
-        <div className="container mx-auto px-6">
-          <div className="text-center">Chargement...</div>
+      <div className="min-h-screen bg-background py-12 sm:py-20">
+        <div className="container mx-auto px-4 sm:px-6">
+          <div className="text-center">
+            <div className="animate-pulse space-y-4">
+              <div className="h-8 bg-muted rounded w-2/3 sm:w-1/3 mx-auto"></div>
+              <div className="h-4 bg-muted rounded w-4/5 sm:w-1/2 mx-auto"></div>
+            </div>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background py-20">
-      <div className="container mx-auto px-6">
-        <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-primary bg-clip-text text-transparent">
+    <div className="min-h-screen bg-background py-12 sm:py-20">
+      <div className="container mx-auto px-4 sm:px-6">
+        <div className="text-center mb-12 sm:mb-16">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6 cyber-text">
             Expérience
           </h1>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+          <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto px-4">
             Mon parcours professionnel en cybersécurité et mes réalisations
           </p>
         </div>
@@ -73,15 +78,15 @@ const Experience = () => {
         <div className="max-w-4xl mx-auto">
           <div className="relative">
             {/* Timeline line */}
-            <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-border"></div>
+            <div className="absolute left-6 sm:left-8 top-0 bottom-0 w-0.5 bg-border"></div>
             
             {experiences.map((experience, index) => (
-              <div key={experience.id} className="relative mb-12">
+              <div key={experience.id} className="relative mb-8 sm:mb-12">
                 {/* Timeline dot */}
-                <div className="absolute left-6 w-4 h-4 bg-primary rounded-full border-4 border-background"></div>
+                <div className="absolute left-4 sm:left-6 w-4 h-4 bg-primary rounded-full border-4 border-background"></div>
                 
-                <div className="ml-20">
-                  <Card className="hover:shadow-cyber transition-all duration-300">
+                <div className="ml-12 sm:ml-20">
+                  <Card className="cyber-border hover:cyber-glow transition-all duration-300">
                     <CardHeader>
                       <div className="flex items-start justify-between">
                         <div>

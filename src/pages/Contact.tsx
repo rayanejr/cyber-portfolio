@@ -63,29 +63,29 @@ const Contact = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background py-20">
-      <div className="container mx-auto px-6">
-        <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-primary bg-clip-text text-transparent">
+    <div className="min-h-screen bg-background py-12 sm:py-20">
+      <div className="container mx-auto px-4 sm:px-6">
+        <div className="text-center mb-12 sm:mb-16">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6 cyber-text">
             Contact
           </h1>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+          <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto px-4">
             Discutons de vos besoins en cybersécurité. Je suis là pour vous aider.
           </p>
         </div>
 
-        <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-12">
+        <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-8 sm:gap-12">
           {/* Contact Form */}
-          <Card className="hover:shadow-cyber transition-all duration-300">
+          <Card className="cyber-border hover:cyber-glow transition-all duration-300">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
                 <Send className="w-5 h-5" />
                 Envoyez-moi un message
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid md:grid-cols-2 gap-4">
+              <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+                <div className="grid sm:grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="name">Nom complet *</Label>
                     <Input
@@ -137,7 +137,7 @@ const Contact = () => {
                 
                 <Button 
                   type="submit" 
-                  className="w-full" 
+                  className="w-full btn-cyber" 
                   disabled={loading}
                 >
                   {loading ? "Envoi en cours..." : "Envoyer le message"}
@@ -147,45 +147,45 @@ const Contact = () => {
           </Card>
 
           {/* Contact Information */}
-          <div className="space-y-8">
-            <Card className="hover:shadow-cyber transition-all duration-300">
+          <div className="space-y-6 sm:space-y-8">
+            <Card className="cyber-border hover:cyber-glow transition-all duration-300">
               <CardHeader>
-                <CardTitle>Informations de contact</CardTitle>
+                <CardTitle className="text-lg sm:text-xl">Informations de contact</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="flex items-center gap-4">
-                  <div className="p-3 bg-primary/10 rounded-lg">
-                    <Mail className="w-5 h-5 text-primary" />
+              <CardContent className="space-y-4 sm:space-y-6">
+                <div className="flex items-center gap-3 sm:gap-4">
+                  <div className="p-2 sm:p-3 bg-primary/10 rounded-lg">
+                    <Mail className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-semibold">Email</h3>
-                    <p className="text-muted-foreground">contact@cybersecpro.com</p>
+                    <h3 className="font-semibold text-sm sm:text-base">Email</h3>
+                    <p className="text-muted-foreground text-sm sm:text-base">contact@cybersecpro.com</p>
                   </div>
                 </div>
                 
-                <div className="flex items-center gap-4">
-                  <div className="p-3 bg-primary/10 rounded-lg">
-                    <Phone className="w-5 h-5 text-primary" />
+                <div className="flex items-center gap-3 sm:gap-4">
+                  <div className="p-2 sm:p-3 bg-primary/10 rounded-lg">
+                    <Phone className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-semibold">Téléphone</h3>
-                    <p className="text-muted-foreground">+33 (0)1 23 45 67 89</p>
+                    <h3 className="font-semibold text-sm sm:text-base">Téléphone</h3>
+                    <p className="text-muted-foreground text-sm sm:text-base">+33 (0)1 23 45 67 89</p>
                   </div>
                 </div>
                 
-                <div className="flex items-center gap-4">
-                  <div className="p-3 bg-primary/10 rounded-lg">
-                    <MapPin className="w-5 h-5 text-primary" />
+                <div className="flex items-center gap-3 sm:gap-4">
+                  <div className="p-2 sm:p-3 bg-primary/10 rounded-lg">
+                    <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-semibold">Localisation</h3>
-                    <p className="text-muted-foreground">Paris, France</p>
+                    <h3 className="font-semibold text-sm sm:text-base">Localisation</h3>
+                    <p className="text-muted-foreground text-sm sm:text-base">Paris, France</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="hover:shadow-cyber transition-all duration-300">
+            <Card className="cyber-border hover:cyber-glow transition-all duration-300">
               <CardHeader>
                 <CardTitle>Disponibilité</CardTitle>
               </CardHeader>
