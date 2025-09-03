@@ -29,7 +29,7 @@ export default function GitHubSync() {
     setSyncResult(null);
 
     try {
-      const response = await fetch('/functions/v1/github-sync', {
+      const response = await fetch('https://pcpjqxuuuawwqxrecexm.supabase.co/functions/v1/github-sync', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

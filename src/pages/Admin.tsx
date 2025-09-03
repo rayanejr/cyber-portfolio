@@ -31,6 +31,7 @@ import AdminCertifications from "@/components/admin/AdminCertifications";
 import AdminSkills from "@/components/admin/AdminSkills";
 import AdminTools from "@/components/admin/AdminTools";
 import AdminFiles from "@/components/admin/AdminFiles";
+import GitHubSync from "@/components/admin/GitHubSync";
 
 const Admin = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
