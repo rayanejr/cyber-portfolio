@@ -142,8 +142,6 @@ export type Database = {
           locked_until: string | null
           password_changed_at: string | null
           password_hash: string
-          session_expires_at: string | null
-          session_token: string | null
           updated_at: string | null
         }
         Insert: {
@@ -157,8 +155,6 @@ export type Database = {
           locked_until?: string | null
           password_changed_at?: string | null
           password_hash: string
-          session_expires_at?: string | null
-          session_token?: string | null
           updated_at?: string | null
         }
         Update: {
@@ -172,8 +168,6 @@ export type Database = {
           locked_until?: string | null
           password_changed_at?: string | null
           password_hash?: string
-          session_expires_at?: string | null
-          session_token?: string | null
           updated_at?: string | null
         }
         Relationships: []
@@ -897,16 +891,16 @@ export type Database = {
           success: boolean
         }[]
       }
-      simple_admin_login: {
-        Args: { p_email: string; p_password: string }
-        Returns: {
-          admin_id: string
-          full_name: string
-          is_super_admin: boolean
-        }[]
+      validate_encryption_key: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
       }
       validate_password_strength: {
         Args: { password: string }
+        Returns: boolean
+      }
+      verify_admin_access: {
+        Args: Record<PropertyKey, never>
         Returns: boolean
       }
     }
