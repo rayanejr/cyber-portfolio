@@ -36,9 +36,25 @@ const CVDownloadButton = () => {
     }
   };
 
-  const handleDownload = () => {
+  const handleDownload = async () => {
     if (cvFile?.file_url) {
-      window.open(cvFile.file_url, '_blank');
+      try {
+        // Utiliser une URL signée pour les fichiers privés
+        const { data, error } = await supabase.storage
+          .from('admin-files')
+          .createSignedUrl(cvFile.file_url.split('/').pop(), 60); // URL valide 1 minute
+
+        if (error) {
+          console.error('Error creating signed URL:', error);
+          // Fallback sur l'URL directe si erreur
+          window.open(cvFile.file_url, '_blank');
+        } else {
+          window.open(data.signedUrl, '_blank');
+        }
+      } catch (error) {
+        console.error('Download error:', error);
+        window.open(cvFile.file_url, '_blank');
+      }
     } else {
       toast({
         title: "CV non disponible",

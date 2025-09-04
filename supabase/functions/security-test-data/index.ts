@@ -16,6 +16,15 @@ const handler = async (req: Request): Promise<Response> => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  // Vérifier l'authentification - fonction maintenant protégée
+  const authHeader = req.headers.get('Authorization');
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return new Response(
+      JSON.stringify({ error: 'Authentication required' }),
+      { status: 401, headers: corsHeaders }
+    );
+  }
+
   try {
     const url = new URL(req.url);
     const action = url.searchParams.get('action') || 'generate-all';

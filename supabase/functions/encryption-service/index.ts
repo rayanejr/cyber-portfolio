@@ -11,12 +11,25 @@ const supabase = createClient(
   Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
 );
 
-// Clé de chiffrement AES-256 (dans un vrai environnement, utilisez une variable d'environnement sécurisée)
-const ENCRYPTION_KEY = Deno.env.get('ENCRYPTION_KEY') || 'default-key-for-demo-only-change-in-production';
+// Clé de chiffrement AES-256 sécurisée - OBLIGATOIRE
+const ENCRYPTION_KEY = Deno.env.get('ENCRYPTION_KEY');
+
+if (!ENCRYPTION_KEY || ENCRYPTION_KEY.length < 32) {
+  throw new Error('ENCRYPTION_KEY must be set and at least 32 characters long');
+}
 
 const handler = async (req: Request): Promise<Response> => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
+  }
+
+  // Vérifier l'authentification - fonction maintenant protégée
+  const authHeader = req.headers.get('Authorization');
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return new Response(
+      JSON.stringify({ error: 'Authentication required' }),
+      { status: 401, headers: corsHeaders }
+    );
   }
 
   try {
@@ -62,9 +75,9 @@ const handler = async (req: Request): Promise<Response> => {
 };
 
 async function generateKey(): Promise<CryptoKey> {
-  // Générer une clé AES-256 à partir de la chaîne de caractères
+  // Générer une clé AES-256 à partir de la chaîne de caractères sécurisée
   const encoder = new TextEncoder();
-  const keyData = encoder.encode(ENCRYPTION_KEY.padEnd(32, '0').slice(0, 32));
+  const keyData = encoder.encode(ENCRYPTION_KEY.slice(0, 32));
   
   return await crypto.subtle.importKey(
     'raw',
@@ -165,60 +178,51 @@ async function handleDecrypt(body: any): Promise<Response> {
 }
 
 async function handleEncryptSensitiveData(): Promise<Response> {
-  // Chiffrer des données sensibles existantes dans la base
-  const sensitiveFields = [
-    'admin_users.email',
-    'admin_users.password_hash',
-    'contact_messages.email',
-    'security_logs.ip_address'
-  ];
+  // Test de chiffrement sécurisé - plus d'exposition de données sensibles
+  const testResults = [];
   
-  const results = [];
-  
-  // Exemple avec les emails des admin_users
-  const { data: adminUsers, error: adminError } = await supabase
-    .from('admin_users')
-    .select('id, email')
-    .limit(5);
-  
-  if (adminUsers && !adminError) {
-    for (const user of adminUsers) {
-      if (user.email && !user.email.includes('encrypted:')) {
-        const encrypted = await encryptData(user.email);
-        
-        // Marquer comme chiffré mais ne pas vraiment modifier en production
-        results.push({
-          table: 'admin_users',
-          field: 'email',
-          id: user.id,
-          original: user.email,
-          encrypted: `encrypted:${encrypted.encrypted}:${encrypted.iv}`,
-          status: 'simulation'
-        });
-      }
-    }
+  try {
+    // Test seulement avec des données de test
+    const testData = 'sample-test-data-' + Date.now();
+    const encrypted = await encryptData(testData);
+    
+    // Tester le déchiffrement
+    const decrypted = await decryptData(encrypted.encrypted, encrypted.iv);
+    
+    testResults.push({
+      test: 'encryption_roundtrip',
+      status: decrypted === testData ? 'success' : 'failed',
+      encrypted_length: encrypted.encrypted.length
+    });
+  } catch (error) {
+    testResults.push({
+      test: 'encryption_roundtrip',
+      status: 'error',
+      error: error.message
+    });
   }
-  
-  // Logger l'activité de chiffrement
+
+  // Logger l'activité de test seulement
   await supabase
     .from('security_logs')
     .insert({
-      event_type: 'DATA_ENCRYPTION',
+      event_type: 'ENCRYPTION_TEST',
       severity: 'INFO',
       source: 'ENCRYPTION_SERVICE',
       metadata: {
-        fields_processed: results.length,
-        encryption_algorithm: 'AES-256-GCM',
+        test_count: testResults.length,
         timestamp: new Date().toISOString()
       }
     });
-  
+
   return new Response(JSON.stringify({
     success: true,
-    message: 'Sensitive data encryption simulation completed',
-    processed_fields: results.length,
-    results: results,
-    note: 'This is a simulation. In production, actual database updates would occur.'
+    message: 'Test de chiffrement effectué',
+    results: testResults,
+    summary: {
+      tests_run: testResults.length,
+      passed: testResults.filter(r => r.status === 'success').length
+    }
   }), {
     headers: { ...corsHeaders, 'Content-Type': 'application/json' },
   });

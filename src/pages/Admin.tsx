@@ -2,8 +2,6 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
@@ -39,16 +37,12 @@ import GitHubSync from "@/components/admin/GitHubSync";
 import AdminUsers from "@/components/admin/AdminUsers";
 import AdminSecurity from "@/components/admin/AdminSecurity";
 import { SecurityTestPanel } from "@/components/admin/SecurityTestPanel";
+import AdminAuth from "@/components/auth/AdminAuth";
+import type { User } from '@supabase/supabase-js';
 
 const Admin = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [currentUser, setCurrentUser] = useState<{
-    id: string;
-    full_name: string;
-  } | null>(null);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loginError, setLoginError] = useState("");
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [stats, setStats] = useState({
     projects: 0,
     blogs: 0,
@@ -68,33 +62,22 @@ const Admin = () => {
   const isMobile = useIsMobile();
 
   useEffect(() => {
-    // Vérifier si l'utilisateur est déjà connecté
+    // Vérifier l'authentification via Supabase Auth
     const checkAuth = async () => {
-      const sessionToken = localStorage.getItem('admin_session_token');
-      if (sessionToken) {
-        try {
-          // Récupérer les infos de l'utilisateur connecté
-          const { data: userData, error } = await supabase
-            .from('admin_users')
-            .select('id, full_name')
-            .eq('session_token', sessionToken)
-            .eq('is_active', true)
-            .single();
-
-          if (!error && userData) {
-            setCurrentUser({
-              id: userData.id,
-              full_name: userData.full_name
-            });
-            setIsAuthenticated(true);
-            await fetchStats();
-            await fetchContactMessages();
-          } else {
-            // Token invalide, nettoyer
-            localStorage.removeItem('admin_session_token');
-          }
-        } catch (error) {
-          localStorage.removeItem('admin_session_token');
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        const { data: adminData } = await supabase
+          .from('admin_users')
+          .select('*')
+          .eq('id', session.user.id)
+          .eq('is_active', true)
+          .single();
+        
+        if (adminData) {
+          setCurrentUser(session.user);
+          setIsAuthenticated(true);
+          await fetchStats();
+          await fetchContactMessages();
         }
       }
       setLoading(false);
@@ -103,49 +86,16 @@ const Admin = () => {
     checkAuth();
   }, []);
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoginError("");
+  const handleAuthenticated = async (user: User) => {
+    setCurrentUser(user);
+    setIsAuthenticated(true);
+    await fetchStats();
+    await fetchContactMessages();
     
-    try {
-      // Utiliser la nouvelle fonction sécurisée ANSSI
-      const { data, error } = await supabase.rpc('secure_admin_login', {
-        p_email: email,
-        p_password: password,
-        p_ip: '127.0.0.1'
-      });
-
-      if (error) throw error;
-
-      if (data && Array.isArray(data) && data.length > 0) {
-        const userData = data[0];
-        if (userData.success) {
-          setCurrentUser({
-            id: userData.admin_id,
-            full_name: userData.full_name
-          });
-          setIsAuthenticated(true);
-          
-          // Stocker le token de session sécurisé
-          localStorage.setItem('admin_session_token', userData.session_token);
-          
-          toast({
-            title: "Connexion réussie",
-            description: `Bienvenue ${userData.full_name}!`,
-          });
-          
-          await fetchStats();
-          await fetchContactMessages();
-        } else {
-          setLoginError("Email ou mot de passe incorrect");
-        }
-      } else {
-        setLoginError("Email ou mot de passe incorrect");
-      }
-    } catch (error: any) {
-      console.error('Login error:', error);
-      setLoginError(error.message || "Erreur de connexion");
-    }
+    toast({
+      title: "Connexion réussie",
+      description: `Bienvenue dans l'administration sécurisée!`,
+    });
   };
 
   const fetchStats = async () => {
@@ -269,84 +219,7 @@ const Admin = () => {
   }
 
   if (!isAuthenticated) {
-    return (
-      <div className="min-h-screen flex items-center justify-center py-20 px-4">
-        <div className="max-w-md w-full">
-          <Card className="cyber-border">
-            <CardHeader className="text-center">
-              <div className="mx-auto w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mb-4">
-                <Lock className="h-8 w-8 text-primary" />
-              </div>
-              <CardTitle className="text-2xl font-orbitron">Administration Sécurisée</CardTitle>
-              <p className="text-muted-foreground">
-                Authentification requise pour accéder au panneau d'administration
-              </p>
-            </CardHeader>
-            
-            <CardContent>
-              {/* Identifiants admin de test */}
-              <div className="mb-6 p-4 bg-primary/10 border border-primary/20 rounded-lg">
-                <div className="flex items-center gap-2 mb-2">
-                  <Lock className="w-4 h-4 text-primary" />
-                  <h3 className="font-semibold text-sm">Identifiants Admin</h3>
-                </div>
-                <div className="text-xs space-y-1">
-                  <p><strong>Email:</strong> admin@test.com</p>
-                  <p><strong>Mot de passe:</strong> AdminSecure123!</p>
-                  <p className="text-red-600 text-xs mt-1">⚠️ Mot de passe fort requis selon ANSSI</p>
-                </div>
-              </div>
-              
-              <form onSubmit={handleLogin} className="space-y-4">
-                <div>
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="votre.email@example.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="mt-1"
-                    required
-                  />
-                </div>
-                
-                <div>
-                  <Label htmlFor="password">Mot de passe</Label>
-                  <Input
-                    id="password"
-                    type="password"
-                    placeholder="••••••••"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="mt-1"
-                    required
-                  />
-                </div>
-
-                {loginError && (
-                  <div className="p-3 rounded-md bg-destructive/10 border border-destructive/20 text-destructive text-sm">
-                    {loginError}
-                  </div>
-                )}
-
-                <Button type="submit" className="w-full">
-                  <Lock className="w-4 h-4 mr-2" />
-                  Se connecter
-                </Button>
-              </form>
-
-              <div className="mt-6 p-4 bg-muted/50 rounded-lg">
-                <p className="text-sm text-muted-foreground text-center">
-                  <strong>Note de sécurité :</strong><br />
-                  Système d'authentification renforcé avec rate limiting et audit trail.
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-    );
+    return <AdminAuth onAuthenticated={handleAuthenticated} />;
   }
 
   const dashboardStats = [
@@ -407,16 +280,16 @@ const Admin = () => {
               </h1>
               {currentUser && (
                 <p className="text-sm text-muted-foreground mt-1">
-                  Connecté en tant que {currentUser.full_name}
+                  Connecté en tant que {currentUser.email}
                 </p>
               )}
             </div>
             <Button 
               variant="outline" 
-              onClick={() => {
+              onClick={async () => {
+                await supabase.auth.signOut();
                 setIsAuthenticated(false);
                 setCurrentUser(null);
-                localStorage.removeItem('admin_session_token');
               }}
             >
               Déconnexion
@@ -653,11 +526,11 @@ const Admin = () => {
           </TabsContent>
 
           <TabsContent value="users">
-            <AdminUsers currentUser={currentUser} />
+            <AdminUsers currentUser={currentUser ? { id: currentUser.id, full_name: currentUser.email || 'Admin' } : null} />
           </TabsContent>
 
           <TabsContent value="security">
-            <AdminSecurity currentUser={currentUser} />
+            <AdminSecurity currentUser={currentUser ? { id: currentUser.id, full_name: currentUser.email || 'Admin' } : null} />
           </TabsContent>
 
           <TabsContent value="security-tests">

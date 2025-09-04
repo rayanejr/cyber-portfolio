@@ -11,12 +11,25 @@ const supabase = createClient(
   Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
 );
 
-// Clé de chiffrement AES-256
-const ENCRYPTION_KEY = Deno.env.get('ENCRYPTION_KEY') || 'default-key-for-demo-only-change-in-production';
+// Clé de chiffrement AES-256 sécurisée
+const ENCRYPTION_KEY = Deno.env.get('ENCRYPTION_KEY');
+
+if (!ENCRYPTION_KEY || ENCRYPTION_KEY.length < 32) {
+  throw new Error('ENCRYPTION_KEY must be set and at least 32 characters long');
+}
 
 const handler = async (req: Request): Promise<Response> => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
+  }
+
+  // Vérifier l'authentification - fonction maintenant protégée
+  const authHeader = req.headers.get('Authorization');
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return new Response(
+      JSON.stringify({ error: 'Authentication required' }),
+      { status: 401, headers: corsHeaders }
+    );
   }
 
   try {
@@ -90,7 +103,7 @@ const handler = async (req: Request): Promise<Response> => {
 
 async function generateKey(): Promise<CryptoKey> {
   const encoder = new TextEncoder();
-  const keyData = encoder.encode(ENCRYPTION_KEY.padEnd(32, '0').slice(0, 32));
+  const keyData = encoder.encode(ENCRYPTION_KEY.slice(0, 32));
   
   return await crypto.subtle.importKey(
     'raw',
