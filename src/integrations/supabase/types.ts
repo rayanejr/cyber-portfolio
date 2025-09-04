@@ -839,30 +839,6 @@ export type Database = {
         Args: { p_email?: string; p_ip: unknown }
         Returns: boolean
       }
-      citext: {
-        Args: { "": boolean } | { "": string } | { "": unknown }
-        Returns: string
-      }
-      citext_hash: {
-        Args: { "": string }
-        Returns: number
-      }
-      citextin: {
-        Args: { "": unknown }
-        Returns: string
-      }
-      citextout: {
-        Args: { "": string }
-        Returns: unknown
-      }
-      citextrecv: {
-        Args: { "": unknown }
-        Returns: string
-      }
-      citextsend: {
-        Args: { "": string }
-        Returns: string
-      }
       cleanup_expired_sessions: {
         Args: Record<PropertyKey, never>
         Returns: number
@@ -883,6 +859,10 @@ export type Database = {
       create_first_super_admin: {
         Args: { p_email: string; p_full_name: string; p_password: string }
         Returns: string
+      }
+      is_admin: {
+        Args: Record<PropertyKey, never> | { p_uid: string }
+        Returns: boolean
       }
       is_authenticated_admin: {
         Args: Record<PropertyKey, never>
