@@ -581,6 +581,33 @@ export type Database = {
         }
         Relationships: []
       }
+      rate_limit_contact: {
+        Row: {
+          attempts: number | null
+          created_at: string | null
+          id: string
+          ip_address: unknown
+          is_blocked: boolean | null
+          window_start: string | null
+        }
+        Insert: {
+          attempts?: number | null
+          created_at?: string | null
+          id?: string
+          ip_address: unknown
+          is_blocked?: boolean | null
+          window_start?: string | null
+        }
+        Update: {
+          attempts?: number | null
+          created_at?: string | null
+          id?: string
+          ip_address?: unknown
+          is_blocked?: boolean | null
+          window_start?: string | null
+        }
+        Relationships: []
+      }
       rate_limit_tracking: {
         Row: {
           created_at: string | null

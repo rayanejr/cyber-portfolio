@@ -50,22 +50,60 @@ const handler = async (req: Request): Promise<Response> => {
                     req.headers.get('x-real-ip') || 
                     '127.0.0.1';
 
-    // Vérifier le rate limiting (5 par heure par IP)
-    const { data: recentMessages, error: rateLimitError } = await supabase
-      .from('contact_messages')
-      .select('id')
-      .filter('created_at', 'gte', new Date(Date.now() - 60 * 60 * 1000).toISOString())
-      .limit(5);
+    // Vérifier le rate limiting amélioré (par IP)
+    const now = new Date();
+    const windowStart = new Date(now.getTime() - 15 * 60 * 1000); // 15 minutes
+    
+    // Nettoyer les anciennes tentatives
+    await supabase
+      .from('rate_limit_contact')
+      .delete()
+      .lt('window_start', new Date(now.getTime() - 60 * 60 * 1000)); // Supprimer les > 1 heure
 
-    if (rateLimitError) {
+    // Vérifier les tentatives récentes
+    const { data: rateLimitData, error: rateLimitError } = await supabase
+      .from('rate_limit_contact')
+      .select('attempts, is_blocked')
+      .eq('ip_address', clientIP)
+      .gte('window_start', windowStart.toISOString())
+      .single();
+
+    if (rateLimitError && rateLimitError.code !== 'PGRST116') {
       console.error('Rate limit check error:', rateLimitError);
     }
 
-    if (recentMessages && recentMessages.length >= 5) {
+    // Si déjà bloqué ou trop de tentatives
+    if (rateLimitData?.is_blocked || (rateLimitData?.attempts && rateLimitData.attempts >= 5)) {
+      // Marquer comme bloqué si pas déjà fait
+      if (!rateLimitData.is_blocked) {
+        await supabase
+          .from('rate_limit_contact')
+          .update({ is_blocked: true })
+          .eq('ip_address', clientIP)
+          .gte('window_start', windowStart.toISOString());
+      }
+
       return new Response(
-        JSON.stringify({ error: 'Trop de messages envoyés. Veuillez patienter avant de renvoyer.' }),
+        JSON.stringify({ error: 'Trop de tentatives. Veuillez patienter 15 minutes avant de renvoyer.' }),
         { status: 429, headers: corsHeaders }
       );
+    }
+
+    // Incrémenter ou créer l'entrée de rate limiting
+    if (rateLimitData) {
+      await supabase
+        .from('rate_limit_contact')
+        .update({ attempts: rateLimitData.attempts + 1 })
+        .eq('ip_address', clientIP)
+        .gte('window_start', windowStart.toISOString());
+    } else {
+      await supabase
+        .from('rate_limit_contact')
+        .insert({
+          ip_address: clientIP,
+          attempts: 1,
+          window_start: windowStart.toISOString()
+        });
     }
 
     // Insérer le message
