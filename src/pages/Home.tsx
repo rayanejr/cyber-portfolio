@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import CertificationViewer from "@/components/CertificationViewer";
 import heroImage from "@/assets/cyber-hero.jpg";
 import profilePhoto from "@/assets/profile-photo.jpg";
 import projectSecurity from "@/assets/project-security.jpg";
