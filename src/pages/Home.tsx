@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import {
   ArrowRight, Shield, Target, Code, Award, ExternalLink, ChevronRight,
-  Mail, Phone, MapPin, FileText
+  Mail, Phone, MapPin, FileText, Eye
 } from "lucide-react";
 import CVDownloadButton from "@/components/CVDownloadButton";
+import CertificationViewer from "@/components/CertificationViewer";
 import { Button } from "@/components/ui/button";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -175,17 +176,12 @@ export default function Home() {
     return u.endsWith(".pdf") || u.endsWith(".jpg") || u.endsWith(".jpeg");
   }
 
+  const [selectedCert, setSelectedCert] = useState<CertRow | null>(null);
+  const [showCertViewer, setShowCertViewer] = useState(false);
+
   function viewCertification(cert: CertRow) {
-    const firstAllowed = [cert.pdf_url, cert.image_url].find(isAllowedAsset);
-    if (firstAllowed) {
-      window.open(firstAllowed!, "_blank");
-      return;
-    }
-    toast({
-      title: "Format non autorisé",
-      description: "Seuls les fichiers PDF et JPG sont consultables.",
-      variant: "destructive",
-    });
+    setSelectedCert(cert);
+    setShowCertViewer(true);
   }
 
   return (
@@ -198,16 +194,16 @@ export default function Home() {
           style={{ backgroundImage: `url(${heroImage})` }}
         />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          {/* Titre rotatif typewriter + dégradé violet */}
+          {/* Titre rotatif typewriter + dégradé violet - responsive */}
           <h1 className="text-3xl sm:text-4xl md:text-6xl font-orbitron font-bold mb-4 sm:mb-6">
             <span className="sr-only">Rôle : </span>
             <span className="cyber-text">—</span>
-            <span aria-live="polite" className="whitespace-nowrap">
+            <div aria-live="polite" className="flex flex-wrap justify-center items-center gap-x-2">
               <span className="bg-gradient-to-r from-violet-500 via-fuchsia-500 to-pink-500 bg-clip-text text-transparent">
                 {displayText || "\u00A0"}
               </span>
               <span className="inline-block w-[2px] h-[1em] align-[-0.15em] bg-fuchsia-400 ml-1 animate-pulse" />
-            </span>{" "}
+            </div>
           </h1>
           <p className="text-lg sm:text-xl md:text-2xl text-muted-foreground mb-6 sm:mb-8 max-w-3xl mx-auto px-4">
             Sécurité offensive & défensive — je protège vos infrastructures contre les menaces modernes.

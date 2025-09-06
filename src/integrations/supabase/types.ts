@@ -138,6 +138,7 @@ export type Database = {
           full_name: string
           id: string
           is_active: boolean | null
+          is_super_admin: boolean | null
           last_login_at: string | null
           locked_until: string | null
           password_changed_at: string | null
@@ -153,6 +154,7 @@ export type Database = {
           full_name: string
           id?: string
           is_active?: boolean | null
+          is_super_admin?: boolean | null
           last_login_at?: string | null
           locked_until?: string | null
           password_changed_at?: string | null
@@ -168,6 +170,7 @@ export type Database = {
           full_name?: string
           id?: string
           is_active?: boolean | null
+          is_super_admin?: boolean | null
           last_login_at?: string | null
           locked_until?: string | null
           password_changed_at?: string | null
@@ -409,97 +412,6 @@ export type Database = {
         }
         Relationships: []
       }
-      modification_history: {
-        Row: {
-          action: string
-          admin_id: string | null
-          changes_summary: string | null
-          created_at: string | null
-          id: string
-          ip_address: unknown | null
-          new_values: Json | null
-          old_values: Json | null
-          record_id: string | null
-          table_name: string
-          user_agent: string | null
-        }
-        Insert: {
-          action: string
-          admin_id?: string | null
-          changes_summary?: string | null
-          created_at?: string | null
-          id?: string
-          ip_address?: unknown | null
-          new_values?: Json | null
-          old_values?: Json | null
-          record_id?: string | null
-          table_name: string
-          user_agent?: string | null
-        }
-        Update: {
-          action?: string
-          admin_id?: string | null
-          changes_summary?: string | null
-          created_at?: string | null
-          id?: string
-          ip_address?: unknown | null
-          new_values?: Json | null
-          old_values?: Json | null
-          record_id?: string | null
-          table_name?: string
-          user_agent?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "modification_history_admin_id_fkey"
-            columns: ["admin_id"]
-            isOneToOne: false
-            referencedRelation: "admin_users"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      notifications: {
-        Row: {
-          admin_id: string | null
-          created_at: string | null
-          id: string
-          is_read: boolean | null
-          message: string
-          metadata: Json | null
-          title: string
-          type: string
-        }
-        Insert: {
-          admin_id?: string | null
-          created_at?: string | null
-          id?: string
-          is_read?: boolean | null
-          message: string
-          metadata?: Json | null
-          title: string
-          type: string
-        }
-        Update: {
-          admin_id?: string | null
-          created_at?: string | null
-          id?: string
-          is_read?: boolean | null
-          message?: string
-          metadata?: Json | null
-          title?: string
-          type?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "notifications_admin_id_fkey"
-            columns: ["admin_id"]
-            isOneToOne: false
-            referencedRelation: "admin_users"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       projects: {
         Row: {
           content: string | null
@@ -568,36 +480,6 @@ export type Database = {
           id?: string
           ip_address?: unknown
           is_blocked?: boolean | null
-          window_start?: string | null
-        }
-        Relationships: []
-      }
-      rate_limit_tracking: {
-        Row: {
-          created_at: string | null
-          endpoint: string
-          id: string
-          ip_address: unknown
-          is_blocked: boolean | null
-          request_count: number | null
-          window_start: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          endpoint: string
-          id?: string
-          ip_address: unknown
-          is_blocked?: boolean | null
-          request_count?: number | null
-          window_start?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          endpoint?: string
-          id?: string
-          ip_address?: unknown
-          is_blocked?: boolean | null
-          request_count?: number | null
           window_start?: string | null
         }
         Relationships: []

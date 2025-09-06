@@ -39,21 +39,29 @@ const CVDownloadButton = () => {
   const handleDownload = async () => {
     if (cvFile?.file_url) {
       try {
-        // Utiliser une URL signée pour les fichiers privés
+        // Utiliser une URL signée pour les fichiers privés admin-files
+        const fileName = cvFile.file_url.includes('/') ? cvFile.file_url.split('/').pop() : cvFile.file_url;
         const { data, error } = await supabase.storage
           .from('admin-files')
-          .createSignedUrl(cvFile.file_url.split('/').pop(), 60); // URL valide 1 minute
+          .createSignedUrl(fileName, 60); // URL valide 1 minute
 
         if (error) {
           console.error('Error creating signed URL:', error);
-          // Fallback sur l'URL directe si erreur
-          window.open(cvFile.file_url, '_blank');
+          toast({
+            title: "Erreur de téléchargement",
+            description: "Impossible de générer l'URL de téléchargement.",
+            variant: "destructive"
+          });
         } else {
           window.open(data.signedUrl, '_blank');
         }
       } catch (error) {
         console.error('Download error:', error);
-        window.open(cvFile.file_url, '_blank');
+        toast({
+          title: "Erreur de téléchargement",
+          description: "Une erreur est survenue lors du téléchargement.",
+          variant: "destructive"
+        });
       }
     } else {
       toast({

@@ -67,18 +67,19 @@ export function Navbar() {
           </div>
 
           {/* Desktop navigation */}
-          <div className="hidden lg:flex items-center space-x-6 xl:space-x-8">
+          <div className="hidden lg:flex items-center space-x-3 xl:space-x-6">
             {navigation.map((item) => (
               <Link
                 key={item.name}
                 to={item.href}
-                className={`px-2 xl:px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 ${
+                className={`px-2 xl:px-3 py-2 rounded-md text-xs xl:text-sm font-medium transition-all duration-300 whitespace-nowrap ${
                   isActive(item.href)
                     ? "text-primary bg-primary/10 border border-primary/30"
                     : "text-muted-foreground hover:text-primary hover:bg-primary/5"
                 }`}
               >
-                {item.name}
+                <span className="hidden xl:inline">{item.name}</span>
+                <span className="xl:hidden">{item.name.length > 8 ? item.name.slice(0, 8) + '...' : item.name}</span>
               </Link>
             ))}
             
