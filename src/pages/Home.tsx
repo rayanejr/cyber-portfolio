@@ -12,7 +12,6 @@ import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import CertificationViewer from "@/components/CertificationViewer";
 import heroImage from "@/assets/cyber-hero.jpg";
 import profilePhoto from "@/assets/profile-photo.jpg";
 import projectSecurity from "@/assets/project-security.jpg";
@@ -495,6 +494,17 @@ export default function Home() {
                         Voir
                       </Button>
 
+                      {(cert.pdf_url || cert.image_url) && (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => viewCertification(cert)}
+                          className="btn-ghost-cyber"
+                          title="Voir la certification"
+                        >
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                      )}
                       {cert.credential_url && (
                         <Button
                           size="sm"
@@ -582,6 +592,21 @@ export default function Home() {
           </Link>
         </div>
       </section>
+
+      {/* Certification Viewer Modal */}
+      <CertificationViewer
+        isOpen={showCertViewer}
+        onClose={() => setShowCertViewer(false)}
+        certification={selectedCert ? {
+          name: selectedCert.name,
+          issuer: selectedCert.issuer || '',
+          issue_date: selectedCert.issue_date,
+          expiry_date: selectedCert.expiry_date,
+          pdf_url: selectedCert.pdf_url,
+          image_url: selectedCert.image_url,
+          credential_url: selectedCert.credential_url
+        } : null}
+      />
     </div>
   );
 }
