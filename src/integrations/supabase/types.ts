@@ -142,6 +142,8 @@ export type Database = {
           locked_until: string | null
           password_changed_at: string | null
           password_hash: string
+          session_expires_at: string | null
+          session_token: string | null
           updated_at: string | null
         }
         Insert: {
@@ -155,6 +157,8 @@ export type Database = {
           locked_until?: string | null
           password_changed_at?: string | null
           password_hash: string
+          session_expires_at?: string | null
+          session_token?: string | null
           updated_at?: string | null
         }
         Update: {
@@ -168,6 +172,8 @@ export type Database = {
           locked_until?: string | null
           password_changed_at?: string | null
           password_hash?: string
+          session_expires_at?: string | null
+          session_token?: string | null
           updated_at?: string | null
         }
         Relationships: []
@@ -238,48 +244,6 @@ export type Database = {
           metadata?: Json | null
           severity?: string
           user_id?: string | null
-        }
-        Relationships: []
-      }
-      blogs: {
-        Row: {
-          content: string
-          created_at: string
-          excerpt: string | null
-          featured: boolean | null
-          id: string
-          image_url: string | null
-          published: boolean | null
-          slug: string
-          tags: string[] | null
-          title: string
-          updated_at: string
-        }
-        Insert: {
-          content: string
-          created_at?: string
-          excerpt?: string | null
-          featured?: boolean | null
-          id?: string
-          image_url?: string | null
-          published?: boolean | null
-          slug: string
-          tags?: string[] | null
-          title: string
-          updated_at?: string
-        }
-        Update: {
-          content?: string
-          created_at?: string
-          excerpt?: string | null
-          featured?: boolean | null
-          id?: string
-          image_url?: string | null
-          published?: boolean | null
-          slug?: string
-          tags?: string[] | null
-          title?: string
-          updated_at?: string
         }
         Relationships: []
       }
