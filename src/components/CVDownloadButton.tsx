@@ -22,15 +22,17 @@ const CVDownloadButton = () => {
         .eq('is_active', true)
         .order('created_at', { ascending: false })
         .limit(1)
-        .single();
+        .maybeSingle();
 
-      if (error && error.code !== 'PGRST116') {
-        throw error;
+      if (error) {
+        console.error('Error fetching CV:', error);
+        // Ne pas bloquer l'affichage du bouton même en cas d'erreur
+      } else {
+        setCvFile(data);
       }
-
-      setCvFile(data);
     } catch (error) {
       console.error('Error fetching CV:', error);
+      // Ne pas bloquer l'affichage du bouton même en cas d'erreur
     } finally {
       setLoading(false);
     }
@@ -72,8 +74,18 @@ const CVDownloadButton = () => {
     }
   };
 
-  if (loading || !cvFile) {
-    return null;
+  if (loading) {
+    return (
+      <Button
+        variant="outline"
+        size="lg"
+        disabled
+        className="btn-ghost-cyber w-full sm:w-auto"
+      >
+        <Download className="mr-2 h-5 w-5" />
+        Chargement...
+      </Button>
+    );
   }
 
   return (
@@ -81,10 +93,10 @@ const CVDownloadButton = () => {
       variant="outline"
       size="lg"
       onClick={handleDownload}
-      className="btn-ghost-cyber"
+      className="btn-ghost-cyber w-full sm:w-auto"
     >
       <Download className="mr-2 h-5 w-5" />
-      Télécharger mon CV
+      {cvFile ? "Télécharger mon CV" : "CV bientôt disponible"}
     </Button>
   );
 };
