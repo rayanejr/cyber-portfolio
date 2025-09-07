@@ -24,7 +24,7 @@ import {
   Database
 } from "lucide-react";
 import AdminProjects from "@/components/admin/AdminProjects";
-import AdminBlogs from "@/components/admin/AdminBlogs";
+
 import AdminVeille from "@/components/admin/AdminVeille";
 import AdminExperiences from "@/components/admin/AdminExperiences";
 import AdminFormations from "@/components/admin/AdminFormations";
@@ -45,7 +45,6 @@ const Admin = () => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [stats, setStats] = useState({
     projects: 0,
-    blogs: 0,
     veille: 0,
     experiences: 0,
     skills: 0,
@@ -102,7 +101,7 @@ const Admin = () => {
     try {
       const [
         { count: projectsCount },
-        { count: blogsCount },
+        
         { count: veilleCount },
         { count: experiencesCount },
         { count: skillsCount },
@@ -113,7 +112,7 @@ const Admin = () => {
         { count: messagesCount }
       ] = await Promise.all([
         supabase.from('projects').select('*', { count: 'exact', head: true }),
-        supabase.from('blogs').select('*', { count: 'exact', head: true }),
+        
         supabase.from('veille_techno').select('*', { count: 'exact', head: true }),
         supabase.from('experiences').select('*', { count: 'exact', head: true }),
         supabase.from('skills').select('*', { count: 'exact', head: true }),
@@ -126,7 +125,7 @@ const Admin = () => {
 
       setStats({
         projects: projectsCount || 0,
-        blogs: blogsCount || 0,
+        
         veille: veilleCount || 0,
         experiences: experiencesCount || 0,
         skills: skillsCount || 0,
@@ -228,12 +227,6 @@ const Admin = () => {
       value: stats.projects,
       icon: Briefcase,
       description: "projets total"
-    },
-    {
-      title: "Articles Blog",
-      value: stats.blogs,
-      icon: FileText,
-      description: "articles publiés"
     },
     {
       title: "Veille Techno",
@@ -393,10 +386,6 @@ const Admin = () => {
                     <Briefcase className="w-4 h-4 mr-2" />
                     Gérer les projets
                   </Button>
-                  <Button onClick={() => setSelectedTab("blogs")} variant="outline">
-                    <FileText className="w-4 h-4 mr-2" />
-                    Gérer le blog
-                  </Button>
                   <Button onClick={() => setSelectedTab("messages")} variant="outline">
                     <MessageSquare className="w-4 h-4 mr-2" />
                     Voir les messages
@@ -414,9 +403,6 @@ const Admin = () => {
             <AdminVeille />
           </TabsContent>
 
-          <TabsContent value="blogs">
-            <AdminBlogs />
-          </TabsContent>
 
           <TabsContent value="experiences">
             <AdminExperiences />

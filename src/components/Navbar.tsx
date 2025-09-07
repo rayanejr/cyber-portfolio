@@ -86,12 +86,9 @@ export function Navbar() {
             <div className="flex items-center space-x-2">
               <ThemeToggle />
               <Link to="/admin">
-                <Button variant="outline" size="sm" className="btn-ghost-cyber hidden xl:flex">
+                <Button variant="outline" size="sm" className="btn-ghost-cyber">
                   <User className="h-4 w-4 mr-2" />
-                  Admin
-                </Button>
-                <Button variant="outline" size="sm" className="btn-ghost-cyber xl:hidden">
-                  <User className="h-4 w-4" />
+                  <span>Admin</span>
                 </Button>
               </Link>
             </div>

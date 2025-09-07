@@ -130,7 +130,7 @@ const AdminSecurity = ({ currentUser }: AdminSecurityProps) => {
           .select('*', { count: 'exact' })
           .eq('is_resolved', false),
         supabase
-          .from('rate_limit_tracking')
+          .from('rate_limit_contact')
           .select('*', { count: 'exact' })
           .eq('is_blocked', true)
           .gte('created_at', last24h)
