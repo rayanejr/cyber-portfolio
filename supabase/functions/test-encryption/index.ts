@@ -92,7 +92,7 @@ const handler = async (req: Request): Promise<Response> => {
     console.error('❌ Error in test-encryption function:', error);
     
     return new Response(
-      JSON.stringify({ error: error.message, details: error.stack }),
+      JSON.stringify({ error: 'Erreur lors du test de chiffrement' }),
       {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },

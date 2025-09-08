@@ -75,35 +75,29 @@ const AdminAuth: React.FC<AdminAuthProps> = ({ onAuthenticated }) => {
 
     try {
       if (isSignUp) {
-        // Inscription (pour créer le premier admin)
-        const { data, error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            emailRedirectTo: `${window.location.origin}/admin`
+        // Création sécurisée du premier admin via edge function
+        const { data, error } = await supabase.functions.invoke('admin-bootstrap', {
+          body: {
+            email: email.toLowerCase(),
+            fullName: email.split('@')[0],
+            password
           }
         });
 
         if (error) throw error;
 
-        if (data.user) {
-          // Créer l'entrée admin
-          const { error: insertError } = await supabase
-            .from('admin_users')
-            .insert({
-              email,
-              full_name: email.split('@')[0],
-              is_active: true,
-              password_hash: 'supabase_auth' // Placeholder car géré par Supabase Auth
-            });
-
-          if (insertError) throw insertError;
-
-          toast({
-            title: "Compte créé",
-            description: "Votre compte administrateur a été créé avec succès",
-          });
+        if (data?.error) {
+          throw new Error(data.error);
         }
+
+        toast({
+          title: "Compte créé",
+          description: "Votre compte administrateur a été créé avec succès. Vous pouvez maintenant vous connecter.",
+        });
+        
+        setIsSignUp(false);
+        setEmail('');
+        setPassword('');
       } else {
         // Connexion
         const { error } = await supabase.auth.signInWithPassword({
