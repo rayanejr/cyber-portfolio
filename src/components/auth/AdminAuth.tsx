@@ -169,21 +169,10 @@ const AdminAuth: React.FC<AdminAuthProps> = ({ onAuthenticated }) => {
 
               <Button type="submit" className="w-full" disabled={loading}>
                 <User className="w-4 h-4 mr-2" />
-                {loading ? 'Connexion...' : (isSignUp ? 'Créer le compte' : 'Se connecter')}
+                {loading ? 'Connexion...' : 'Se connecter'}
               </Button>
             </form>
 
-            {!isSignUp && (
-              <div className="mt-4 text-center">
-                <Button
-                  variant="link"
-                  onClick={() => setIsSignUp(!isSignUp)}
-                  className="text-sm"
-                >
-                  Créer le premier admin
-                </Button>
-              </div>
-            )}
 
             <div className="mt-6 p-4 bg-muted/50 rounded-lg">
               <p className="text-sm text-muted-foreground text-center">

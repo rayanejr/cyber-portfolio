@@ -80,7 +80,7 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({ skills }) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <AnimatedSection className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-orbitron font-bold mb-6">
-            Compétences <span className="cyber-text typing-text">Techniques</span>
+            Compétences <span className="cyber-text">Techniques</span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
             Une expertise complète couvrant tous les aspects de la cybersécurité moderne,
@@ -128,30 +128,30 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({ skills }) => {
                       className={`group/skill ${visibleSkills.has(skill.name) ? 'animate-fade-in' : 'opacity-0'}`}
                       style={{ animationDelay: `${(groupIndex * 100) + (skillIndex * 50)}ms` }}
                     >
-                      <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center justify-between">
                         <Badge 
                           variant="secondary" 
                           className="text-sm font-medium bg-muted/50 hover:bg-muted/80 transition-colors duration-200"
                         >
                           {skill.name}
                         </Badge>
-                        <span className="text-sm text-muted-foreground font-mono">
-                          {skill.level}%
+                        <span className="text-sm text-primary font-mono font-bold">
+                          Expert
                         </span>
                       </div>
-                      
                     </div>
                   ))}
 
-                  {/* Stats footer */}
+                  {/* Stats footer simplifié */}
                   <div className="mt-6 pt-4 border-t border-border/50">
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-muted-foreground">
-                        Niveau moyen
-                      </span>
-                      <span className="font-mono text-primary">
-                        {Math.round(skillGroup.items.reduce((acc, skill) => acc + skill.level, 0) / skillGroup.items.length)}%
-                      </span>
+                    <div className="flex items-center justify-center text-sm">
+                      <Badge 
+                        variant="outline" 
+                        className="bg-primary/10 text-primary border-primary/20"
+                      >
+                        <Shield className="w-3 h-3 mr-1" />
+                        Maîtrise confirmée
+                      </Badge>
                     </div>
                   </div>
                 </CardContent>
