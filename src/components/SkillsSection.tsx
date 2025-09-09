@@ -140,16 +140,6 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({ skills }) => {
                         </span>
                       </div>
                       
-                      {/* Progress bar with animation */}
-                      <div className="skill-progress">
-                        <div 
-                          className="h-full bg-gradient-to-r from-primary via-secondary to-accent rounded-full transition-all duration-1000 ease-out"
-                          style={{
-                            width: visibleSkills.has(skill.name) ? `${skill.level}%` : '0%',
-                            transitionDelay: `${(groupIndex * 100) + (skillIndex * 50)}ms`
-                          }}
-                        ></div>
-                      </div>
                     </div>
                   ))}
 

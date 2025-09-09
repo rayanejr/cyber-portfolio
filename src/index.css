@@ -207,6 +207,39 @@
     animation: typing 3s steps(30) infinite, blink 1s infinite;
   }
 
+  @keyframes typing {
+    from { width: 0; }
+    to { width: 100%; }
+  }
+
+  @keyframes blink {
+    0%, 50% { border-color: hsl(var(--primary)); }
+    51%, 100% { border-color: transparent; }
+  }
+
+  /* Enhanced animations for dark/light modes */
+  .animate-glow-pulse {
+    animation: glow-pulse 3s ease-in-out infinite alternate;
+  }
+
+  @keyframes glow-pulse {
+    from {
+      box-shadow: 0 0 20px hsl(var(--primary) / 0.5);
+    }
+    to {
+      box-shadow: 0 0 40px hsl(var(--primary) / 0.8),
+                  0 0 60px hsl(var(--primary) / 0.4);
+    }
+  }
+
+  /* Enhanced gradient background */
+  body {
+    background: linear-gradient(135deg, 
+      hsl(var(--background)) 0%, 
+      hsl(var(--card)) 100%);
+    background-attachment: fixed;
+  }
+
   /* Parallax effects */
   .parallax-slow {
     transform: translateY(var(--scroll-y, 0) * -0.5px);

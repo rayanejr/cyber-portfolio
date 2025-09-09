@@ -144,12 +144,9 @@ const Home = () => {
 
   return (
     <div className="min-h-screen">
-      {/* ===== HERO SECTION ===== */}
+      {/* Hero Section - Gardé identique */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Background particles */}
         <div className="absolute inset-0 particles"></div>
-        
-        {/* Cyber grid */}
         <div className="absolute inset-0 cyber-grid opacity-30"></div>
         
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -210,7 +207,6 @@ const Home = () => {
           </AnimatedSection>
         </div>
 
-        {/* Scroll indicator */}
         <AnimatedSection 
           animation="fade-in" 
           delay={1200}
@@ -222,7 +218,7 @@ const Home = () => {
         </AnimatedSection>
       </section>
 
-      {/* ===== À PROPOS ===== */}
+      {/* À propos - Gardé identique */}
       <section className="py-20 bg-card/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -281,10 +277,10 @@ const Home = () => {
         </div>
       </section>
 
-      {/* ===== COMPÉTENCES AMÉLIORÉES ===== */}
+      {/* Compétences sans barres de progression */}
       <SkillsSection skills={skills} />
 
-      {/* ===== PROJETS RÉCENTS AVEC ANIMATIONS ===== */}
+      {/* Projets récents - Gardés identiques */}
       <section className="py-20 bg-card/30 relative overflow-hidden">
         <div className="absolute inset-0 particles opacity-50"></div>
         
@@ -376,7 +372,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* ===== CERTIFICATIONS AVEC ANIMATIONS ===== */}
+      {/* Certifications - Gardées identiques */}
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <AnimatedSection className="text-center mb-16">
@@ -421,26 +417,36 @@ const Home = () => {
                       </div>
                     </CardHeader>
 
-                    <CardContent>
+                    <CardContent className="pt-0">
+                      {cert.description && (
+                        <p className="text-sm text-muted-foreground mb-4 line-clamp-3">
+                          {cert.description}
+                        </p>
+                      )}
+
                       <div className="flex items-center justify-between">
                         <Badge 
-                          variant={cert.expiry_date && new Date(cert.expiry_date) > new Date() ? "default" : "secondary"}
-                          className="animate-glow-pulse"
+                          variant="secondary" 
+                          className="bg-primary/10 text-primary border-primary/20"
                         >
-                          {cert.expiry_date && new Date(cert.expiry_date) > new Date() ? "Valide" : "Acquise"}
+                          <Shield className="w-3 h-3 mr-1" />
+                          Certifié
                         </Badge>
-                        
-                        <Button variant="ghost" size="sm" className="text-primary hover:text-primary/80">
-                          <Eye className="h-4 w-4 mr-2 group-hover:scale-110 transition-transform duration-200" />
-                          Voir
-                        </Button>
+                        {cert.credential_url && (
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              window.open(cert.credential_url, '_blank');
+                            }}
+                            className="text-xs hover:text-primary"
+                          >
+                            <ExternalLink className="w-3 h-3 mr-1" />
+                            Voir
+                          </Button>
+                        )}
                       </div>
-
-                      {cert.credential_id && (
-                        <div className="mt-3 p-2 bg-muted/30 rounded text-xs font-mono">
-                          ID: {cert.credential_id}
-                        </div>
-                      )}
                     </CardContent>
                   </Card>
                 </AnimatedSection>
@@ -450,50 +456,43 @@ const Home = () => {
         </div>
       </section>
 
-      {/* ===== CONTACT FINAL AVEC ANIMATIONS ===== */}
+      {/* Contact - Gardé identique */}
       <section className="py-20 bg-card/30 relative overflow-hidden">
-        <div className="absolute inset-0 particles"></div>
+        <div className="absolute inset-0 particles opacity-30"></div>
         
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-          <AnimatedSection animation="scale-in">
+          <AnimatedSection animation="fade-in" delay={200}>
             <h2 className="text-3xl md:text-4xl font-orbitron font-bold mb-6">
-              Prêt à <span className="cyber-text">sécuriser</span> votre infrastructure ?
+              Collaborons <span className="cyber-text">ensemble</span>
             </h2>
-            <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Discutons de vos besoins en cybersécurité et trouvons ensemble 
-              les solutions adaptées à votre environnement.
+            <p className="text-lg text-muted-foreground mb-10 max-w-2xl mx-auto">
+              Besoin d'expertise en cybersécurité ? Contactez-moi pour discuter de vos projets
+              et découvrir comment je peux renforcer la sécurité de votre infrastructure.
             </p>
           </AnimatedSection>
 
-          <AnimatedSection animation="fade-in" delay={300}>
+          <AnimatedSection animation="scale-in" delay={400}>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Link to="/contact">
                 <Button className="btn-cyber group text-lg px-8 py-4 hover-lift">
                   <Lock className="mr-2 h-6 w-6 group-hover:rotate-12 transition-transform duration-300" />
-                  Démarrer un projet
+                  Contactez-moi
                   <ArrowRight className="ml-2 h-6 w-6 group-hover:translate-x-1 transition-transform duration-300" />
                 </Button>
               </Link>
-              
-              <a href="mailto:rayane.jerbi@yahoo.com">
-                <Button variant="outline" className="btn-ghost-cyber text-lg px-8 py-4 hover-lift">
-                  Envoyer un email
-                  <ExternalLink className="ml-2 h-5 w-5" />
-                </Button>
-              </a>
+
+              <CVDownloadButton />
             </div>
           </AnimatedSection>
         </div>
       </section>
 
-      {/* Modal de certification */}
-      {selectedCertification && (
-        <CertificationViewer
-          certification={selectedCertification}
-          isOpen={!!selectedCertification}
-          onClose={() => setSelectedCertification(null)}
-        />
-      )}
+      {/* Certification Viewer Modal */}
+      <CertificationViewer 
+        isOpen={!!selectedCertification}
+        certification={selectedCertification}
+        onClose={() => setSelectedCertification(null)}
+      />
     </div>
   );
 };
