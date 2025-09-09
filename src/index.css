@@ -158,8 +158,6 @@
   .fade-in-delay-1 { animation-delay: 0.1s; }
   .fade-in-delay-2 { animation-delay: 0.2s; }
   .fade-in-delay-3 { animation-delay: 0.3s; }
-  .fade-in-delay-4 { animation-delay: 0.4s; }
-  .fade-in-delay-5 { animation-delay: 0.5s; }
 
   @keyframes fadeInUp {
     to {
@@ -175,122 +173,6 @@
 
   .pulse-glow {
     animation: pulse-glow 2s ease-in-out infinite;
-  }
-
-  /* Skill animations */
-  .skill-card {
-    @apply transition-all duration-500 hover:scale-105 hover:cyber-glow;
-    transform-origin: center;
-  }
-
-  .skill-card:hover {
-    transform: scale(1.05) translateY(-5px);
-  }
-
-  .skill-progress {
-    @apply relative overflow-hidden bg-muted/30 rounded-full h-2;
-  }
-
-  .skill-progress::after {
-    content: '';
-    @apply absolute inset-y-0 left-0 bg-gradient-to-r from-primary via-secondary to-accent rounded-full;
-    width: var(--progress, 0%);
-    animation: skill-load 2s ease-out forwards;
-    animation-delay: var(--delay, 0s);
-  }
-
-  /* Typing effect */
-  .typing-text {
-    overflow: hidden;
-    white-space: nowrap;
-    border-right: 2px solid hsl(var(--primary));
-    animation: typing 3s steps(30) infinite, blink 1s infinite;
-  }
-
-  @keyframes typing {
-    from { width: 0; }
-    to { width: 100%; }
-  }
-
-  @keyframes blink {
-    0%, 50% { border-color: hsl(var(--primary)); }
-    51%, 100% { border-color: transparent; }
-  }
-
-  /* Enhanced animations for dark/light modes */
-  .animate-glow-pulse {
-    animation: glow-pulse 3s ease-in-out infinite alternate;
-  }
-
-  @keyframes glow-pulse {
-    from {
-      box-shadow: 0 0 20px hsl(var(--primary) / 0.5);
-    }
-    to {
-      box-shadow: 0 0 40px hsl(var(--primary) / 0.8),
-                  0 0 60px hsl(var(--primary) / 0.4);
-    }
-  }
-
-  /* Enhanced gradient background */
-  body {
-    background: linear-gradient(135deg, 
-      hsl(var(--background)) 0%, 
-      hsl(var(--card)) 100%);
-    background-attachment: fixed;
-  }
-
-  /* Parallax effects */
-  .parallax-slow {
-    transform: translateY(var(--scroll-y, 0) * -0.5px);
-  }
-
-  .parallax-fast {
-    transform: translateY(var(--scroll-y, 0) * -0.8px);
-  }
-
-  /* Hover effects */
-  .hover-lift {
-    @apply transition-all duration-300 hover:-translate-y-2 hover:shadow-lg;
-  }
-
-  .hover-glow {
-    @apply transition-all duration-300;
-  }
-
-  .hover-glow:hover {
-    box-shadow: 0 0 30px hsl(var(--primary) / 0.4);
-  }
-
-  /* Interactive particles */
-  .particles {
-    position: relative;
-    overflow: hidden;
-  }
-
-  .particles::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-image: 
-      radial-gradient(2px 2px at 20% 30%, hsl(var(--primary)), transparent),
-      radial-gradient(2px 2px at 40% 70%, hsl(var(--secondary)), transparent),
-      radial-gradient(1px 1px at 90% 40%, hsl(var(--accent)), transparent);
-    background-repeat: repeat;
-    background-size: 100px 100px, 120px 120px, 80px 80px;
-    animation: particles-float 20s linear infinite;
-    opacity: 0.3;
-  }
-
-  @keyframes particles-float {
-    0% { transform: translateY(0) translateX(0); }
-    25% { transform: translateY(-10px) translateX(5px); }
-    50% { transform: translateY(-20px) translateX(0); }
-    75% { transform: translateY(-10px) translateX(-5px); }
-    100% { transform: translateY(0) translateX(0); }
   }
 
   /* Cyber grid background */
@@ -316,24 +198,4 @@
     @apply border border-primary/30 text-primary hover:bg-primary/10 hover:border-primary rounded-lg font-medium;
     transition: var(--transition-cyber);
   }
-
-  /* Page transitions */
-  .page-enter {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-
-  .page-enter-active {
-    opacity: 1;
-    transform: translateY(0);
-    transition: all 0.8s ease-out;
-  }
-
-  /* Stagger animations */
-  .stagger-1 { animation-delay: 0.1s; }
-  .stagger-2 { animation-delay: 0.2s; }
-  .stagger-3 { animation-delay: 0.3s; }
-  .stagger-4 { animation-delay: 0.4s; }
-  .stagger-5 { animation-delay: 0.5s; }
-  .stagger-6 { animation-delay: 0.6s; }
 }
