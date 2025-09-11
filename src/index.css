@@ -73,7 +73,7 @@
   }
 
   .light {
-    /* Light mode overrides */
+    /* Light mode overrides with enhanced animations */
     --background: 200 100% 98%;
     --foreground: 222 87% 8%;
     --card: 0 0% 100%;
@@ -92,6 +92,11 @@
     --input: 200 50% 90%;
     --gradient-hero: linear-gradient(135deg, hsl(200 100% 98%), hsl(200 50% 95%));
     --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(200 50% 98%));
+    
+    /* Enhanced light mode effects */
+    --glow-primary: 0 0 20px hsl(195 100% 45% / 0.4);
+    --glow-secondary: 0 0 20px hsl(142 100% 40% / 0.4);
+    --glow-accent: 0 0 20px hsl(270 91% 55% / 0.4);
   }
 }
 
@@ -148,21 +153,76 @@
     background-clip: text;
   }
 
-  /* Scroll animations */
+  /* Enhanced scroll animations */
   .fade-in {
     opacity: 0;
-    transform: translateY(20px);
-    animation: fadeInUp 0.6s ease-out forwards;
+    transform: translateY(30px);
+    animation: fadeInUp 0.8s ease-out forwards;
+  }
+
+  .slide-in-up {
+    opacity: 0;
+    transform: translateY(50px);
+    animation: slideInUp 0.8s ease-out forwards;
+  }
+
+  .slide-in-left {
+    opacity: 0;
+    transform: translateX(-50px);
+    animation: slideInLeft 0.8s ease-out forwards;
+  }
+
+  .slide-in-right {
+    opacity: 0;
+    transform: translateX(50px);
+    animation: slideInRight 0.8s ease-out forwards;
+  }
+
+  .scale-in {
+    opacity: 0;
+    transform: scale(0.9);
+    animation: scaleIn 0.6s ease-out forwards;
   }
 
   .fade-in-delay-1 { animation-delay: 0.1s; }
   .fade-in-delay-2 { animation-delay: 0.2s; }
   .fade-in-delay-3 { animation-delay: 0.3s; }
+  .fade-in-delay-4 { animation-delay: 0.4s; }
+  .fade-in-delay-5 { animation-delay: 0.5s; }
+  .fade-in-delay-6 { animation-delay: 0.6s; }
 
   @keyframes fadeInUp {
     to {
       opacity: 1;
       transform: translateY(0);
+    }
+  }
+
+  @keyframes slideInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideInLeft {
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes slideInRight {
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes scaleIn {
+    to {
+      opacity: 1;
+      transform: scale(1);
     }
   }
 

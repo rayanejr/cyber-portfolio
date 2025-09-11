@@ -86,6 +86,50 @@ export type Database = {
         }
         Relationships: []
       }
+      admin_sessions: {
+        Row: {
+          admin_id: string | null
+          created_at: string | null
+          expires_at: string
+          id: string
+          ip_address: unknown | null
+          is_active: boolean | null
+          last_activity: string | null
+          session_token: string
+          user_agent: string | null
+        }
+        Insert: {
+          admin_id?: string | null
+          created_at?: string | null
+          expires_at: string
+          id?: string
+          ip_address?: unknown | null
+          is_active?: boolean | null
+          last_activity?: string | null
+          session_token: string
+          user_agent?: string | null
+        }
+        Update: {
+          admin_id?: string | null
+          created_at?: string | null
+          expires_at?: string
+          id?: string
+          ip_address?: unknown | null
+          is_active?: boolean | null
+          last_activity?: string | null
+          session_token?: string
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "admin_sessions_admin_id_fkey"
+            columns: ["admin_id"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       admin_users: {
         Row: {
           created_at: string | null
@@ -94,6 +138,7 @@ export type Database = {
           full_name: string
           id: string
           is_active: boolean | null
+          is_super_admin: boolean | null
           last_login_at: string | null
           locked_until: string | null
           password_changed_at: string | null
@@ -109,6 +154,7 @@ export type Database = {
           full_name: string
           id?: string
           is_active?: boolean | null
+          is_super_admin?: boolean | null
           last_login_at?: string | null
           locked_until?: string | null
           password_changed_at?: string | null
@@ -124,6 +170,7 @@ export type Database = {
           full_name?: string
           id?: string
           is_active?: boolean | null
+          is_super_admin?: boolean | null
           last_login_at?: string | null
           locked_until?: string | null
           password_changed_at?: string | null
@@ -134,45 +181,117 @@ export type Database = {
         }
         Relationships: []
       }
+      analytics_events: {
+        Row: {
+          category: string
+          created_at: string | null
+          event_name: string
+          id: string
+          ip_address: unknown | null
+          properties: Json | null
+          session_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          category: string
+          created_at?: string | null
+          event_name: string
+          id?: string
+          ip_address?: unknown | null
+          properties?: Json | null
+          session_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string | null
+          event_name?: string
+          id?: string
+          ip_address?: unknown | null
+          properties?: Json | null
+          session_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      anomaly_detections: {
+        Row: {
+          created_at: string | null
+          description: string
+          detection_type: string
+          id: string
+          ip_address: unknown | null
+          is_resolved: boolean | null
+          metadata: Json | null
+          severity: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description: string
+          detection_type: string
+          id?: string
+          ip_address?: unknown | null
+          is_resolved?: boolean | null
+          metadata?: Json | null
+          severity: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string
+          detection_type?: string
+          id?: string
+          ip_address?: unknown | null
+          is_resolved?: boolean | null
+          metadata?: Json | null
+          severity?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       blogs: {
         Row: {
-          content: string
-          created_at: string
+          author_id: string | null
+          content: string | null
+          created_at: string | null
           excerpt: string | null
           featured: boolean | null
           id: string
           image_url: string | null
-          published: boolean | null
+          is_published: boolean | null
           slug: string
           tags: string[] | null
           title: string
-          updated_at: string
+          updated_at: string | null
         }
         Insert: {
-          content: string
-          created_at?: string
+          author_id?: string | null
+          content?: string | null
+          created_at?: string | null
           excerpt?: string | null
           featured?: boolean | null
           id?: string
           image_url?: string | null
-          published?: boolean | null
+          is_published?: boolean | null
           slug: string
           tags?: string[] | null
           title: string
-          updated_at?: string
+          updated_at?: string | null
         }
         Update: {
-          content?: string
-          created_at?: string
+          author_id?: string | null
+          content?: string | null
+          created_at?: string | null
           excerpt?: string | null
           featured?: boolean | null
           id?: string
           image_url?: string | null
-          published?: boolean | null
+          is_published?: boolean | null
           slug?: string
           tags?: string[] | null
           title?: string
-          updated_at?: string
+          updated_at?: string | null
         }
         Relationships: []
       }
@@ -383,6 +502,69 @@ export type Database = {
         }
         Relationships: []
       }
+      rate_limit_contact: {
+        Row: {
+          attempts: number | null
+          created_at: string | null
+          id: string
+          ip_address: unknown
+          is_blocked: boolean | null
+          window_start: string | null
+        }
+        Insert: {
+          attempts?: number | null
+          created_at?: string | null
+          id?: string
+          ip_address: unknown
+          is_blocked?: boolean | null
+          window_start?: string | null
+        }
+        Update: {
+          attempts?: number | null
+          created_at?: string | null
+          id?: string
+          ip_address?: unknown
+          is_blocked?: boolean | null
+          window_start?: string | null
+        }
+        Relationships: []
+      }
+      security_logs: {
+        Row: {
+          created_at: string | null
+          event_type: string
+          id: string
+          ip_address: unknown | null
+          metadata: Json | null
+          severity: string
+          source: string
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          event_type: string
+          id?: string
+          ip_address?: unknown | null
+          metadata?: Json | null
+          severity: string
+          source: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          event_type?: string
+          id?: string
+          ip_address?: unknown | null
+          metadata?: Json | null
+          severity?: string
+          source?: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       skills: {
         Row: {
           category: string
@@ -569,33 +751,13 @@ export type Database = {
         Args: { p_email?: string; p_ip: unknown }
         Returns: boolean
       }
-      citext: {
-        Args: { "": boolean } | { "": string } | { "": unknown }
-        Returns: string
-      }
-      citext_hash: {
-        Args: { "": string }
-        Returns: number
-      }
-      citextin: {
-        Args: { "": unknown }
-        Returns: string
-      }
-      citextout: {
-        Args: { "": string }
-        Returns: unknown
-      }
-      citextrecv: {
-        Args: { "": unknown }
-        Returns: string
-      }
-      citextsend: {
-        Args: { "": string }
-        Returns: string
-      }
       cleanup_expired_sessions: {
         Args: Record<PropertyKey, never>
         Returns: number
+      }
+      cleanup_old_security_data: {
+        Args: Record<PropertyKey, never>
+        Returns: string
       }
       create_admin_user: {
         Args: {
@@ -610,6 +772,10 @@ export type Database = {
         Args: { p_email: string; p_full_name: string; p_password: string }
         Returns: string
       }
+      is_admin: {
+        Args: Record<PropertyKey, never> | { p_uid: string }
+        Returns: boolean
+      }
       is_authenticated_admin: {
         Args: Record<PropertyKey, never>
         Returns: boolean
@@ -617,6 +783,22 @@ export type Database = {
       is_bcrypt: {
         Args: { p: string }
         Returns: boolean
+      }
+      log_security_event: {
+        Args: {
+          p_event_type: string
+          p_ip_address?: unknown
+          p_metadata?: Json
+          p_severity: string
+          p_source: string
+          p_user_agent?: string
+          p_user_id?: string
+        }
+        Returns: string
+      }
+      rotate_expired_sessions: {
+        Args: Record<PropertyKey, never>
+        Returns: number
       }
       secure_admin_login: {
         Args: { p_email: string; p_ip?: unknown; p_password: string }
@@ -627,16 +809,16 @@ export type Database = {
           success: boolean
         }[]
       }
-      simple_admin_login: {
-        Args: { p_email: string; p_password: string }
-        Returns: {
-          admin_id: string
-          full_name: string
-          is_super_admin: boolean
-        }[]
+      validate_encryption_key: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
       }
       validate_password_strength: {
         Args: { password: string }
+        Returns: boolean
+      }
+      verify_admin_access: {
+        Args: Record<PropertyKey, never>
         Returns: boolean
       }
     }

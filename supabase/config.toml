@@ -1,1 +1,28 @@
 project_id = "pcpjqxuuuawwqxrecexm"
+
+[functions.security-test-data]
+verify_jwt = true
+
+[functions.encryption-service]
+verify_jwt = true
+
+[functions.security-automation]
+verify_jwt = true
+
+[functions.vulnerability-scan]
+verify_jwt = true
+
+[functions.test-encryption]
+verify_jwt = true
+
+[functions.contact-form]
+verify_jwt = false
+
+[functions.secure-contact-form]
+verify_jwt = false
+
+[functions.secure-cv-download]
+verify_jwt = false
+
+[functions.admin-bootstrap]
+verify_jwt = false

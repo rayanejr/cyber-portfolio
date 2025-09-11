@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import {
   ArrowRight, Shield, Target, Code, Award, ExternalLink, ChevronRight,
-  Mail, Phone, MapPin, FileText
+  Mail, Phone, MapPin, FileText, Eye
 } from "lucide-react";
 import CVDownloadButton from "@/components/CVDownloadButton";
+import CertificationViewer from "@/components/CertificationViewer";
 import { Button } from "@/components/ui/button";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -175,17 +176,12 @@ export default function Home() {
     return u.endsWith(".pdf") || u.endsWith(".jpg") || u.endsWith(".jpeg");
   }
 
+  const [selectedCert, setSelectedCert] = useState<CertRow | null>(null);
+  const [showCertViewer, setShowCertViewer] = useState(false);
+
   function viewCertification(cert: CertRow) {
-    const firstAllowed = [cert.pdf_url, cert.image_url].find(isAllowedAsset);
-    if (firstAllowed) {
-      window.open(firstAllowed!, "_blank");
-      return;
-    }
-    toast({
-      title: "Format non autorisé",
-      description: "Seuls les fichiers PDF et JPG sont consultables.",
-      variant: "destructive",
-    });
+    setSelectedCert(cert);
+    setShowCertViewer(true);
   }
 
   return (
@@ -198,21 +194,21 @@ export default function Home() {
           style={{ backgroundImage: `url(${heroImage})` }}
         />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          {/* Titre rotatif typewriter + dégradé violet */}
-          <h1 className="text-3xl sm:text-4xl md:text-6xl font-orbitron font-bold mb-4 sm:mb-6">
+          {/* Titre rotatif typewriter + dégradé violet - responsive */}
+          <h1 className="text-3xl sm:text-4xl md:text-6xl font-orbitron font-bold mb-4 sm:mb-6 fade-in">
             <span className="sr-only">Rôle : </span>
             <span className="cyber-text">—</span>
-            <span aria-live="polite" className="whitespace-nowrap">
+            <div aria-live="polite" className="flex flex-wrap justify-center items-center gap-x-2">
               <span className="bg-gradient-to-r from-violet-500 via-fuchsia-500 to-pink-500 bg-clip-text text-transparent">
                 {displayText || "\u00A0"}
               </span>
               <span className="inline-block w-[2px] h-[1em] align-[-0.15em] bg-fuchsia-400 ml-1 animate-pulse" />
-            </span>{" "}
+            </div>
           </h1>
-          <p className="text-lg sm:text-xl md:text-2xl text-muted-foreground mb-6 sm:mb-8 max-w-3xl mx-auto px-4">
+          <p className="text-lg sm:text-xl md:text-2xl text-muted-foreground mb-6 sm:mb-8 max-w-3xl mx-auto px-4 fade-in fade-in-delay-1">
             Sécurité offensive & défensive — je protège vos infrastructures contre les menaces modernes.
           </p>
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4 fade-in fade-in-delay-2">
             <Link to="/projects">
               <Button size="lg" className="btn-cyber group w-full sm:w-auto">
                 Découvrir mes projets
@@ -232,11 +228,11 @@ export default function Home() {
       {/* ===== À PROPOS ===== */}
       <section className="py-12 sm:py-20 bg-card/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-orbitron font-bold text-center mb-8 sm:mb-12">À propos</h2>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-orbitron font-bold text-center mb-8 sm:mb-12 fade-in">À propos</h2>
 
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_2fr] xl:grid-cols-[320px_1fr] gap-8 lg:gap-10 items-start">
             {/* Colonne gauche : portrait */}
-            <div className="space-y-6 flex justify-center lg:justify-start">
+            <div className="space-y-6 flex justify-center lg:justify-start slide-in-left">
               <div className="relative w-full max-w-sm lg:max-w-none">
                 <AspectRatio ratio={3/4} className="rounded-xl overflow-hidden">
                   <img
@@ -246,7 +242,7 @@ export default function Home() {
                   />
                 </AspectRatio>
 
-                <div className="absolute -bottom-3 -right-3 bg-primary text-primary-foreground rounded-full p-2">
+                <div className="absolute -bottom-3 -right-3 bg-primary text-primary-foreground rounded-full p-2 scale-in">
                   <Shield className="h-6 w-6" />
                 </div>
               </div>
@@ -337,12 +333,15 @@ export default function Home() {
                     {skillGroup.items.map((skill: string, skillIndex: number) => (
                       <div
                         key={`${skillGroup.category}-${skill}-${skillIndex}`}
-                        className={`flex items-center p-3 rounded-lg bg-card/50 hover:bg-card/80 transition-all duration-300 fade-in fade-in-delay-${skillIndex + 2}`}
+                        className="group relative overflow-hidden"
                       >
-                        {/* Badge VERT (pill) */}
-                        <Badge className="text-sm font-medium bg-green-600 text-white border-0 rounded-full px-3 py-1">
-                          {skill}
-                        </Badge>
+                        <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg"></div>
+                        <div className="relative flex items-center justify-between p-4 rounded-lg bg-card/50 hover:bg-card/80 transition-all duration-300 border border-border/30 hover:border-primary/30">
+                          <Badge className="text-sm font-medium bg-gradient-to-r from-primary to-secondary text-white border-0 rounded-full px-4 py-2 shadow-lg hover:shadow-xl transition-all duration-300">
+                            {skill}
+                          </Badge>
+                          <div className="w-3 h-3 bg-primary rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse"></div>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -498,6 +497,17 @@ export default function Home() {
                         Voir
                       </Button>
 
+                      {(cert.pdf_url || cert.image_url) && (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => viewCertification(cert)}
+                          className="btn-ghost-cyber"
+                          title="Voir la certification"
+                        >
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                      )}
                       {cert.credential_url && (
                         <Button
                           size="sm"
@@ -585,6 +595,21 @@ export default function Home() {
           </Link>
         </div>
       </section>
+
+      {/* Certification Viewer Modal */}
+      <CertificationViewer
+        isOpen={showCertViewer}
+        onClose={() => setShowCertViewer(false)}
+        certification={selectedCert ? {
+          name: selectedCert.name,
+          issuer: selectedCert.issuer || '',
+          issue_date: selectedCert.issue_date,
+          expiry_date: selectedCert.expiry_date,
+          pdf_url: selectedCert.pdf_url,
+          image_url: selectedCert.image_url,
+          credential_url: selectedCert.credential_url
+        } : null}
+      />
     </div>
   );
 }

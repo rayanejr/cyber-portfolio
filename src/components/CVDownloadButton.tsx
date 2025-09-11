@@ -15,41 +15,81 @@ const CVDownloadButton = () => {
 
   const fetchCV = async () => {
     try {
-      const { data, error } = await supabase
-        .from('admin_files')
-        .select('*')
-        .eq('file_category', 'cv')
-        .eq('is_active', true)
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .single();
-
-      if (error && error.code !== 'PGRST116') {
-        throw error;
+      // Vérifier si un CV est disponible via la fonction sécurisée
+      const { data, error } = await supabase.functions.invoke('secure-cv-download');
+      
+      if (!error && data && !data.error) {
+        // Si on a reçu des données valides, le CV est disponible
+        setCvFile({ available: true, filename: data.filename });
+      } else {
+        // Pas de CV disponible ou erreur
+        setCvFile(null);
       }
-
-      setCvFile(data);
     } catch (error) {
-      console.error('Error fetching CV:', error);
+      console.error('Error checking CV availability:', error);
+      // En cas d'erreur, on considère qu'aucun CV n'est disponible
+      setCvFile(null);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleDownload = () => {
-    if (cvFile?.file_url) {
-      window.open(cvFile.file_url, '_blank');
-    } else {
+  const handleDownload = async () => {
+    try {
+      // Appeler la fonction edge sécurisée pour obtenir l'URL signée
+      const { data, error } = await supabase.functions.invoke('secure-cv-download');
+
+      if (error) {
+        console.error('Error calling secure-cv-download:', error);
+        toast({
+          title: "Erreur de téléchargement",
+          description: "Impossible d'accéder au CV.",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      if (data?.error) {
+        toast({
+          title: "CV non disponible",
+          description: data.error,
+          variant: "destructive"
+        });
+        return;
+      }
+
+      if (data?.signedUrl) {
+        // Ouvrir l'URL signée dans un nouvel onglet
+        window.open(data.signedUrl, '_blank');
+      } else {
+        toast({
+          title: "Erreur de téléchargement",
+          description: "Impossible de générer le lien de téléchargement.",
+          variant: "destructive"
+        });
+      }
+    } catch (error) {
+      console.error('Download error:', error);
       toast({
-        title: "CV non disponible",
-        description: "Le CV n'est pas encore disponible au téléchargement.",
+        title: "Erreur de téléchargement",
+        description: "Une erreur est survenue lors du téléchargement.",
         variant: "destructive"
       });
     }
   };
 
-  if (loading || !cvFile) {
-    return null;
+  if (loading) {
+    return (
+      <Button
+        variant="outline"
+        size="lg"
+        disabled
+        className="btn-ghost-cyber w-full sm:w-auto"
+      >
+        <Download className="mr-2 h-5 w-5" />
+        Chargement...
+      </Button>
+    );
   }
 
   return (
@@ -57,10 +97,11 @@ const CVDownloadButton = () => {
       variant="outline"
       size="lg"
       onClick={handleDownload}
-      className="btn-ghost-cyber"
+      className="btn-ghost-cyber w-full sm:w-auto"
+      disabled={!cvFile}
     >
       <Download className="mr-2 h-5 w-5" />
-      Télécharger mon CV
+      CV
     </Button>
   );
 };

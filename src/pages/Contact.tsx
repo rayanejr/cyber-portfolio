@@ -23,18 +23,21 @@ const Contact = () => {
     setLoading(true);
 
     try {
-      const { error } = await supabase
-        .from('contact_messages')
-        .insert([{
-          name: formData.name,
-          email: formData.email, 
-          subject: formData.subject,
-          message: formData.message
-        }]);
+      const { data, error } = await supabase.functions.invoke('contact-form', {
+        body: {
+          name: formData.name.trim(),
+          email: formData.email.toLowerCase().trim(),
+          subject: formData.subject?.trim() || null,
+          message: formData.message.trim(),
+        }
+      });
 
       if (error) {
-        console.error('Supabase error:', error);
         throw error;
+      }
+
+      if (!data.success) {
+        throw new Error(data.error || 'Erreur lors de l\'envoi du message');
       }
 
       toast({
@@ -43,11 +46,11 @@ const Contact = () => {
       });
 
       setFormData({ name: '', email: '', subject: '', message: '' });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error sending message:', error);
       toast({
         title: "Erreur",
-        description: "Une erreur s'est produite lors de l'envoi du message. Veuillez réessayer.",
+        description: error.message || "Une erreur s'est produite lors de l'envoi du message. Veuillez réessayer.",
         variant: "destructive",
       });
     } finally {
