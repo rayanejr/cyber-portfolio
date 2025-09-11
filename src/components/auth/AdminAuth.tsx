@@ -173,18 +173,6 @@ const AdminAuth: React.FC<AdminAuthProps> = ({ onAuthenticated }) => {
               </Button>
             </form>
 
-            {!isSignUp && (
-              <div className="mt-4 text-center">
-                <Button
-                  variant="link"
-                  onClick={() => setIsSignUp(true)}
-                  className="text-sm"
-                >
-                  Pas encore de compte ?
-                </Button>
-              </div>
-            )}
-
             <div className="mt-6 p-4 bg-muted/50 rounded-lg">
               <p className="text-sm text-muted-foreground text-center">
                 <strong>Sécurité renforcée :</strong><br />

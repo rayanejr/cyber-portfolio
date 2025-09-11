@@ -3,7 +3,7 @@ import {
   ArrowRight, Shield, Target, Code, Award, ExternalLink, ChevronRight,
   Mail, Phone, MapPin, FileText, Eye
 } from "lucide-react";
-import CVDownloadButton from "@/components/CVDownloadButton";
+// import CVDownloadButton from "@/components/CVDownloadButton";
 import CertificationViewer from "@/components/CertificationViewer";
 import { Button } from "@/components/ui/button";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
@@ -57,16 +57,16 @@ export default function Home() {
     "Ingénieur Sécurité Cloud (AWS/Azure) – Alternance",
   ];
 
-
+  const [resumeUrl, setResumeUrl] = useState<string | null>(null);
   const [roleIndex, setRoleIndex] = useState(0);
   const [displayText, setDisplayText] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     const current = roles[roleIndex];
-    const typingSpeed = isDeleting ? 40 : 80; // vitesse lettre par lettre
-    const holdFull = 1200;                    // pause quand le mot est complet
-    const holdEmpty = 250;                    // pause quand effacé
+    const typingSpeed = isDeleting ? 40 : 80;
+    const holdFull = 1200;
+    const holdEmpty = 250;
     let t: number;
 
     if (!isDeleting && displayText === current) {
@@ -84,6 +84,51 @@ export default function Home() {
     }
     return () => window.clearTimeout(t);
   }, [displayText, isDeleting, roleIndex, roles]);
+
+  // ===== Récupération du CV (sans colonnes fantômes) =====
+useEffect(() => {
+  let mounted = true;
+
+  const fetchResume = async () => {
+    try {
+      // On ne demande que des colonnes qui existent partout
+      const { data, error } = await supabase
+        .from("admin_files")
+        .select("file_url,file_type,is_active")
+        .eq("file_category", "cv");
+
+      if (error) {
+        console.warn("[CV] error:", error);
+        setResumeUrl(null);
+        return;
+      }
+
+      if (!mounted) return;
+
+      const rows = (data ?? []).filter(r => !!r?.file_url);
+
+      // Priorité: PDF + actif > PDF > actif > le reste
+      const score = (r: any) =>
+        (/(^|\/)pdf$/i.test(r.file_type) || /\.pdf(\?|$)/i.test(r.file_url) ? 2 : 0) +
+        (r.is_active ? 1 : 0);
+
+      rows.sort((a, b) => score(b) - score(a));
+
+      const chosen = rows[0];
+      setResumeUrl(chosen?.file_url ?? null);
+      console.log("[CV] choisi:", chosen);
+    } catch (e) {
+      console.error("Erreur chargement CV:", e);
+      setResumeUrl(null);
+    }
+  };
+
+  fetchResume();
+  return () => { mounted = false; };
+}, []);
+
+
+
 
   // fallback images si l’enregistrement n’a pas d’image
   const projectFallbacks = [projectSecurity, projectSoc, projectThreat];
@@ -110,7 +155,7 @@ export default function Home() {
 
         setSkills(grouped);
 
-        // === Certifications (actives, récentes d’abord) ===
+        // === Certifications ===
         const { data: certsData, error: certErr } = await supabase
           .from("certifications")
           .select("*")
@@ -122,32 +167,29 @@ export default function Home() {
         setCertifications(certsData || []);
         
         // === Projets récents (3 max) ===
-      const { data: projData, error: projErr } = await supabase
-        .from("projects")
-        .select("*")
-        .eq("is_active", true)
-        .order("featured", { ascending: false })
-        .order("created_at", { ascending: false })
-        .limit(3);
+        const { data: projData, error: projErr } = await supabase
+          .from("projects")
+          .select("*")
+          .eq("is_active", true)
+          .order("featured", { ascending: false })
+          .order("created_at", { ascending: false })
+          .limit(3);
 
-      if (projErr) throw projErr;
+        if (projErr) throw projErr;
 
-      // Normalisation légère pour rester robuste côté rendu
-      const normalized: ProjectRow[] = (projData ?? []).map((p, i) => ({
-        ...p,
-        technologies: Array.isArray(p.technologies)
-          ? p.technologies
-          : (typeof p.technologies === "string" ? safeParseArray(p.technologies) : []),
-        image_url: p.image_url || projectFallbacks[i % projectFallbacks.length],
-      }));
+        const normalized: ProjectRow[] = (projData ?? []).map((p, i) => ({
+          ...p,
+          technologies: Array.isArray(p.technologies)
+            ? p.technologies
+            : (typeof p.technologies === "string" ? safeParseArray(p.technologies) : []),
+          image_url: p.image_url || projectFallbacks[i % projectFallbacks.length],
+        }));
 
-      setRecentProjects(normalized);
+        setRecentProjects(normalized);
 
-
-      // (optionnel) aide au debug dans la console
-      if ((projData ?? []).length === 0) {
-        console.warn("[projects] 0 lignes renvoyées. Causes probables : RLS ou filtres trop stricts.");
-      }
+        if ((projData ?? []).length === 0) {
+          console.warn("[projects] 0 lignes renvoyées. Causes probables : RLS ou filtres trop stricts.");
+        }
 
       } catch (e) {
         console.error(e);
@@ -160,7 +202,6 @@ export default function Home() {
     })();
   }, []);
 
-  // parse tolérant pour technologies
   function safeParseArray(raw: string): string[] {
     try {
       const j = JSON.parse(raw);
@@ -169,7 +210,6 @@ export default function Home() {
     return raw.split(",").map(s => s.trim()).filter(Boolean);
   }
 
-  // n’autorise que PDF et JPG/JPEG
   function isAllowedAsset(url?: string | null) {
     if (!url) return false;
     const u = url.split("?")[0].toLowerCase();
@@ -194,7 +234,7 @@ export default function Home() {
           style={{ backgroundImage: `url(${heroImage})` }}
         />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          {/* Titre rotatif typewriter + dégradé violet - responsive */}
+          {/* Titre rotatif typewriter + dégradé violet */}
           <h1 className="text-3xl sm:text-4xl md:text-6xl font-orbitron font-bold mb-4 sm:mb-6 fade-in">
             <span className="sr-only">Rôle : </span>
             <span className="cyber-text">—</span>
@@ -206,7 +246,8 @@ export default function Home() {
             </div>
           </h1>
           <p className="text-lg sm:text-xl md:text-2xl text-muted-foreground mb-6 sm:mb-8 max-w-3xl mx-auto px-4 fade-in fade-in-delay-1">
-            Sécurité offensive & défensive — je protège vos infrastructures contre les menaces modernes.
+            Étudiant en 2ᵉ année de Master IRS (Université Paris-Saclay, 2024–2026). Recherche une alternance
+            (3 semaines entreprise / 1 semaine école) pour développer mes compétences en cybersécurité et DevSecOps.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4 fade-in fade-in-delay-2">
             <Link to="/projects">
@@ -220,7 +261,16 @@ export default function Home() {
                 Me contacter
               </Button>
             </Link>
-            <CVDownloadButton />
+
+            {/* Bouton CV */}
+            {resumeUrl && (
+              <a href={resumeUrl} target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto">
+                <Button size="lg" className="btn-cyber group w-full sm:w-auto">
+                  Télécharger mon CV
+                  <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+                </Button>
+              </a>
+            )}
           </div>
         </div>
       </section>
@@ -253,16 +303,18 @@ export default function Home() {
               <Card className="cyber-border">
                 <CardContent className="p-6">
                   <p className="text-lg text-muted-foreground leading-relaxed">
-                    Ingénieur sécurité avec une approche terrain + stratégie : mise en place de SOC,
-                    détection & réponse, pentest avancé et outillage DevSecOps. J’aime transformer des
-                    contraintes opérationnelles en systèmes fiables et mesurables.
+                    Étudiant en Master IRS spécialité Cybersécurité, orienté DevSecOps et sécurité des infrastructures. 
+                    Compétences en CI/CD (GitLab, Jenkins), Cloud et IaC (AWS, Terraform) et 
+                    automatisation (Python, Bash, PowerShell) pour améliorer la sécurité et la fiabilité.
+
                   </p>
                   <div className="mt-4 flex flex-wrap gap-3">
-                    <Badge className="bg-green-600 text-white border-0">+2 ans d'expériences</Badge>
-                    <Badge className="bg-green-600 text-white border-0">Disponibilité 24/7</Badge>
-                    <Badge className="bg-green-600 text-white border-0">Pentest</Badge>
-                    <Badge className="bg-green-600 text-white border-0">DevSecOps</Badge>
-                    <Badge className="bg-green-600 text-white border-0">Automatisation</Badge>
+                    <Badge className="bg-green-600 text-white border-0">Master IRS Cyber 2024–2026</Badge>
+                    <Badge className="bg-green-600 text-white border-0">Alternance 3s/1s</Badge>
+                    <Badge className="bg-green-600 text-white border-0">DevSecOps • CI/CD • Jenkins</Badge>
+                    <Badge className="bg-green-600 text-white border-0">Cybersécurité • Pentest • Audit</Badge>
+                    <Badge className="bg-green-600 text-white border-0">Cloud • AWS • Terraform</Badge>
+                    <Badge className="bg-green-600 text-white border-0">Automatisation • Python • Bash • PowerShell</Badge>
                   </div>
                 </CardContent>
               </Card>
@@ -271,24 +323,24 @@ export default function Home() {
                 <Card className="cyber-border hover:cyber-glow transition">
                   <CardHeader className="p-4">
                     <Shield className="h-6 w-6 sm:h-8 sm:w-8 text-primary mb-2" />
-                    <CardTitle className="text-sm sm:text-base">Sécurité défensive</CardTitle>
-                    <CardDescription className="text-xs sm:text-sm">SIEM, use-cases, réponse à incident</CardDescription>
+                    <CardTitle className="text-sm sm:text-base">Cybersécurité</CardTitle>
+                    <CardDescription className="text-xs sm:text-sm">Pentest, audit, durcissement</CardDescription>
                   </CardHeader>
                 </Card>
 
                 <Card className="cyber-border hover:cyber-glow transition">
                   <CardHeader className="p-4">
                     <Target className="h-6 w-6 sm:h-8 sm:w-8 text-secondary mb-2" />
-                    <CardTitle className="text-sm sm:text-base">Sécurité offensive</CardTitle>
-                    <CardDescription className="text-xs sm:text-sm">Pentest, red team, vulnérabilités</CardDescription>
+                    <CardTitle className="text-sm sm:text-base">Systèmes & Réseaux</CardTitle>
+                    <CardDescription className="text-xs sm:text-sm">VMware, AD, DNS, GPO, firewall</CardDescription>
                   </CardHeader>
                 </Card>
 
                 <Card className="cyber-border hover:cyber-glow transition sm:col-span-2 lg:col-span-1">
                   <CardHeader className="p-4">
                     <Code className="h-6 w-6 sm:h-8 sm:w-8 text-accent mb-2" />
-                    <CardTitle className="text-sm sm:text-base">Dev sécurisé</CardTitle>
-                    <CardDescription className="text-xs sm:text-sm">Outils, CI/CD, bonnes pratiques</CardDescription>
+                    <CardTitle className="text-sm sm:text-base">DevOps & Cloud</CardTitle>
+                    <CardDescription className="text-xs sm:text-sm">CI/CD, GitLab, Jenkins, AWS, Terraform</CardDescription>
                   </CardHeader>
                 </Card>
               </div>
@@ -305,7 +357,7 @@ export default function Home() {
               Compétences <span className="cyber-text">Techniques</span>
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Une expertise complète couvrant tous les aspects de la cybersécurité moderne
+              Réseaux & systèmes, cloud (AWS), IaC (Terraform), DevOps/CI-CD, scripting (Python/Bash/PowerShell).
             </p>
           </div>
 
@@ -465,7 +517,9 @@ export default function Home() {
             <h2 className="text-3xl md:text-4xl font-orbitron font-bold">
               <span className="cyber-text">Certifications</span>
             </h2>
-            <p className="text-lg text-muted-foreground">Consultation disponible en PDF ou JPG uniquement</p>
+            <p className="text-lg text-muted-foreground">
+              Sécurité du Cloud (DataScientest, 03/2024) • Bash & Linux (01/2024) • Introduction à Python (01/2024) • Prévention Sup’ (INRS, 02/2024)
+            </p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
@@ -536,7 +590,7 @@ export default function Home() {
               <span className="cyber-text">Contact</span>
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Prêt à discuter de vos besoins en cybersécurité ?
+              Prêt à discuter de vos besoins en cybersécurité ou DevSecOps ?
             </p>
           </div>
 
@@ -561,7 +615,7 @@ export default function Home() {
               <CardContent className="p-6 text-center">
                 <MapPin className="h-10 w-10 text-accent mx-auto mb-3" />
                 <h3 className="font-semibold mb-1">Localisation</h3>
-                <p className="text-muted-foreground text-sm">Paris, France</p>
+                <p className="text-muted-foreground text-sm">Paris 15ᵉ, France</p>
               </CardContent>
             </Card>
           </div>
