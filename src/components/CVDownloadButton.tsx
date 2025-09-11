@@ -98,9 +98,10 @@ const CVDownloadButton = () => {
       size="lg"
       onClick={handleDownload}
       className="btn-ghost-cyber w-full sm:w-auto"
+      disabled={!cvFile}
     >
       <Download className="mr-2 h-5 w-5" />
-      {cvFile ? "Télécharger mon CV" : "CV bientôt disponible"}
+      CV
     </Button>
   );
 };
