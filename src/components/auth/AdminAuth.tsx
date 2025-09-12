@@ -16,7 +16,7 @@ const AdminAuth: React.FC<AdminAuthProps> = ({ onAuthenticated }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [isSignUp, setIsSignUp] = useState(false);
+  const [isSignUp] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -74,39 +74,22 @@ const AdminAuth: React.FC<AdminAuthProps> = ({ onAuthenticated }) => {
     setLoading(true);
 
     try {
-      if (isSignUp) {
-        // Création sécurisée du premier admin via edge function
-        const { data, error } = await supabase.functions.invoke('admin-bootstrap', {
-          body: {
-            email: email.toLowerCase(),
-            fullName: email.split('@')[0],
-            password
-          }
-        });
-
-        if (error) throw error;
-
-        if (data?.error) {
-          throw new Error(data.error);
-        }
-
-        toast({
-          title: "Compte créé",
-          description: "Votre compte administrateur a été créé avec succès. Vous pouvez maintenant vous connecter.",
-        });
-        
-        setIsSignUp(false);
-        setEmail('');
-        setPassword('');
-      } else {
-        // Connexion
-        const { error } = await supabase.auth.signInWithPassword({
-          email,
-          password
-        });
-
-        if (error) throw error;
+      // Validation mot de passe fort
+      if (password.length < 12) {
+        throw new Error('Le mot de passe doit contenir au moins 12 caractères');
       }
+      
+      if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d])/.test(password)) {
+        throw new Error('Le mot de passe doit contenir des minuscules, majuscules, chiffres et symboles');
+      }
+
+      // Connexion
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      if (error) throw error;
     } catch (error: any) {
       console.error('Auth error:', error);
       toast({
@@ -163,13 +146,13 @@ const AdminAuth: React.FC<AdminAuthProps> = ({ onAuthenticated }) => {
                   minLength={12}
                 />
                 <p className="text-xs text-muted-foreground mt-1">
-                  Minimum 12 caractères selon les standards ANSSI
+                  Minimum 12 caractères avec majuscules, minuscules, chiffres et symboles
                 </p>
               </div>
 
               <Button type="submit" className="w-full" disabled={loading}>
                 <User className="w-4 h-4 mr-2" />
-                {loading ? 'Connexion...' : (isSignUp ? 'Créer le compte' : 'Se connecter')}
+                {loading ? 'Connexion...' : 'Se connecter'}
               </Button>
             </form>
 

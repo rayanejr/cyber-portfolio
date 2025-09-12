@@ -3,7 +3,7 @@ import {
   ArrowRight, Shield, Target, Code, Award, ExternalLink, ChevronRight,
   Mail, Phone, MapPin, FileText, Eye
 } from "lucide-react";
-// import CVDownloadButton from "@/components/CVDownloadButton";
+import CVDownloadButton from "@/components/CVDownloadButton";
 import CertificationViewer from "@/components/CertificationViewer";
 import { Button } from "@/components/ui/button";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
@@ -256,21 +256,12 @@ useEffect(() => {
                 <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
               </Button>
             </Link>
+            <CVDownloadButton />
             <Link to="/contact">
               <Button variant="outline" size="lg" className="btn-ghost-cyber w-full sm:w-auto">
                 Me contacter
               </Button>
             </Link>
-
-            {/* Bouton CV */}
-            {resumeUrl && (
-              <a href={resumeUrl} target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto">
-                <Button size="lg" className="btn-cyber group w-full sm:w-auto">
-                  Télécharger mon CV
-                  <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-                </Button>
-              </a>
-            )}
           </div>
         </div>
       </section>
@@ -353,9 +344,13 @@ useEffect(() => {
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16 fade-in">
-            <h2 className="text-3xl md:text-4xl font-orbitron font-bold mb-4">
-              Compétences <span className="cyber-text">Techniques</span>
-            </h2>
+            <div className="flex items-center justify-center gap-4 mb-4">
+              <div className="w-4 h-4 bg-primary rounded-full animate-pulse"></div>
+              <h2 className="text-3xl md:text-4xl font-orbitron font-bold">
+                Compétences <span className="cyber-text">Techniques</span>
+              </h2>
+              <div className="w-4 h-4 bg-secondary rounded-full animate-pulse [animation-delay:500ms]"></div>
+            </div>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               Réseaux & systèmes, cloud (AWS), IaC (Terraform), DevOps/CI-CD, scripting (Python/Bash/PowerShell).
             </p>
@@ -365,42 +360,34 @@ useEffect(() => {
             {skills.map((skillGroup, index) => (
               <Card
                 key={skillGroup.category}
-                className={`cyber-border hover:cyber-glow transition-all duration-300 fade-in fade-in-delay-${index + 1} group relative overflow-hidden`}
+                className={`cyber-border hover:cyber-glow transition-all duration-300 fade-in fade-in-delay-${index + 1} group relative overflow-hidden aspect-square`}
               >
                 {/* Glow effect background */}
                 <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-secondary/10 to-accent/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
-                <CardHeader className="relative z-10">
-                  <CardTitle className="text-xl flex items-center gap-3 mb-4">
-                    <div className="relative">
-                      <div className="w-4 h-4 bg-primary rounded-full animate-pulse"></div>
-                      <div className="absolute inset-0 w-4 h-4 bg-primary rounded-full animate-ping opacity-75"></div>
-                    </div>
-                    <span className="font-orbitron">{skillGroup.category}</span>
+                <CardHeader className="relative z-10 text-center">
+                  <CardTitle className="text-xl font-orbitron mb-4">
+                    {skillGroup.category}
                   </CardTitle>
                 </CardHeader>
 
-                <CardContent className="relative z-10">
-                  <div className="space-y-3">
+                <CardContent className="relative z-10 h-full flex flex-col justify-between">
+                  <div className="grid grid-cols-1 gap-2">
                     {skillGroup.items.map((skill: string, skillIndex: number) => (
                       <div
                         key={`${skillGroup.category}-${skill}-${skillIndex}`}
-                        className="group relative overflow-hidden"
+                        className="group relative"
                       >
-                        <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg"></div>
-                        <div className="relative flex items-center justify-between p-4 rounded-lg bg-card/50 hover:bg-card/80 transition-all duration-300 border border-border/30 hover:border-primary/30">
-                          <Badge className="text-sm font-medium bg-gradient-to-r from-primary to-secondary text-white border-0 rounded-full px-4 py-2 shadow-lg hover:shadow-xl transition-all duration-300">
-                            {skill}
-                          </Badge>
-                          <div className="w-3 h-3 bg-primary rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse"></div>
-                        </div>
+                        <Badge className="text-sm font-medium bg-muted/80 text-foreground border border-border/50 hover:border-primary/50 transition-all duration-300 w-full justify-center py-2">
+                          {skill}
+                        </Badge>
                       </div>
                     ))}
                   </div>
 
                   {/* trait fin + compteur */}
-                  <div className="mt-6 pt-4 border-t border-border/50">
-                    <div className="flex items-center justify-between text-sm text-muted-foreground">
+                  <div className="mt-4 pt-4 border-t border-border/50">
+                    <div className="flex items-center justify-center text-sm text-muted-foreground">
                       <span>{skillGroup.items.length} compétences</span>
                     </div>
                   </div>

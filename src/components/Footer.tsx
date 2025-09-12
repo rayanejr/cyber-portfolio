@@ -4,20 +4,11 @@ import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 
 type Profile = {
-  display_name?: string | null;
-  role_title?: string | null;
-  company?: string | null;
-  degree?: string | null;
-  school?: string | null;
-  tagline?: string | null;
-  github_url?: string | null;
-  linkedin_url?: string | null;
-  email_public?: string | null;
-  resume_url?: string | null;
+  full_name?: string | null;
+  email?: string | null;
 };
 
-const SELECT_PROFILE =
-  "display_name, role_title, company, degree, school, tagline, github_url, linkedin_url, email_public, resume_url" as const;
+const SELECT_PROFILE = "full_name, email" as const;
 
 export function Footer() {
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
@@ -46,26 +37,13 @@ if (!error && first) setLogoUrl(first);
 
     const fetchProfile = async () => {
       try {
-        // 1) tentative avec is_active
-        let { data, error } = await supabase
-          .from("admin_users") // <-- PLURIEL
-          .select(SELECT_PROFILE)
+        const { data } = await supabase
+          .from("admin_users")
+          .select("full_name, email")
           .eq("is_active", true)
-          .returns<Profile[]>()        // <-- borne le type
           .limit(1);
 
-        // 2) fallback avec is_activate si vide/erreur
-        if ((!data || data.length === 0 || error) && mounted) {
-          const fb = await supabase
-            .from("admin_users")
-            .select(SELECT_PROFILE)
-            .eq("is_activate", true)
-            .returns<Profile[]>();     // <-- borne le type
-          data = fb.data;
-          error = fb.error;
-        }
-
-        if (!error && data && data.length > 0 && mounted) {
+        if (data && data.length > 0 && mounted) {
           setProfile(data[0]);
         }
       } catch (error) {
@@ -82,17 +60,17 @@ if (!error && first) setLogoUrl(first);
   }, []);
 
   // Fallbacks si BDD vide
-  const displayName = profile?.display_name || "Rayane JERBI";
-  const roleTitle = profile?.role_title || "Alternant Ingénieur Réseaux & Systèmes";
-  const company = profile?.company || "LNE";
-  const degree = profile?.degree || "M1 IRS";
-  const school = profile?.school || "Université Paris-Saclay";
-  const tagline = profile?.tagline || "Cybersécurité • DevOps • Réseaux";
+  const displayName = profile?.full_name || "Rayane JERBI";
+  const roleTitle = "Alternant Ingénieur Réseaux & Systèmes";
+  const company = "LNE";
+  const degree = "M1 IRS";
+  const school = "Université Paris-Saclay";
+  const tagline = "Cybersécurité • DevOps • Réseaux";
 
-  const github = profile?.github_url || "https://github.com/rayanejr";
-  const linkedin = profile?.linkedin_url || "https://www.linkedin.com/in/rayane-jerbi";
-  const email = profile?.email_public || "rayane.jerbi@yahoo.fr";
-  const resumeUrl = profile?.resume_url || "";
+  const github = "https://github.com/rayanejr";
+  const linkedin = "https://www.linkedin.com/in/rayane-jerbi";
+  const email = profile?.email || "rayane.jerbi@yahoo.fr";
+  const resumeUrl = "";
 
   return (
     <footer className="cyber-border bg-card/50 backdrop-blur-lg">
