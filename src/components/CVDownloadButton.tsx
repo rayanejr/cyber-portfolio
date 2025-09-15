@@ -10,23 +10,19 @@ export default function CVDownloadButton() {
   useEffect(() => {
     const fetchResume = async () => {
       try {
-        // Utiliser la function Supabase pour récupérer le CV de manière sécurisée
-        const { data, error } = await supabase.functions.invoke('secure-cv-download');
-        
-        if (!error && data?.signedUrl) {
-          setResumeUrl(data.signedUrl);
-        } else {
-          // Fallback: essayer de récupérer directement depuis admin_files
-          const { data: fileData } = await supabase
-            .from("admin_files")
-            .select("file_url")
-            .eq("file_category", "cv")
-            .eq("is_active", true)
-            .single();
-          
-          if (fileData?.file_url) {
-            setResumeUrl(fileData.file_url);
-          }
+        // Récupérer directement le CV depuis admin_files (accessible en public pour les CVs)
+        const { data, error } = await supabase
+          .from("admin_files")
+          .select("file_url, filename")
+          .eq("file_category", "cv")
+          .eq("is_active", true)
+          .like("file_type", "%pdf%") // Filtrer seulement les PDFs
+          .order("created_at", { ascending: false })
+          .limit(1)
+          .single();
+
+        if (!error && data) {
+          setResumeUrl(data.file_url);
         }
       } catch (error) {
         console.error("Erreur lors de la récupération du CV:", error);
@@ -38,7 +34,6 @@ export default function CVDownloadButton() {
     fetchResume();
   }, []);
 
-  // Toujours afficher le bouton, même s'il n'y a pas de CV
   return (
     <Button 
       size="lg" 
