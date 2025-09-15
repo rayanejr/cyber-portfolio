@@ -92,7 +92,7 @@ const Formation = () => {
                 <div className="absolute left-4 sm:left-6 w-4 h-4 bg-primary rounded-full border-4 border-background pulse-glow"></div>
                 
                 <div className="ml-12 sm:ml-20">
-                  <Card className="cyber-border hover:cyber-glow transition-all duration-300">
+                  <Card className="cyber-border hover:cyber-glow transition-all duration-300 group bg-card/50 backdrop-blur-sm">
                     <CardHeader>
                       <div className="flex items-start justify-between">
                         <div>

@@ -346,13 +346,13 @@ useEffect(() => {
       {/* ===== COMPÉTENCES ===== */}
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16 fade-in">
+          <div className="text-center mb-16 animate-fade-in">
             <div className="flex items-center justify-center gap-4 mb-4">
-              <div className="w-4 h-4 bg-primary rounded-full animate-pulse"></div>
+              <div className="w-4 h-4 bg-primary rounded-full pulse-glow"></div>
               <h2 className="text-3xl md:text-4xl font-orbitron font-bold">
                 Compétences <span className="cyber-text">Techniques</span>
               </h2>
-              <div className="w-4 h-4 bg-secondary rounded-full animate-pulse [animation-delay:500ms]"></div>
+              <div className="w-4 h-4 bg-secondary rounded-full pulse-glow" style={{ animationDelay: '500ms' }}></div>
             </div>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               Réseaux & systèmes, cloud (AWS), IaC (Terraform), DevOps/CI-CD, scripting (Python/Bash/PowerShell).
@@ -363,13 +363,17 @@ useEffect(() => {
             {skills.map((skillGroup, index) => (
               <Card
                 key={skillGroup.category}
-                className={`cyber-border hover:cyber-glow transition-all duration-300 fade-in fade-in-delay-${index + 1} group relative overflow-hidden aspect-square`}
+                className="cyber-border hover:cyber-glow transition-all duration-300 group relative overflow-hidden aspect-square animate-fade-in"
+                style={{ 
+                  animationDelay: `${0.6 + (index * 0.2)}s`, 
+                  animationFillMode: 'both' 
+                }}
               >
                 {/* Glow effect background */}
-                <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-secondary/10 to-accent/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
                 <CardHeader className="relative z-10 text-center">
-                  <CardTitle className="text-xl font-orbitron mb-4">
+                  <CardTitle className="text-lg md:text-xl font-orbitron mb-4 text-foreground">
                     {skillGroup.category}
                   </CardTitle>
                 </CardHeader>
@@ -379,9 +383,9 @@ useEffect(() => {
                     {skillGroup.items.map((skill: string, skillIndex: number) => (
                       <div
                         key={`${skillGroup.category}-${skill}-${skillIndex}`}
-                        className="group relative"
+                        className="group/skill relative"
                       >
-                        <Badge className="text-sm font-medium bg-muted/80 text-foreground border border-border/50 hover:border-primary/50 transition-all duration-300 w-full justify-center py-2">
+                        <Badge className="text-sm font-medium bg-background/90 text-foreground border-2 border-primary/30 hover:border-primary hover:bg-primary/10 transition-all duration-300 w-full justify-center py-2 backdrop-blur-sm">
                           {skill}
                         </Badge>
                       </div>
@@ -389,7 +393,7 @@ useEffect(() => {
                   </div>
 
                   {/* trait fin + compteur */}
-                  <div className="mt-4 pt-4 border-t border-border/50">
+                  <div className="mt-4 pt-4 border-t border-primary/30">
                     <div className="flex items-center justify-center text-sm text-muted-foreground">
                       <span>{skillGroup.items.length} compétences</span>
                     </div>
@@ -397,7 +401,7 @@ useEffect(() => {
                 </CardContent>
 
                 {/* Animated border effect */}
-                <div className="absolute inset-0 border-2 border-transparent bg-gradient-to-r from-primary via-secondary to-accent p-[2px] rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                <div className="absolute inset-0 border-2 border-transparent bg-gradient-to-br from-primary/50 via-secondary/50 to-accent/50 p-[2px] rounded-lg opacity-0 group-hover:opacity-30 transition-opacity duration-500">
                   <div className="bg-card rounded-lg w-full h-full"></div>
                 </div>
               </Card>

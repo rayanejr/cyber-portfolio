@@ -772,6 +772,10 @@ export type Database = {
         Args: { p_email: string; p_full_name: string; p_password: string }
         Returns: string
       }
+      debug_whoami: {
+        Args: Record<PropertyKey, never>
+        Returns: Json
+      }
       is_admin: {
         Args: Record<PropertyKey, never> | { p_uid: string }
         Returns: boolean
