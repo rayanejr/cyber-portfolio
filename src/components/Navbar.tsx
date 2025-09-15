@@ -45,21 +45,22 @@ export function Navbar() {
   };
 
   return (
-    <nav className="sticky top-0 z-50 cyber-border bg-card/80 backdrop-blur-lg">
+    <nav className="sticky top-0 z-50 cyber-border bg-card/80 backdrop-blur-lg animate-slide-in-up">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-14 sm:h-16">
           <div className="flex items-center">
-            <Link to="/" className="flex items-center space-x-2">
+            <Link to="/" className="flex items-center space-x-2 animate-fade-in">
               {logoUrl ? (
                 <img 
                   src={logoUrl} 
                   alt="Logo" 
-                  className="h-6 w-6 sm:h-8 sm:w-8 object-contain" 
+                  className="h-6 w-6 sm:h-8 sm:w-8 object-contain animate-scale-in" 
+                  style={{ animationDelay: '0.2s', animationFillMode: 'both' }}
                 />
               ) : (
-                <Shield className="h-6 w-6 sm:h-8 sm:w-8 text-primary cyber-glow" />
+                <Shield className="h-6 w-6 sm:h-8 sm:w-8 text-primary cyber-glow pulse-glow animate-scale-in" style={{ animationDelay: '0.2s', animationFillMode: 'both' }} />
               )}
-              <span className="font-orbitron font-bold text-lg sm:text-xl cyber-text">
+              <span className="font-orbitron font-bold text-lg sm:text-xl cyber-text animate-fade-in" style={{ animationDelay: '0.4s', animationFillMode: 'both' }}>
                 <span className="hidden sm:inline">JERBI Rayane</span>
                 <span className="sm:hidden">JERBI R.</span>
               </span>

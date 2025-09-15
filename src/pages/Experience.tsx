@@ -67,10 +67,10 @@ const Experience = () => {
     <div className="min-h-screen bg-background py-12 sm:py-20">
       <div className="container mx-auto px-4 sm:px-6">
         <div className="text-center mb-12 sm:mb-16">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6 cyber-text">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6 cyber-text animate-fade-in">
             Expérience
           </h1>
-          <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto px-4">
+          <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto px-4 animate-fade-in" style={{ animationDelay: '0.3s', animationFillMode: 'both' }}>
             Mon parcours professionnel en cybersécurité et mes réalisations
           </p>
         </div>
@@ -81,9 +81,16 @@ const Experience = () => {
             <div className="absolute left-6 sm:left-8 top-0 bottom-0 w-0.5 bg-border"></div>
             
             {experiences.map((experience, index) => (
-              <div key={experience.id} className="relative mb-8 sm:mb-12">
+              <div 
+                key={experience.id} 
+                className="relative mb-8 sm:mb-12 animate-fade-in"
+                style={{ 
+                  animationDelay: `${0.6 + (index * 0.2)}s`, 
+                  animationFillMode: 'both' 
+                }}
+              >
                 {/* Timeline dot */}
-                <div className="absolute left-4 sm:left-6 w-4 h-4 bg-primary rounded-full border-4 border-background"></div>
+                <div className="absolute left-4 sm:left-6 w-4 h-4 bg-primary rounded-full border-4 border-background pulse-glow"></div>
                 
                 <div className="ml-12 sm:ml-20">
                   <Card className="cyber-border hover:cyber-glow transition-all duration-300">

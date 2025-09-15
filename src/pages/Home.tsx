@@ -228,36 +228,38 @@ useEffect(() => {
     <div className="min-h-screen">
       {/* ===== HERO ===== */}
       <section className="relative py-20 overflow-hidden">
-        <div className="absolute inset-0 cyber-grid opacity-20" />
+        <div className="absolute inset-0 cyber-grid opacity-20 animate-fade-in" />
         <div
-          className="absolute inset-0 bg-cover bg-center opacity-10"
+          className="absolute inset-0 bg-cover bg-center opacity-10 animate-scale-in"
           style={{ backgroundImage: `url(${heroImage})` }}
         />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           {/* Titre rotatif typewriter + dégradé violet */}
-          <h1 className="text-3xl sm:text-4xl md:text-6xl font-orbitron font-bold mb-4 sm:mb-6 fade-in">
+          <h1 className="text-3xl sm:text-4xl md:text-6xl font-orbitron font-bold mb-4 sm:mb-6 animate-fade-in">
             <span className="sr-only">Rôle : </span>
             <span className="cyber-text">—</span>
             <div aria-live="polite" className="flex flex-wrap justify-center items-center gap-x-2">
-              <span className="bg-gradient-to-r from-violet-500 via-fuchsia-500 to-pink-500 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-violet-500 via-fuchsia-500 to-pink-500 bg-clip-text text-transparent animate-fade-in" style={{ animationDelay: '0.3s', animationFillMode: 'both' }}>
                 {displayText || "\u00A0"}
               </span>
               <span className="inline-block w-[2px] h-[1em] align-[-0.15em] bg-fuchsia-400 ml-1 animate-pulse" />
             </div>
           </h1>
-          <p className="text-lg sm:text-xl md:text-2xl text-muted-foreground mb-6 sm:mb-8 max-w-3xl mx-auto px-4 fade-in fade-in-delay-1">
+          <p className="text-lg sm:text-xl md:text-2xl text-muted-foreground mb-6 sm:mb-8 max-w-3xl mx-auto px-4 animate-fade-in" style={{ animationDelay: '0.6s', animationFillMode: 'both' }}>
             Étudiant en 2ᵉ année de Master IRS (Université Paris-Saclay, 2024–2026). Recherche une alternance
             (3 semaines entreprise / 1 semaine école) pour développer mes compétences en cybersécurité et DevSecOps.
           </p>
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4 fade-in fade-in-delay-2">
-            <Link to="/projects">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4 animate-fade-in" style={{ animationDelay: '0.9s', animationFillMode: 'both' }}>
+            <Link to="/projects" className="animate-scale-in" style={{ animationDelay: '1.2s', animationFillMode: 'both' }}>
               <Button size="lg" className="btn-cyber group w-full sm:w-auto">
                 Découvrir mes projets
                 <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
               </Button>
             </Link>
-            <CVDownloadButton />
-            <Link to="/contact">
+            <div className="animate-scale-in" style={{ animationDelay: '1.4s', animationFillMode: 'both' }}>
+              <CVDownloadButton />
+            </div>
+            <Link to="/contact" className="animate-scale-in" style={{ animationDelay: '1.6s', animationFillMode: 'both' }}>
               <Button variant="outline" size="lg" className="btn-ghost-cyber w-full sm:w-auto">
                 Me contacter
               </Button>
@@ -269,21 +271,22 @@ useEffect(() => {
       {/* ===== À PROPOS ===== */}
       <section className="py-12 sm:py-20 bg-card/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-orbitron font-bold text-center mb-8 sm:mb-12 fade-in">À propos</h2>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-orbitron font-bold text-center mb-8 sm:mb-12 animate-fade-in">À propos</h2>
 
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_2fr] xl:grid-cols-[320px_1fr] gap-8 lg:gap-10 items-start">
             {/* Colonne gauche : portrait */}
-            <div className="space-y-6 flex justify-center lg:justify-start slide-in-left">
+            <div className="space-y-6 flex justify-center lg:justify-start animate-slide-in-right" style={{ animationDelay: '0.3s', animationFillMode: 'both' }}>
               <div className="relative w-full max-w-sm lg:max-w-none">
                 <AspectRatio ratio={3/4} className="rounded-xl overflow-hidden">
                   <img
                     src={profilePhoto}
                     alt="Rayane – cybersécurité"
-                    className="w-full h-full object-cover object-[50%_20%] cyber-border hover:cyber-glow transition"
+                    className="w-full h-full object-cover object-[50%_20%] cyber-border hover:cyber-glow transition animate-scale-in"
+                    style={{ animationDelay: '0.6s', animationFillMode: 'both' }}
                   />
                 </AspectRatio>
 
-                <div className="absolute -bottom-3 -right-3 bg-primary text-primary-foreground rounded-full p-2 scale-in">
+                <div className="absolute -bottom-3 -right-3 bg-primary text-primary-foreground rounded-full p-2 animate-scale-in pulse-glow" style={{ animationDelay: '0.9s', animationFillMode: 'both' }}>
                   <Shield className="h-6 w-6" />
                 </div>
               </div>

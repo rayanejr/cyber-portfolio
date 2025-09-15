@@ -129,10 +129,10 @@ const Projects = () => {
     <div className="container mx-auto px-4 sm:px-6 py-12 sm:py-20">
       {/* Header */}
       <div className="text-center mb-12 sm:mb-16">
-        <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold font-orbitron mb-4 sm:mb-6 cyber-text">
+        <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold font-orbitron mb-4 sm:mb-6 cyber-text animate-fade-in">
           Mes Projets
         </h1>
-        <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto px-4">
+        <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto px-4 animate-fade-in" style={{ animationDelay: '0.3s', animationFillMode: 'both' }}>
           Découvrez mes réalisations en cybersécurité, développement web et analyse de sécurité
         </p>
       </div>
@@ -216,8 +216,15 @@ const Projects = () => {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
-          {filteredProjects.map((project) => (
-            <Card key={project.id} className="cyber-border hover:cyber-glow transition-all duration-300 group bg-card/50 backdrop-blur-sm h-full flex flex-col">
+          {filteredProjects.map((project, index) => (
+            <Card 
+              key={project.id} 
+              className="cyber-border hover:cyber-glow transition-all duration-300 group bg-card/50 backdrop-blur-sm h-full flex flex-col animate-fade-in"
+              style={{ 
+                animationDelay: `${0.6 + (index * 0.1)}s`, 
+                animationFillMode: 'both' 
+              }}
+            >
               {project.image_url && (
                 <div className="relative overflow-hidden rounded-t-lg">
                   <img
