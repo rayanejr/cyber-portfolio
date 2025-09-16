@@ -735,6 +735,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      bootstrap_admin_if_none_exists: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
       change_admin_password: {
         Args: {
           p_admin_id: string
