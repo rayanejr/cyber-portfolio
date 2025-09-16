@@ -363,19 +363,53 @@ useEffect(() => {
             {skills.map((skillGroup, index) => (
               <Card
                 key={skillGroup.category}
-                className="cyber-border hover:cyber-glow transition-all duration-300 group relative overflow-hidden aspect-square animate-fade-in"
+                className="cyber-border hover:cyber-glow transition-all duration-500 group relative overflow-hidden aspect-square animate-fade-in cursor-pointer transform hover:scale-105 hover:rotate-1"
                 style={{ 
                   animationDelay: `${0.6 + (index * 0.2)}s`, 
                   animationFillMode: 'both' 
                 }}
+                onClick={() => {
+                  // Animation de pulse lors du clic
+                  const card = document.getElementById(`skill-card-${index}`);
+                  if (card) {
+                    card.classList.add('animate-pulse-glow');
+                    setTimeout(() => card.classList.remove('animate-pulse-glow'), 1000);
+                  }
+                }}
+                id={`skill-card-${index}`}
               >
-                {/* Glow effect background */}
+                {/* Animated matrix background */}
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                
+                {/* Floating particles effect */}
+                <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                  {[...Array(5)].map((_, i) => (
+                    <div
+                      key={i}
+                      className="absolute w-1 h-1 bg-primary/60 rounded-full opacity-0 group-hover:opacity-100 animate-float"
+                      style={{
+                        left: `${20 + (i * 15)}%`,
+                        top: `${30 + (i * 10)}%`,
+                        animationDelay: `${i * 0.3}s`,
+                        animationDuration: `${2 + (i * 0.5)}s`
+                      }}
+                    />
+                  ))}
+                </div>
+
+                {/* Scanning line effect */}
+                <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                  <div className="absolute w-full h-[2px] bg-gradient-to-r from-transparent via-primary to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-scan-line"></div>
+                </div>
 
                 <CardHeader className="relative z-10 text-center">
-                  <CardTitle className="text-lg md:text-xl font-orbitron mb-4 text-foreground">
+                  <CardTitle className="text-lg md:text-xl font-orbitron mb-4 text-foreground group-hover:text-primary transition-colors duration-300 transform group-hover:scale-110">
                     {skillGroup.category}
                   </CardTitle>
+                  {/* Category icon effect */}
+                  <div className="w-8 h-8 mx-auto border-2 border-primary/50 rounded-full flex items-center justify-center group-hover:border-primary group-hover:rotate-180 transition-all duration-500">
+                    <div className="w-2 h-2 bg-primary/70 rounded-full group-hover:bg-primary animate-pulse"></div>
+                  </div>
                 </CardHeader>
 
                 <CardContent className="relative z-10 h-full flex flex-col justify-between">
@@ -383,27 +417,54 @@ useEffect(() => {
                     {skillGroup.items.map((skill: string, skillIndex: number) => (
                       <div
                         key={`${skillGroup.category}-${skill}-${skillIndex}`}
-                        className="group/skill relative"
+                        className="group/skill relative transform transition-all duration-300 hover:translate-x-2"
+                        style={{ 
+                          animationDelay: `${skillIndex * 0.1}s` 
+                        }}
                       >
-                        <Badge className="text-sm font-medium bg-background/90 text-foreground border-2 border-primary/30 hover:border-primary hover:bg-primary/10 transition-all duration-300 w-full justify-center py-2 backdrop-blur-sm">
-                          {skill}
+                        <Badge 
+                          className="text-sm font-medium bg-background/90 text-foreground border-2 border-primary/30 hover:border-primary hover:bg-primary/20 transition-all duration-300 w-full justify-center py-2 backdrop-blur-sm group-hover/skill:shadow-lg group-hover/skill:shadow-primary/30 animate-fade-in"
+                          onMouseEnter={(e) => {
+                            e.currentTarget.classList.add('animate-bounce');
+                            setTimeout(() => e.currentTarget.classList.remove('animate-bounce'), 600);
+                          }}
+                        >
+                          <span className="relative">
+                            {skill}
+                            {/* Skill level indicator */}
+                            <div className="absolute -right-2 -top-1 w-2 h-2 bg-primary rounded-full opacity-0 group-hover/skill:opacity-100 transition-opacity duration-300 animate-ping"></div>
+                          </span>
                         </Badge>
+                        
+                        {/* Skill progress bar */}
+                        <div className="absolute bottom-0 left-0 h-[2px] bg-primary/50 w-0 group-hover/skill:w-full transition-all duration-500 rounded-full"></div>
                       </div>
                     ))}
                   </div>
 
-                  {/* trait fin + compteur */}
-                  <div className="mt-4 pt-4 border-t border-primary/30">
-                    <div className="flex items-center justify-center text-sm text-muted-foreground">
-                      <span>{skillGroup.items.length} compétences</span>
+                  {/* Enhanced counter with animation */}
+                  <div className="mt-4 pt-4 border-t border-primary/30 group-hover:border-primary transition-colors duration-300">
+                    <div className="flex items-center justify-center text-sm text-muted-foreground group-hover:text-primary transition-colors duration-300">
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-primary/70 rounded-full animate-pulse group-hover:bg-primary"></div>
+                        <span className="font-mono">{skillGroup.items.length}</span>
+                        <span>compétences</span>
+                        <div className="w-2 h-2 bg-primary/70 rounded-full animate-pulse group-hover:bg-primary"></div>
+                      </div>
                     </div>
                   </div>
                 </CardContent>
 
-                {/* Animated border effect */}
-                <div className="absolute inset-0 border-2 border-transparent bg-gradient-to-br from-primary/50 via-secondary/50 to-accent/50 p-[2px] rounded-lg opacity-0 group-hover:opacity-30 transition-opacity duration-500">
+                {/* Enhanced animated border effect */}
+                <div className="absolute inset-0 border-2 border-transparent bg-gradient-to-br from-primary/50 via-secondary/50 to-accent/50 p-[2px] rounded-lg opacity-0 group-hover:opacity-50 transition-opacity duration-500 animate-spin-slow">
                   <div className="bg-card rounded-lg w-full h-full"></div>
                 </div>
+
+                {/* Corner glow effects */}
+                <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-primary/0 group-hover:border-primary transition-colors duration-500"></div>
+                <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-primary/0 group-hover:border-primary transition-colors duration-500"></div>
+                <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-primary/0 group-hover:border-primary transition-colors duration-500"></div>
+                <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-primary/0 group-hover:border-primary transition-colors duration-500"></div>
               </Card>
             ))}
           </div>

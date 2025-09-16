@@ -261,6 +261,37 @@
     animation: rotateSlow 10s linear infinite;
   }
 
+  /* Enhanced skill animations */
+  .animate-pulse-glow {
+    animation: pulse-glow 1s ease-in-out;
+  }
+
+  .animate-float {
+    animation: float 2s ease-in-out infinite;
+  }
+
+  .animate-scan-line {
+    animation: scan-line 2s ease-in-out infinite;
+  }
+
+  .animate-spin-slow {
+    animation: rotateSlow 20s linear infinite;
+  }
+
+  @keyframes scan-line {
+    0% {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+    50% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(400%);
+      opacity: 0;
+    }
+  }
+
   /* Cyber grid background */
   .cyber-grid {
     background-image: 
