@@ -30,7 +30,7 @@ const AdminAuth: React.FC<AdminAuthProps> = ({ onAuthenticated }) => {
           .select('*')
           .eq('id', session.user.id)
           .eq('is_active', true)
-          .single();
+          .maybeSingle();
         
         if (adminData) {
           onAuthenticated(session.user);
@@ -50,7 +50,7 @@ const AdminAuth: React.FC<AdminAuthProps> = ({ onAuthenticated }) => {
             .select('*')
             .eq('id', session.user.id)
             .eq('is_active', true)
-            .single();
+            .maybeSingle();
           
           if (adminData) {
             onAuthenticated(session.user);
