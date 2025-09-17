@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import {
   ArrowRight, Shield, Target, Code, Award, ExternalLink, ChevronRight,
-  Mail, Phone, MapPin, FileText, Eye, Brain, Database, Globe, Lock, Zap, Search, User, Briefcase, GraduationCap
+  Mail, Phone, MapPin
 } from "lucide-react";
 import CVDownloadButton from "@/components/CVDownloadButton";
 import CertificationViewer from "@/components/CertificationViewer";
@@ -9,12 +9,9 @@ import { Button } from "@/components/ui/button";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { useDocumentTitle } from "@/hooks/useDocumentTitle";
-import { useIsMobile } from "@/hooks/use-mobile";
 import heroImage from "@/assets/cyber-hero.jpg";
 import profilePhoto from "@/assets/profile-photo.jpg";
 import projectSecurity from "@/assets/project-security.jpg";
@@ -89,49 +86,45 @@ export default function Home() {
   }, [displayText, isDeleting, roleIndex, roles]);
 
   // ===== Récupération du CV (sans colonnes fantômes) =====
-useEffect(() => {
-  let mounted = true;
+  useEffect(() => {
+    let mounted = true;
 
-  const fetchResume = async () => {
-    try {
-      // On ne demande que des colonnes qui existent partout
-      const { data, error } = await supabase
-        .from("admin_files")
-        .select("file_url,file_type,is_active")
-        .eq("file_category", "cv");
+    const fetchResume = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("admin_files")
+          .select("file_url,file_type,is_active")
+          .eq("file_category", "cv");
 
-      if (error) {
-        console.warn("[CV] error:", error);
+        if (error) {
+          console.warn("[CV] error:", error);
+          setResumeUrl(null);
+          return;
+        }
+
+        if (!mounted) return;
+
+        const rows = (data ?? []).filter((r: any) => !!r?.file_url);
+
+        // Priorité: PDF + actif > PDF > actif > le reste
+        const score = (r: any) =>
+          (/(^|\/)pdf$/i.test(r.file_type) || /\.pdf(\?|$)/i.test(r.file_url) ? 2 : 0) +
+          (r.is_active ? 1 : 0);
+
+        rows.sort((a: any, b: any) => score(b) - score(a));
+
+        const chosen = rows[0];
+        setResumeUrl(chosen?.file_url ?? null);
+        console.log("[CV] choisi:", chosen);
+      } catch (e) {
+        console.error("Erreur chargement CV:", e);
         setResumeUrl(null);
-        return;
       }
+    };
 
-      if (!mounted) return;
-
-      const rows = (data ?? []).filter(r => !!r?.file_url);
-
-      // Priorité: PDF + actif > PDF > actif > le reste
-      const score = (r: any) =>
-        (/(^|\/)pdf$/i.test(r.file_type) || /\.pdf(\?|$)/i.test(r.file_url) ? 2 : 0) +
-        (r.is_active ? 1 : 0);
-
-      rows.sort((a, b) => score(b) - score(a));
-
-      const chosen = rows[0];
-      setResumeUrl(chosen?.file_url ?? null);
-      console.log("[CV] choisi:", chosen);
-    } catch (e) {
-      console.error("Erreur chargement CV:", e);
-      setResumeUrl(null);
-    }
-  };
-
-  fetchResume();
-  return () => { mounted = false; };
-}, []);
-
-
-
+    fetchResume();
+    return () => { mounted = false; };
+  }, []);
 
   // fallback images si l’enregistrement n’a pas d’image
   const projectFallbacks = [projectSecurity, projectSoc, projectThreat];
@@ -180,7 +173,7 @@ useEffect(() => {
 
         if (projErr) throw projErr;
 
-        const normalized: ProjectRow[] = (projData ?? []).map((p, i) => ({
+        const normalized: ProjectRow[] = (projData ?? []).map((p: any, i: number) => ({
           ...p,
           technologies: Array.isArray(p.technologies)
             ? p.technologies
@@ -303,7 +296,6 @@ useEffect(() => {
                     Étudiant en Master IRS spécialité Cybersécurité, orienté DevSecOps et sécurité des infrastructures. 
                     Compétences en CI/CD (GitLab, Jenkins), Cloud et IaC (AWS, Terraform) et 
                     automatisation (Python, Bash, PowerShell) pour améliorer la sécurité et la fiabilité.
-
                   </p>
                   <div className="mt-4 flex flex-wrap gap-3">
                     <Badge className="bg-green-600 text-white border-0">Master IRS Cyber 2024–2026</Badge>
@@ -523,42 +515,6 @@ useEffect(() => {
         </div>
       </section>
 
-                      <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 bg-primary/70 rounded-full animate-pulse group-hover:bg-primary"></div>
-                        <span className="font-mono">{skillGroup.items.length}</span>
-                        <span>compétences</span>
-                        <div className="w-2 h-2 bg-primary/70 rounded-full animate-pulse group-hover:bg-primary"></div>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-
-                {/* Enhanced animated border effect */}
-                <div className="absolute inset-0 border-2 border-transparent bg-gradient-to-br from-primary/50 via-secondary/50 to-accent/50 p-[2px] rounded-lg opacity-0 group-hover:opacity-50 transition-opacity duration-500 animate-spin-slow">
-                  <div className="bg-card rounded-lg w-full h-full"></div>
-                </div>
-
-                {/* Corner glow effects */}
-                <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-primary/0 group-hover:border-primary transition-colors duration-500"></div>
-                <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-primary/0 group-hover:border-primary transition-colors duration-500"></div>
-                <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-primary/0 group-hover:border-primary transition-colors duration-500"></div>
-                <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-primary/0 group-hover:border-primary transition-colors duration-500"></div>
-              </Card>
-            ))}
-          </div>
-
-          {/* Skills CTA */}
-          <div className="text-center mt-12 fade-in fade-in-delay-4">
-            <Link to="/tools">
-              <Button className="btn-cyber group">
-                Découvrir mes outils de cybersécurité
-                <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </section>
-
       {/* ===== PROJETS RÉCENTS (DB) ===== */}
       <section className="py-20 bg-card/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -612,7 +568,7 @@ useEffect(() => {
                       <CardTitle className="text-lg">{p.title}</CardTitle>
                       <CardDescription className="line-clamp-3">
                         {p.description}
-                      </CardDescription>
+                       </CardDescription>
                     </CardHeader>
 
                     {/* Meta + actions */}
@@ -620,7 +576,7 @@ useEffect(() => {
                       {/* Technologies (sécurisé) */}
                       {techs.length > 0 && (
                         <div className="flex flex-wrap gap-2 mb-4">
-                          {techs.map((t) => (
+                          {techs.map((t: string) => (
                             <Badge key={t} variant="secondary" className="text-xs">
                               {t}
                             </Badge>
@@ -692,7 +648,7 @@ useEffect(() => {
                           className="btn-ghost-cyber"
                           title="Voir la certification"
                         >
-                          <Eye className="h-4 w-4" />
+                          <ExternalLink className="h-4 w-4" />
                         </Button>
                       )}
                       {cert.credential_url && (
@@ -756,7 +712,9 @@ useEffect(() => {
           <div className="text-center">
             <Link to="/contact">
               <Button size="lg" className="btn-cyber group">
-                <FileText className="mr-2 h-5 w-5" />
+                <svg className="mr-2 h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden>
+                  <path d="M4 4h16v16H4z" stroke="currentColor" />
+                </svg>
                 Envoyer un message
                 <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
               </Button>
