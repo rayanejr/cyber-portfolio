@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import { 
   FileText, 
   Briefcase, 
@@ -41,6 +42,7 @@ import AdminAuth from "@/components/auth/AdminAuth";
 import type { User } from '@supabase/supabase-js';
 
 const Admin = () => {
+  useDocumentTitle("Administration");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [stats, setStats] = useState({

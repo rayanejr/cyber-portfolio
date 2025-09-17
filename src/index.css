@@ -261,34 +261,209 @@
     animation: rotateSlow 10s linear infinite;
   }
 
-  /* Enhanced skill animations */
-  .animate-pulse-glow {
-    animation: pulse-glow 1s ease-in-out;
+  /* Animations pour les compétences améliorées */
+  .skill-item {
+    animation: fadeInUp 0.8s ease-out forwards;
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  .skill-category {
+    animation: fadeInUp 0.6s ease-out forwards;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  .skill-progress {
+    animation: progressFill 2s ease-out forwards;
+    animation-delay: var(--progress-delay, 0s);
+  }
+
+  .particle {
+    animation: particleFloat 8s ease-in-out infinite;
+  }
+
+  .animate-scan {
+    animation: scanLine 4s ease-in-out infinite;
+  }
+
+  /* Nouvelle animation de flottement */
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
   }
 
   .animate-float {
-    animation: float 2s ease-in-out infinite;
+    animation: float 3s ease-in-out infinite;
   }
 
-  .animate-scan-line {
-    animation: scan-line 2s ease-in-out infinite;
+  /* Animation de scan améliorée */
+  @keyframes scanLine {
+    0% {
+      transform: translateX(-100%);
+      opacity: 0;
+    }
+    25% {
+      opacity: 1;
+    }
+    75% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateX(100%);
+      opacity: 0;
+    }
   }
 
-  .animate-spin-slow {
-    animation: rotateSlow 20s linear infinite;
+  /* Effet de grille cyber */
+  .grid-pattern {
+    background-image: 
+      linear-gradient(rgba(var(--primary) / 0.1) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(var(--primary) / 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+    animation: gridMove 20s linear infinite;
   }
 
-  @keyframes scan-line {
+  @keyframes gridMove {
+    0% {
+      transform: translate(0, 0);
+    }
+    100% {
+      transform: translate(20px, 20px);
+    }
+  }
+
+  @keyframes fadeInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes progressFill {
+    from {
+      transform: scaleX(0);
+      opacity: 0.5;
+    }
+    to {
+      transform: scaleX(1);
+      opacity: 1;
+    }
+  }
+
+  @keyframes particleFloat {
+    0%, 100% {
+      opacity: 0.2;
+      transform: translateY(0px) translateX(0px) scale(1);
+    }
+    25% {
+      opacity: 0.8;
+      transform: translateY(-15px) translateX(10px) scale(1.2);
+    }
+    50% {
+      opacity: 1;
+      transform: translateY(-30px) translateX(-10px) scale(0.8);
+    }
+    75% {
+      opacity: 0.6;
+      transform: translateY(-15px) translateX(15px) scale(1.1);
+    }
+  }
+
+  /* Animation d'apparition en cascade */
+  @keyframes cascadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(30px) rotateX(15deg);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) rotateX(0deg);
+    }
+  }
+
+  .skill-item:nth-child(1) { animation-delay: 0.1s; }
+  .skill-item:nth-child(2) { animation-delay: 0.2s; }
+  .skill-item:nth-child(3) { animation-delay: 0.3s; }
+  .skill-item:nth-child(4) { animation-delay: 0.4s; }
+  .skill-item:nth-child(5) { animation-delay: 0.5s; }
+
+  /* Effet de brillance sur hover */
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
+  .skill-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.6s;
+    border-radius: inherit;
+  }
+
+  .skill-item:hover::before {
+    animation: shimmer 1s ease-in-out;
+  }
+
+  /* Animation de scan vertical */
+  @keyframes scanVertical {
     0% {
       transform: translateY(-100%);
       opacity: 0;
     }
-    50% {
+    25% {
+      opacity: 1;
+    }
+    75% {
       opacity: 1;
     }
     100% {
-      transform: translateY(400%);
+      transform: translateY(100vh);
       opacity: 0;
+    }
+  }
+
+  .animate-scan-vertical {
+    animation: scanVertical 4s ease-in-out infinite;
+  }
+
+  /* Effet Matrix rain */
+  .matrix-rain {
+    background: repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 98px,
+      rgba(0, 255, 0, 0.03) 100px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 98px,
+      rgba(0, 255, 0, 0.03) 100px
+    );
+    animation: matrixMove 20s linear infinite;
+  }
+
+  @keyframes matrixMove {
+    0% {
+      background-position: 0 0, 0 0;
+    }
+    100% {
+      background-position: 100px 0, 0 100px;
     }
   }
 
