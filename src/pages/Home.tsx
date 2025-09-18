@@ -39,6 +39,18 @@ type CertRow = {
   credential_url?: string | null;
 }
 
+// Helper functions
+const safeParseArray = (str: string): string[] => {
+  try {
+    const parsed = JSON.parse(str);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+};
+
+const projectFallbacks = [projectSecurity, projectSoc, projectThreat];
+
 export default function Home() {
   const [skills, setSkills] = useState<SkillGroup[]>([]);
   const [certifications, setCertifications] = useState<CertRow[]>([]);
