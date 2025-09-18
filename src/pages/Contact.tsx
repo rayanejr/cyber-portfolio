@@ -68,10 +68,10 @@ const Contact = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background py-12 sm:py-20">
+    <div className="min-h-screen bg-background py-12 sm:py-20 animate-fade-in">
       <div className="container mx-auto px-4 sm:px-6">
-        <div className="text-center mb-12 sm:mb-16">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6 cyber-text">
+        <div className="text-center mb-12 sm:mb-16 fade-in-delay-1">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6 cyber-text font-orbitron">
             Contact
           </h1>
           <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto px-4">
@@ -81,17 +81,17 @@ const Contact = () => {
 
         <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-8 sm:gap-12">
           {/* Contact Form */}
-          <Card className="cyber-border hover:cyber-glow transition-all duration-300">
+          <Card className="cyber-border hover:cyber-glow transition-all duration-500 fade-in-delay-2">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
-                <Send className="w-5 h-5" />
+              <CardTitle className="flex items-center gap-2 text-lg sm:text-xl font-orbitron">
+                <Send className="w-5 h-5 text-primary" />
                 Envoyez-moi un message
               </CardTitle>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
                 <div className="grid sm:grid-cols-2 gap-4">
-                  <div>
+                  <div className="fade-in-delay-3">{/* ... rest remains the same ... */}
                     <Label htmlFor="name">Nom complet *</Label>
                     <Input
                       id="name"

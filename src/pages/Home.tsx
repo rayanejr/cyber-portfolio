@@ -394,65 +394,39 @@ export default function Home() {
                 }}
               >
                 {/* Main skill card */}
-                <Card className="relative cyber-border hover:cyber-glow transition-all duration-700 group cursor-pointer overflow-hidden min-h-[400px] transform hover:scale-105 hover:-rotate-1 animate-fade-in">
+                <Card className="relative cyber-border hover:cyber-glow transition-all duration-700 group cursor-pointer overflow-hidden h-[450px] transform hover:scale-105 hover:-rotate-1 animate-fade-in flex flex-col">
                   {/* Animated background layers */}
                   <div className="absolute inset-0 bg-gradient-to-br from-background via-muted/20 to-background"></div>
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-secondary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-                  
-                  {/* Matrix effect */}
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-700">
-                    <div className="matrix-rain w-full h-full"></div>
-                  </div>
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
                   
                   {/* Scanning lines */}
                   <div className="absolute inset-0 overflow-hidden pointer-events-none">
                     <div className="absolute w-full h-0.5 bg-gradient-to-r from-transparent via-primary to-transparent animate-scan opacity-0 group-hover:opacity-100"></div>
-                    <div className="absolute h-full w-0.5 bg-gradient-to-b from-transparent via-secondary to-transparent animate-scan-vertical opacity-0 group-hover:opacity-100" style={{ animationDelay: '1s' }}></div>
-                  </div>
-                  
-                  {/* Floating particles */}
-                  <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                    {Array.from({ length: 8 }).map((_, i) => (
-                      <div
-                        key={i}
-                        className={`absolute rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700 ${
-                          i % 3 === 0 ? 'w-2 h-2 bg-primary/40' : 
-                          i % 3 === 1 ? 'w-1 h-1 bg-secondary/60' : 
-                          'w-1.5 h-1.5 bg-accent/50'
-                        }`}
-                        style={{
-                          left: `${10 + (i * 12)}%`,
-                          top: `${15 + (i * 10)}%`,
-                          animation: `particleFloat ${4 + (i * 2)}s ease-in-out infinite`,
-                          animationDelay: `${i * 0.3}s`
-                        }}
-                      />
-                    ))}
                   </div>
                   
                   {/* Corner indicators */}
-                  <div className="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-primary/50 group-hover:border-primary transition-colors duration-300"></div>
-                  <div className="absolute top-2 right-2 w-4 h-4 border-t-2 border-r-2 border-secondary/50 group-hover:border-secondary transition-colors duration-300"></div>
-                  <div className="absolute bottom-2 left-2 w-4 h-4 border-b-2 border-l-2 border-accent/50 group-hover:border-accent transition-colors duration-300"></div>
-                  <div className="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 border-primary/50 group-hover:border-primary transition-colors duration-300"></div>
+                  <div className="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-primary/30 group-hover:border-primary transition-colors duration-300"></div>
+                  <div className="absolute top-2 right-2 w-4 h-4 border-t-2 border-r-2 border-secondary/30 group-hover:border-secondary transition-colors duration-300"></div>
+                  <div className="absolute bottom-2 left-2 w-4 h-4 border-b-2 border-l-2 border-accent/30 group-hover:border-accent transition-colors duration-300"></div>
+                  <div className="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 border-primary/30 group-hover:border-primary transition-colors duration-300"></div>
                   
-                  <CardHeader className="relative z-10 text-center pb-6">
+                  <CardHeader className="relative z-10 text-center pb-4 flex-shrink-0">
                     {/* Category icon */}
-                    <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center group-hover:scale-110 group-hover:rotate-12 transition-all duration-500 shadow-lg">
+                    <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg">
                       <Shield className="w-8 h-8 text-primary group-hover:animate-pulse" />
                     </div>
                     
-                    <CardTitle className="text-xl font-orbitron font-bold text-foreground group-hover:text-primary transition-colors duration-300 mb-2">
+                    <CardTitle className="text-xl font-orbitron font-bold text-foreground group-hover:text-primary transition-colors duration-300 mb-2 h-[60px] flex items-center justify-center">
                       {skillGroup.category}
                     </CardTitle>
                     
                     {/* Progress indicator */}
-                    <div className="flex justify-center gap-1 mb-4">
+                    <div className="flex justify-center gap-1 mb-2">
                       {Array.from({ length: 5 }).map((_, i) => (
                         <div
                           key={i}
                           className={`w-2 h-1 rounded-full transition-all duration-300 ${
-                            i < skillGroup.items.length ? 'bg-primary' : 'bg-muted'
+                            i < Math.min(skillGroup.items.length, 5) ? 'bg-primary' : 'bg-muted'
                           }`}
                           style={{ animationDelay: `${i * 0.1}s` }}
                         />
@@ -460,44 +434,63 @@ export default function Home() {
                     </div>
                   </CardHeader>
 
-                  <CardContent className="relative z-10 space-y-3">
-                    {skillGroup.items.map((skill: string, skillIndex: number) => (
-                      <div
-                        key={`${skillGroup.category}-${skill}-${skillIndex}`}
-                        className="group/skill relative"
-                        style={{ 
-                          animationDelay: `${(index * 0.2) + (skillIndex * 0.1)}s` 
-                        }}
-                      >
-                        <div className="relative p-3 rounded-xl bg-gradient-to-r from-muted/30 to-muted/10 border border-muted/30 hover:border-primary/50 transition-all duration-300 group-hover/skill:transform group-hover/skill:scale-105 animate-fade-in">
-                          {/* Skill name with enhanced styling */}
-                          <div className="flex items-center gap-3">
-                            <div className="w-2 h-2 rounded-full bg-primary/70 group-hover/skill:bg-primary group-hover/skill:animate-pulse"></div>
-                            <span className="font-medium text-foreground group-hover/skill:text-primary transition-colors duration-300">
-                              {skill}
-                            </span>
-                            <div className="ml-auto opacity-0 group-hover/skill:opacity-100 transition-opacity duration-300">
-                              <Code className="w-4 h-4 text-primary" />
+                  <CardContent className="relative z-10 flex-1 flex flex-col">
+                    {/* Skills container avec hauteur fixe */}
+                    <div className="flex-1 overflow-hidden space-y-2">
+                      {skillGroup.items.slice(0, 8).map((skill: string, skillIndex: number) => (
+                        <div
+                          key={`${skillGroup.category}-${skill}-${skillIndex}`}
+                          className="group/skill relative"
+                          style={{ 
+                            animationDelay: `${(index * 0.2) + (skillIndex * 0.1)}s` 
+                          }}
+                        >
+                          <div className="relative p-2 rounded-lg bg-gradient-to-r from-muted/20 to-muted/10 border border-muted/20 hover:border-primary/40 transition-all duration-300 group-hover/skill:transform group-hover/skill:scale-105 animate-fade-in">
+                            {/* Skill name */}
+                            <div className="flex items-center gap-2">
+                              <div className="w-1.5 h-1.5 rounded-full bg-primary/60 group-hover/skill:bg-primary group-hover/skill:animate-pulse flex-shrink-0"></div>
+                              <span className="text-sm font-medium text-foreground group-hover/skill:text-primary transition-colors duration-300 truncate">
+                                {skill}
+                              </span>
+                              <div className="ml-auto opacity-0 group-hover/skill:opacity-100 transition-opacity duration-300 flex-shrink-0">
+                                <Code className="w-3 h-3 text-primary" />
+                              </div>
                             </div>
+                            
+                            {/* Skill level bar */}
+                            <div className="mt-1 h-0.5 bg-muted/40 rounded-full overflow-hidden">
+                              <div className="h-full bg-gradient-to-r from-primary to-secondary w-0 group-hover/skill:w-full transition-all duration-1000 rounded-full"></div>
+                            </div>
+                            
+                            {/* Hover effect */}
+                            <div className="absolute inset-0 bg-gradient-to-r from-primary/3 via-transparent to-secondary/3 opacity-0 group-hover/skill:opacity-100 transition-opacity duration-300 rounded-lg"></div>
                           </div>
-                          
-                          {/* Skill level bar */}
-                          <div className="mt-2 h-1 bg-muted/50 rounded-full overflow-hidden">
-                            <div className="h-full bg-gradient-to-r from-primary to-secondary w-0 group-hover/skill:w-full transition-all duration-1000 rounded-full"></div>
-                          </div>
-                          
-                          {/* Hover effects */}
-                          <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-secondary/5 opacity-0 group-hover/skill:opacity-100 transition-opacity duration-300 rounded-xl"></div>
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                      
+                      {/* Indicateur s'il y a plus de compétences */}
+                      {skillGroup.items.length > 8 && (
+                        <div className="text-xs text-muted-foreground text-center pt-2 opacity-70">
+                          +{skillGroup.items.length - 8} autres compétences
+                        </div>
+                      )}
+                    </div>
                     
                     {/* Enhanced stats footer */}
-                    <div className="pt-6 mt-6 border-t border-muted/30 group-hover:border-primary/30 transition-colors duration-300">
-                      <div className="flex items-center justify-center gap-4 text-sm text-muted-foreground group-hover:text-primary transition-colors duration-300">
-                        <div className="flex items-center gap-2">
-                          <Target className="w-4 h-4" />
-                          <span className="font-medium">{skillGroup.items.length} compétences</span>
+                    <div className="pt-3 mt-auto border-t border-muted/20 group-hover:border-primary/20 transition-colors duration-300 flex-shrink-0">
+                      <div className="flex items-center justify-center gap-3 text-xs text-muted-foreground group-hover:text-primary transition-colors duration-300">
+                        <div className="flex items-center gap-1">
+                          <Target className="w-3 h-3" />
+                          <span className="font-medium">{skillGroup.items.length}</span>
+                        </div>
+                        <div className="w-1 h-1 rounded-full bg-muted-foreground"></div>
+                        <div className="flex items-center gap-1">
+                          <Award className="w-3 h-3" />
+                          <span>Expert</span>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
                         </div>
                         <div className="w-1 h-1 bg-current rounded-full"></div>
                         <div className="flex items-center gap-2">
