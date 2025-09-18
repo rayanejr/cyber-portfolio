@@ -45,10 +45,23 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    // Obtenir l'IP du client
-    const clientIP = req.headers.get('x-forwarded-for') || 
-                    req.headers.get('x-real-ip') || 
-                    '127.0.0.1';
+    // Obtenir l'IP du client - extraire la première IP si plusieurs
+    const forwardedFor = req.headers.get('x-forwarded-for');
+    const realIP = req.headers.get('x-real-ip');
+    
+    let clientIP = '127.0.0.1';
+    if (forwardedFor) {
+      // Prendre la première IP de la liste (client original)
+      clientIP = forwardedFor.split(',')[0].trim();
+    } else if (realIP) {
+      clientIP = realIP.trim();
+    }
+    
+    // Validation IP format basique
+    const ipRegex = /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$|^(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}$/;
+    if (!ipRegex.test(clientIP)) {
+      clientIP = '127.0.0.1';
+    }
 
     // Vérifier le rate limiting amélioré (par IP)
     const now = new Date();
