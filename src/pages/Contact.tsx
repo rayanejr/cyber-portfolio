@@ -91,7 +91,7 @@ const Contact = () => {
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
                 <div className="grid sm:grid-cols-2 gap-4">
-                  <div className="fade-in-delay-3">{/* ... rest remains the same ... */}
+                  <div className="fade-in-delay-3">
                     <Label htmlFor="name">Nom complet *</Label>
                     <Input
                       id="name"
@@ -100,9 +100,10 @@ const Contact = () => {
                       onChange={handleChange}
                       required
                       placeholder="Votre nom"
+                      className="cyber-border"
                     />
                   </div>
-                  <div>
+                  <div className="fade-in-delay-4">
                     <Label htmlFor="email">Email *</Label>
                     <Input
                       id="email"
@@ -112,11 +113,12 @@ const Contact = () => {
                       onChange={handleChange}
                       required
                       placeholder="votre@email.com"
+                      className="cyber-border"
                     />
                   </div>
                 </div>
                 
-                <div>
+                <div className="fade-in-delay-5">
                   <Label htmlFor="subject">Sujet</Label>
                   <Input
                     id="subject"
@@ -124,10 +126,11 @@ const Contact = () => {
                     value={formData.subject}
                     onChange={handleChange}
                     placeholder="Objet de votre message"
+                    className="cyber-border"
                   />
                 </div>
                 
-                <div>
+                <div className="fade-in-delay-6">
                   <Label htmlFor="message">Message *</Label>
                   <Textarea
                     id="message"
@@ -137,15 +140,17 @@ const Contact = () => {
                     required
                     rows={6}
                     placeholder="Décrivez votre projet ou vos besoins en cybersécurité..."
+                    className="cyber-border"
                   />
                 </div>
                 
                 <Button 
                   type="submit" 
-                  className="w-full btn-cyber" 
+                  className="w-full btn-cyber fade-in-delay-7 group" 
                   disabled={loading}
                 >
                   {loading ? "Envoi en cours..." : "Envoyer le message"}
+                  <Send className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
                 </Button>
               </form>
             </CardContent>
@@ -153,13 +158,13 @@ const Contact = () => {
 
           {/* Contact Information */}
           <div className="space-y-6 sm:space-y-8">
-            <Card className="cyber-border hover:cyber-glow transition-all duration-300">
+            <Card className="cyber-border hover:cyber-glow transition-all duration-500 fade-in-delay-3">
               <CardHeader>
-                <CardTitle className="text-lg sm:text-xl">Informations de contact</CardTitle>
+                <CardTitle className="text-lg sm:text-xl font-orbitron">Informations de contact</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4 sm:space-y-6">
-                <div className="flex items-center gap-3 sm:gap-4">
-                  <div className="p-2 sm:p-3 bg-primary/10 rounded-lg">
+                <div className="flex items-center gap-3 sm:gap-4 fade-in-delay-4">
+                  <div className="p-2 sm:p-3 bg-primary/10 rounded-lg hover:bg-primary/20 transition-colors duration-300">
                     <Mail className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                   </div>
                   <div>
@@ -168,8 +173,8 @@ const Contact = () => {
                   </div>
                 </div>
                 
-                <div className="flex items-center gap-3 sm:gap-4">
-                  <div className="p-2 sm:p-3 bg-primary/10 rounded-lg">
+                <div className="flex items-center gap-3 sm:gap-4 fade-in-delay-5">
+                  <div className="p-2 sm:p-3 bg-primary/10 rounded-lg hover:bg-primary/20 transition-colors duration-300">
                     <Phone className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                   </div>
                   <div>
@@ -178,8 +183,8 @@ const Contact = () => {
                   </div>
                 </div>
                 
-                <div className="flex items-center gap-3 sm:gap-4">
-                  <div className="p-2 sm:p-3 bg-primary/10 rounded-lg">
+                <div className="flex items-center gap-3 sm:gap-4 fade-in-delay-6">
+                  <div className="p-2 sm:p-3 bg-primary/10 rounded-lg hover:bg-primary/20 transition-colors duration-300">
                     <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                   </div>
                   <div>
@@ -190,25 +195,25 @@ const Contact = () => {
               </CardContent>
             </Card>
 
-            <Card className="cyber-border hover:cyber-glow transition-all duration-300">
+            <Card className="cyber-border hover:cyber-glow transition-all duration-500 fade-in-delay-4">
               <CardHeader>
-                <CardTitle>Disponibilité</CardTitle>
+                <CardTitle className="font-orbitron">Disponibilité</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  <div className="flex justify-between items-center">
+                  <div className="flex justify-between items-center fade-in-delay-5">
                     <span>Lundi - Vendredi</span>
                     <span className="text-muted-foreground">9h00 - 18h00</span>
                   </div>
-                  <div className="flex justify-between items-center">
+                  <div className="flex justify-between items-center fade-in-delay-6">
                     <span>Samedi</span>
                     <span className="text-muted-foreground">10h00 - 16h00</span>
                   </div>
-                  <div className="flex justify-between items-center">
+                  <div className="flex justify-between items-center fade-in-delay-7">
                     <span>Dimanche</span>
                     <span className="text-muted-foreground">Fermé</span>
                   </div>
-                  <div className="mt-4 p-3 bg-success/10 rounded-lg border border-success/20">
+                  <div className="mt-4 p-3 bg-success/10 rounded-lg border border-success/20 fade-in-delay-8">
                     <div className="flex items-center gap-2 text-success">
                       <CheckCircle className="w-4 h-4" />
                       <span className="text-sm font-medium">Réponse sous 24h garantie</span>
@@ -218,29 +223,29 @@ const Contact = () => {
               </CardContent>
             </Card>
 
-            <Card className="hover:shadow-cyber transition-all duration-300">
+            <Card className="cyber-border hover:cyber-glow transition-all duration-500 fade-in-delay-5">
               <CardHeader>
-                <CardTitle>Services disponibles</CardTitle>
+                <CardTitle className="font-orbitron">Services disponibles</CardTitle>
               </CardHeader>
               <CardContent>
                 <ul className="space-y-2 text-sm">
-                  <li className="flex items-center gap-2">
+                  <li className="flex items-center gap-2 fade-in-delay-6">
                     <CheckCircle className="w-4 h-4 text-success" />
                     <span>Audit de sécurité</span>
                   </li>
-                  <li className="flex items-center gap-2">
+                  <li className="flex items-center gap-2 fade-in-delay-7">
                     <CheckCircle className="w-4 h-4 text-success" />
                     <span>Tests d'intrusion</span>
                   </li>
-                  <li className="flex items-center gap-2">
+                  <li className="flex items-center gap-2 fade-in-delay-8">
                     <CheckCircle className="w-4 h-4 text-success" />
                     <span>Formation cybersécurité</span>
                   </li>
-                  <li className="flex items-center gap-2">
+                  <li className="flex items-center gap-2 fade-in-delay-8">
                     <CheckCircle className="w-4 h-4 text-success" />
                     <span>Consultation stratégique</span>
                   </li>
-                  <li className="flex items-center gap-2">
+                  <li className="flex items-center gap-2 fade-in-delay-8">
                     <CheckCircle className="w-4 h-4 text-success" />
                     <span>Réponse aux incidents</span>
                   </li>
