@@ -491,15 +491,6 @@ export default function Home() {
                       </div>
                     </div>
                   </CardContent>
-                        </div>
-                        <div className="w-1 h-1 bg-current rounded-full"></div>
-                        <div className="flex items-center gap-2">
-                          <Award className="w-4 h-4" />
-                          <span className="font-medium">Expert</span>
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
                 </Card>
               </div>
             ))}
