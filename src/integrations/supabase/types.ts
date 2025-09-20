@@ -132,6 +132,7 @@ export type Database = {
       }
       admin_users: {
         Row: {
+          auth_user_id: string | null
           created_at: string | null
           email: string
           failed_login_attempts: number | null
@@ -148,6 +149,7 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          auth_user_id?: string | null
           created_at?: string | null
           email: string
           failed_login_attempts?: number | null
@@ -164,6 +166,7 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          auth_user_id?: string | null
           created_at?: string | null
           email?: string
           failed_login_attempts?: number | null
@@ -762,6 +765,10 @@ export type Database = {
       cleanup_old_security_data: {
         Args: Record<PropertyKey, never>
         Returns: string
+      }
+      create_admin_auth_user: {
+        Args: { p_email: string; p_full_name: string; p_password: string }
+        Returns: Json
       }
       create_admin_user: {
         Args: {

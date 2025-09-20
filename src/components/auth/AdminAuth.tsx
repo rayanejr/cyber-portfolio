@@ -28,7 +28,7 @@ const AdminAuth: React.FC<AdminAuthProps> = ({ onAuthenticated }) => {
         const { data: adminData } = await supabase
           .from('admin_users')
           .select('*')
-          .eq('id', session.user.id)
+          .eq('auth_user_id', session.user.id)
           .eq('is_active', true)
           .maybeSingle();
         
@@ -48,7 +48,7 @@ const AdminAuth: React.FC<AdminAuthProps> = ({ onAuthenticated }) => {
           const { data: adminData } = await supabase
             .from('admin_users')
             .select('*')
-            .eq('id', session.user.id)
+            .eq('auth_user_id', session.user.id)
             .eq('is_active', true)
             .maybeSingle();
           
@@ -107,7 +107,7 @@ const AdminAuth: React.FC<AdminAuthProps> = ({ onAuthenticated }) => {
         const { data: adminData } = await supabase
           .from('admin_users')
           .select('*')
-          .eq('id', data.user.id)
+          .eq('auth_user_id', data.user.id)
           .eq('is_active', true)
           .maybeSingle();
         
