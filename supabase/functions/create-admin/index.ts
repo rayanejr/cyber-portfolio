@@ -13,6 +13,13 @@ serve(async (req) => {
   }
 
   try {
+    // Parse request body
+    const { email, password, full_name } = await req.json()
+    
+    const adminEmail = email || 'admin@cybersecpro.com'
+    const adminPassword = password || 'AdminCyberSec2024!@#'
+    const adminFullName = full_name || 'Super Administrateur'
+
     // Create Supabase client with service role key
     const supabaseAdmin = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
@@ -27,11 +34,11 @@ serve(async (req) => {
 
     // Create the admin user in auth.users
     const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
-      email: 'admin@cybersecpro.com',
-      password: 'AdminCyberSec2024!@#',
+      email: adminEmail,
+      password: adminPassword,
       email_confirm: true,
       user_metadata: {
-        full_name: 'Super Administrateur'
+        full_name: adminFullName
       }
     })
 
@@ -40,7 +47,7 @@ serve(async (req) => {
     }
 
     const userId = authData?.user?.id || (await supabaseAdmin.auth.admin.listUsers())
-      .data.users.find(u => u.email === 'admin@cybersecpro.com')?.id
+      .data.users.find(u => u.email === adminEmail)?.id
 
     if (!userId) {
       throw new Error('Failed to create or find admin user')
@@ -51,10 +58,8 @@ serve(async (req) => {
       .from('admin_users')
       .upsert({
         id: userId,
-        email: 'admin@cybersecpro.com',
-        full_name: 'Super Administrateur',
-        password_hash: 'dummy', // Not used with Supabase Auth
-        is_super_admin: true,
+        email: adminEmail,
+        full_name: adminFullName,
         is_active: true,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
@@ -69,9 +74,10 @@ serve(async (req) => {
         success: true, 
         message: 'Admin user created successfully',
         credentials: {
-          email: 'admin@cybersecpro.com',
-          password: 'AdminCyberSec2024!@#'
-        }
+          email: adminEmail,
+          password: adminPassword
+        },
+        user_id: userId
       }),
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },

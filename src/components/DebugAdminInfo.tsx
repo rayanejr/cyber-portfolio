@@ -11,7 +11,25 @@ export const DebugAdminInfo = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [newPassword, setNewPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [adminInfo, setAdminInfo] = useState<any>(null);
   const { toast } = useToast();
+
+  const fetchAdminInfo = async () => {
+    try {
+      const { data: adminUsers } = await supabase
+        .from('admin_users')
+        .select('*')
+        .in('email', ['rayane.jerbi@yahoo.com', 'admin@cybersecpro.com']);
+      
+      setAdminInfo(adminUsers);
+    } catch (error) {
+      console.error('Erreur fetch admin info:', error);
+    }
+  };
+
+  React.useEffect(() => {
+    fetchAdminInfo();
+  }, []);
 
   const resetToDefaultPassword = async () => {
     setLoading(true);
@@ -38,37 +56,72 @@ export const DebugAdminInfo = () => {
     }
   };
 
-  const updatePassword = async () => {
-    if (!newPassword || newPassword.length < 12) {
-      toast({
-        title: "Erreur",
-        description: "Le mot de passe doit contenir au moins 12 caractères",
-        variant: "destructive",
-      });
-      return;
-    }
-
+  const createMissingAdmin = async () => {
     setLoading(true);
     try {
-      const { error } = await supabase.auth.updateUser({
-        password: newPassword
+      const response = await supabase.functions.invoke('create-admin', {
+        body: {
+          email: 'admin@cybersecpro.com',
+          password: 'AdminCyberSec2024!@#',
+          full_name: 'Super Administrateur'
+        }
       });
 
-      if (error) throw error;
-
-      toast({
-        title: "Mot de passe mis à jour",
-        description: "Votre mot de passe a été mis à jour avec succès",
-      });
-      setNewPassword('');
+      if (response.error) {
+        console.error('Erreur création admin:', response.error);
+        toast({
+          title: "Erreur",
+          description: `Impossible de créer l'admin: ${response.error.message}`,
+          variant: "destructive"
+        });
+      } else {
+        console.log('Admin créé:', response.data);
+        toast({
+          title: "Succès",
+          description: "Utilisateur admin créé avec succès dans Supabase Auth!",
+          variant: "default"
+        });
+        await fetchAdminInfo();
+      }
     } catch (error: any) {
+      console.error('Erreur lors de la création admin:', error);
       toast({
         title: "Erreur",
-        description: error.message,
-        variant: "destructive",
+        description: error.message || "Erreur lors de la création",
+        variant: "destructive"
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const resetPassword = async (email: string) => {
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/admin`
+      });
+
+      if (error) {
+        console.error('Erreur reset:', error);
+        toast({
+          title: "Erreur",
+          description: `Impossible de reset: ${error.message}`,
+          variant: "destructive"
+        });
+      } else {
+        toast({
+          title: "Email envoyé",
+          description: "Un email de réinitialisation a été envoyé!",
+          variant: "default"
+        });
+      }
+    } catch (error: any) {
+      console.error('Erreur lors du reset:', error);
+      toast({
+        title: "Erreur",
+        description: error.message || "Erreur lors du reset",
+        variant: "destructive"
+      });
     }
   };
 
@@ -82,57 +135,83 @@ export const DebugAdminInfo = () => {
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="p-4 bg-blue-50 dark:bg-blue-950 rounded-lg border border-blue-200 dark:border-blue-800">
-          <h3 className="font-semibold mb-2">Identifiants actuels :</h3>
-          <div className="space-y-2">
+          <h3 className="font-semibold mb-2">Identifiants de test :</h3>
+          <div className="space-y-3">
             <div>
-              <strong>Email :</strong> rayane.jerbi@yahoo.com
+              <strong>Compte 1:</strong> rayane.jerbi@yahoo.com
+              <div className="flex items-center gap-2 mt-1">
+                <span className={showPassword ? '' : 'blur-sm select-none'}>
+                  AdminCyber2024!
+                </span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </Button>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <strong>Mot de passe de test :</strong>
-              <span className={showPassword ? '' : 'blur-sm select-none'}>
-                AdminCyber2024!
-              </span>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-              </Button>
+            <div>
+              <strong>Compte 2:</strong> admin@cybersecpro.com
+              <div className="flex items-center gap-2 mt-1">
+                <span className={showPassword ? '' : 'blur-sm select-none'}>
+                  AdminCyberSec2024!@#
+                </span>
+              </div>
             </div>
           </div>
+          
+          {adminInfo && (
+            <div className="mt-3 p-2 bg-gray-100 dark:bg-gray-800 rounded text-xs">
+              <strong>État de la DB:</strong>
+              <ul>
+                {adminInfo.map((admin: any) => (
+                  <li key={admin.id}>
+                    {admin.email} - {admin.is_active ? '✅ Actif' : '❌ Inactif'}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
 
         <div className="space-y-4">
           <h3 className="font-semibold">Actions de dépannage :</h3>
           
-          <Button 
-            onClick={resetToDefaultPassword}
-            disabled={loading}
-            variant="outline"
-            className="w-full"
-          >
-            Réinitialiser au mot de passe par défaut
-          </Button>
-
-          <div className="space-y-2">
-            <Label htmlFor="newPassword">Définir un nouveau mot de passe :</Label>
-            <div className="flex gap-2">
-              <Input
-                id="newPassword"
-                type="password"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                placeholder="Nouveau mot de passe (min. 12 caractères)"
-                className="flex-1"
-              />
-              <Button 
-                onClick={updatePassword}
-                disabled={loading || !newPassword}
-              >
-                Mettre à jour
-              </Button>
-            </div>
+          <div className="grid grid-cols-1 gap-3">
+            <Button 
+              onClick={createMissingAdmin}
+              disabled={loading}
+              variant="outline"
+              size="sm"
+            >
+              Créer admin@cybersecpro.com dans Auth
+            </Button>
+            <Button 
+              onClick={() => resetPassword('rayane.jerbi@yahoo.com')}
+              disabled={loading}
+              variant="outline"
+              size="sm"
+            >
+              Reset mot de passe Rayane
+            </Button>
+            <Button 
+              onClick={() => resetPassword('admin@cybersecpro.com')}
+              disabled={loading}
+              variant="outline"
+              size="sm"
+            >
+              Reset mot de passe Admin
+            </Button>
+            <Button 
+              onClick={fetchAdminInfo}
+              disabled={loading}
+              variant="outline"
+              size="sm"
+            >
+              Actualiser info admin
+            </Button>
           </div>
         </div>
 
