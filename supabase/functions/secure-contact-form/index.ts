@@ -161,18 +161,31 @@ serve(async (req) => {
       );
     }
 
-    // Insert contact message (using service role to bypass RLS)
-    const { error: insertError } = await supabaseAdmin
+    // Insert contact message and verify success with SELECT
+    const { data: insertData, error: insertError } = await supabaseAdmin
       .from('contact_messages')
       .insert({
         name: name.trim(),
         email: email.trim().toLowerCase(),
         subject: subject?.trim() || null,
         message: message.trim()
-      });
+      })
+      .select('id')
+      .single();
 
     if (insertError) {
       console.error('Error inserting contact message:', insertError);
+      // Log error to security_events
+      await supabaseAdmin
+        .from('security_events')
+        .insert({
+          kind: 'security_log',
+          severity: 'ERROR',
+          action: 'CONTACT_INSERT_ERROR',
+          ip_address: clientIP,
+          message: `Contact insert failed: ${insertError.message}`,
+          details: { error: insertError, email }
+        });
       return new Response(
         JSON.stringify({ error: 'Erreur lors de l\'envoi du message' }),
         { 
@@ -182,24 +195,27 @@ serve(async (req) => {
       );
     }
 
-    // Log successful contact form submission (minimal metadata)
+    // Log successful contact form submission
     await supabaseAdmin
       .from('security_events')
       .insert({
-        kind: 'security_log',
+        kind: 'audit',
         severity: 'INFO',
-        action: 'CONTACT_FORM_SUBMISSION',
+        action: 'CONTACT_SUBMIT',
         ip_address: clientIP,
-        message: 'Contact form submission received',
+        message: `Contact message ${insertData.id} submitted`,
         details: {
+          contact_id: insertData.id,
           has_subject: !!subject,
-          message_length: message.length
+          message_length: message.length,
+          email
         }
       });
 
     return new Response(
       JSON.stringify({ 
         success: true, 
+        id: insertData.id,
         message: 'Message envoyé avec succès' 
       }),
       {
