@@ -25,7 +25,7 @@ const Contact = () => {
     setLoading(true);
 
     try {
-      const { data, error } = await supabase.functions.invoke('contact-form', {
+      const { data, error } = await supabase.functions.invoke('secure-contact-form', {
         body: {
           name: formData.name.trim(),
           email: formData.email.toLowerCase().trim(),

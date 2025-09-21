@@ -39,7 +39,7 @@ import AdminUsers from "@/components/admin/AdminUsers";
 import AdminSecurity from "@/components/admin/AdminSecurity";
 import { SecurityTestPanel } from "@/components/admin/SecurityTestPanel";
 import AdminAuth from "@/components/auth/AdminAuth";
-import { AdminBootstrap } from "@/components/AdminBootstrap";
+
 import type { User } from '@supabase/supabase-js';
 
 const Admin = () => {
@@ -71,7 +71,7 @@ const Admin = () => {
         const { data: adminData } = await supabase
           .from('admin_users')
           .select('*')
-          .eq('auth_user_id', session.user.id)
+          .eq('id', session.user.id)
           .eq('is_active', true)
           .single();
         
@@ -227,10 +227,6 @@ const Admin = () => {
           <div className="max-w-md mx-auto space-y-6">
             <h1 className="text-2xl font-bold text-center mb-8">Administration</h1>
             <AdminAuth onAuthenticated={handleAuthenticated} />
-            {/* Bootstrap component for creating admin if needed */}
-            <div className="mt-8">
-              <AdminBootstrap />
-            </div>
           </div>
         </div>
       </div>

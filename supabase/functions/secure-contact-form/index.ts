@@ -184,13 +184,14 @@ serve(async (req) => {
 
     // Log successful contact form submission (minimal metadata)
     await supabaseAdmin
-      .from('security_logs')
+      .from('security_events')
       .insert({
-        event_type: 'CONTACT_FORM_SUBMISSION',
+        kind: 'security_log',
         severity: 'INFO',
-        source: 'secure-contact-form',
+        action: 'CONTACT_FORM_SUBMISSION',
         ip_address: clientIP,
-        metadata: {
+        message: 'Contact form submission received',
+        details: {
           has_subject: !!subject,
           message_length: message.length
         }
