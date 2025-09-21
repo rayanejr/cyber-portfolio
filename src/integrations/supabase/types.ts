@@ -14,45 +14,6 @@ export type Database = {
   }
   public: {
     Tables: {
-      admin_audit_log: {
-        Row: {
-          action: string
-          admin_id: string | null
-          created_at: string | null
-          id: string
-          ip_address: unknown | null
-          new_values: Json | null
-          old_values: Json | null
-          record_id: string | null
-          table_name: string | null
-          user_agent: string | null
-        }
-        Insert: {
-          action: string
-          admin_id?: string | null
-          created_at?: string | null
-          id?: string
-          ip_address?: unknown | null
-          new_values?: Json | null
-          old_values?: Json | null
-          record_id?: string | null
-          table_name?: string | null
-          user_agent?: string | null
-        }
-        Update: {
-          action?: string
-          admin_id?: string | null
-          created_at?: string | null
-          id?: string
-          ip_address?: unknown | null
-          new_values?: Json | null
-          old_values?: Json | null
-          record_id?: string | null
-          table_name?: string | null
-          user_agent?: string | null
-        }
-        Relationships: []
-      }
       admin_files: {
         Row: {
           created_at: string
@@ -86,214 +47,41 @@ export type Database = {
         }
         Relationships: []
       }
-      admin_sessions: {
-        Row: {
-          admin_id: string | null
-          created_at: string | null
-          expires_at: string
-          id: string
-          ip_address: unknown | null
-          is_active: boolean | null
-          last_activity: string | null
-          session_token: string
-          user_agent: string | null
-        }
-        Insert: {
-          admin_id?: string | null
-          created_at?: string | null
-          expires_at: string
-          id?: string
-          ip_address?: unknown | null
-          is_active?: boolean | null
-          last_activity?: string | null
-          session_token: string
-          user_agent?: string | null
-        }
-        Update: {
-          admin_id?: string | null
-          created_at?: string | null
-          expires_at?: string
-          id?: string
-          ip_address?: unknown | null
-          is_active?: boolean | null
-          last_activity?: string | null
-          session_token?: string
-          user_agent?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "admin_sessions_admin_id_fkey"
-            columns: ["admin_id"]
-            isOneToOne: false
-            referencedRelation: "admin_users"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       admin_users: {
         Row: {
-          auth_user_id: string | null
           created_at: string | null
           email: string
           failed_login_attempts: number | null
           full_name: string
           id: string
           is_active: boolean | null
-          is_super_admin: boolean | null
           last_login_at: string | null
           locked_until: string | null
           password_changed_at: string | null
-          password_hash: string
-          session_expires_at: string | null
-          session_token: string | null
           updated_at: string | null
         }
         Insert: {
-          auth_user_id?: string | null
           created_at?: string | null
           email: string
           failed_login_attempts?: number | null
           full_name: string
           id?: string
           is_active?: boolean | null
-          is_super_admin?: boolean | null
           last_login_at?: string | null
           locked_until?: string | null
           password_changed_at?: string | null
-          password_hash: string
-          session_expires_at?: string | null
-          session_token?: string | null
           updated_at?: string | null
         }
         Update: {
-          auth_user_id?: string | null
           created_at?: string | null
           email?: string
           failed_login_attempts?: number | null
           full_name?: string
           id?: string
           is_active?: boolean | null
-          is_super_admin?: boolean | null
           last_login_at?: string | null
           locked_until?: string | null
           password_changed_at?: string | null
-          password_hash?: string
-          session_expires_at?: string | null
-          session_token?: string | null
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
-      analytics_events: {
-        Row: {
-          category: string
-          created_at: string | null
-          event_name: string
-          id: string
-          ip_address: unknown | null
-          properties: Json | null
-          session_id: string | null
-          user_id: string | null
-        }
-        Insert: {
-          category: string
-          created_at?: string | null
-          event_name: string
-          id?: string
-          ip_address?: unknown | null
-          properties?: Json | null
-          session_id?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          category?: string
-          created_at?: string | null
-          event_name?: string
-          id?: string
-          ip_address?: unknown | null
-          properties?: Json | null
-          session_id?: string | null
-          user_id?: string | null
-        }
-        Relationships: []
-      }
-      anomaly_detections: {
-        Row: {
-          created_at: string | null
-          description: string
-          detection_type: string
-          id: string
-          ip_address: unknown | null
-          is_resolved: boolean | null
-          metadata: Json | null
-          severity: string
-          user_id: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          description: string
-          detection_type: string
-          id?: string
-          ip_address?: unknown | null
-          is_resolved?: boolean | null
-          metadata?: Json | null
-          severity: string
-          user_id?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          description?: string
-          detection_type?: string
-          id?: string
-          ip_address?: unknown | null
-          is_resolved?: boolean | null
-          metadata?: Json | null
-          severity?: string
-          user_id?: string | null
-        }
-        Relationships: []
-      }
-      blogs: {
-        Row: {
-          author_id: string | null
-          content: string | null
-          created_at: string | null
-          excerpt: string | null
-          featured: boolean | null
-          id: string
-          image_url: string | null
-          is_published: boolean | null
-          slug: string
-          tags: string[] | null
-          title: string
-          updated_at: string | null
-        }
-        Insert: {
-          author_id?: string | null
-          content?: string | null
-          created_at?: string | null
-          excerpt?: string | null
-          featured?: boolean | null
-          id?: string
-          image_url?: string | null
-          is_published?: boolean | null
-          slug: string
-          tags?: string[] | null
-          title: string
-          updated_at?: string | null
-        }
-        Update: {
-          author_id?: string | null
-          content?: string | null
-          created_at?: string | null
-          excerpt?: string | null
-          featured?: boolean | null
-          id?: string
-          image_url?: string | null
-          is_published?: boolean | null
-          slug?: string
-          tags?: string[] | null
-          title?: string
           updated_at?: string | null
         }
         Relationships: []
@@ -532,39 +320,54 @@ export type Database = {
         }
         Relationships: []
       }
-      security_logs: {
+      security_events: {
         Row: {
+          action: string | null
+          actor_admin: string | null
+          actor_user: string | null
           created_at: string | null
-          event_type: string
+          details: Json | null
+          detected_at: string | null
           id: string
           ip_address: unknown | null
-          metadata: Json | null
-          severity: string
-          source: string
+          kind: Database["public"]["Enums"]["security_event_kind"]
+          message: string | null
+          record_id: string | null
+          severity: string | null
+          table_name: string | null
           user_agent: string | null
-          user_id: string | null
         }
         Insert: {
+          action?: string | null
+          actor_admin?: string | null
+          actor_user?: string | null
           created_at?: string | null
-          event_type: string
+          details?: Json | null
+          detected_at?: string | null
           id?: string
           ip_address?: unknown | null
-          metadata?: Json | null
-          severity: string
-          source: string
+          kind: Database["public"]["Enums"]["security_event_kind"]
+          message?: string | null
+          record_id?: string | null
+          severity?: string | null
+          table_name?: string | null
           user_agent?: string | null
-          user_id?: string | null
         }
         Update: {
+          action?: string | null
+          actor_admin?: string | null
+          actor_user?: string | null
           created_at?: string | null
-          event_type?: string
+          details?: Json | null
+          detected_at?: string | null
           id?: string
           ip_address?: unknown | null
-          metadata?: Json | null
-          severity?: string
-          source?: string
+          kind?: Database["public"]["Enums"]["security_event_kind"]
+          message?: string | null
+          record_id?: string | null
+          severity?: string | null
+          table_name?: string | null
           user_agent?: string | null
-          user_id?: string | null
         }
         Relationships: []
       }
@@ -735,7 +538,114 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      admin_audit_log_v: {
+        Row: {
+          action: string | null
+          admin_id: string | null
+          created_at: string | null
+          id: string | null
+          ip_address: unknown | null
+          new_values: Json | null
+          old_values: Json | null
+          record_id: string | null
+          table_name: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          action?: string | null
+          admin_id?: string | null
+          created_at?: string | null
+          id?: string | null
+          ip_address?: unknown | null
+          new_values?: never
+          old_values?: never
+          record_id?: string | null
+          table_name?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          action?: string | null
+          admin_id?: string | null
+          created_at?: string | null
+          id?: string | null
+          ip_address?: unknown | null
+          new_values?: never
+          old_values?: never
+          record_id?: string | null
+          table_name?: string | null
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
+      anomaly_detections_v: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string | null
+          ip_address: unknown | null
+          is_resolved: boolean | null
+          metadata: Json | null
+          severity: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string | null
+          ip_address?: unknown | null
+          is_resolved?: never
+          metadata?: Json | null
+          severity?: never
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string | null
+          ip_address?: unknown | null
+          is_resolved?: never
+          metadata?: Json | null
+          severity?: never
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      security_logs_v: {
+        Row: {
+          created_at: string | null
+          event_type: string | null
+          id: string | null
+          ip_address: unknown | null
+          metadata: Json | null
+          severity: string | null
+          source: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          event_type?: string | null
+          id?: string | null
+          ip_address?: unknown | null
+          metadata?: Json | null
+          severity?: never
+          source?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          event_type?: string | null
+          id?: string | null
+          ip_address?: unknown | null
+          metadata?: Json | null
+          severity?: never
+          source?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       bootstrap_admin_if_none_exists: {
@@ -795,6 +705,10 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: boolean
       }
+      is_admin_uuid: {
+        Args: { p: string }
+        Returns: boolean
+      }
       is_authenticated_admin: {
         Args: Record<PropertyKey, never>
         Returns: boolean
@@ -842,7 +756,7 @@ export type Database = {
       }
     }
     Enums: {
-      [_ in never]: never
+      security_event_kind: "audit" | "anomaly" | "security_log"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -969,6 +883,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      security_event_kind: ["audit", "anomaly", "security_log"],
+    },
   },
 } as const
