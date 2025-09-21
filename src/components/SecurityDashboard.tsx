@@ -56,12 +56,13 @@ const SecurityDashboard: React.FC = () => {
     queryKey: ['security-logs'],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('security_logs')
+        .from('security_events')
         .select('*')
+        .eq('kind', 'security_log')
         .order('created_at', { ascending: false })
         .limit(100);
       if (error) throw error;
-      return data as SecurityLog[];
+      return data || [];
     },
     refetchInterval: 5000, // Actualisation toutes les 5 secondes
   });
@@ -70,12 +71,13 @@ const SecurityDashboard: React.FC = () => {
     queryKey: ['anomaly-detections'],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('anomaly_detections')
+        .from('security_events')
         .select('*')
+        .eq('kind', 'anomaly')
         .order('created_at', { ascending: false })
         .limit(50);
       if (error) throw error;
-      return data as AnomalyDetection[];
+      return data || [];
     },
     refetchInterval: 3000,
   });
@@ -190,7 +192,7 @@ const SecurityDashboard: React.FC = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {anomalies?.filter(a => !a.is_resolved).length || 0}
+              {anomalies?.filter(a => !(a.details as any)?.is_resolved).length || 0}
             </div>
             <p className="text-xs text-muted-foreground">
               {anomalies?.filter(a => a.severity === 'CRITICAL').length || 0} critiques
@@ -246,9 +248,9 @@ const SecurityDashboard: React.FC = () => {
                         {log.severity}
                       </Badge>
                       <div>
-                        <p className="font-medium">{log.event_type}</p>
+                        <p className="font-medium">{log.action}</p>
                         <p className="text-sm text-muted-foreground">
-                          Source: {log.source} | IP: {log.ip_address || 'N/A'}
+                          Source: {log.message} | IP: {String(log.ip_address) || 'N/A'}
                         </p>
                       </div>
                     </div>
@@ -277,12 +279,12 @@ const SecurityDashboard: React.FC = () => {
                         {anomaly.severity}
                       </Badge>
                       <div>
-                        <p className="font-medium">{anomaly.detection_type}</p>
-                        <p className="text-sm text-muted-foreground">{anomaly.description}</p>
+                        <p className="font-medium">{anomaly.action}</p>
+                        <p className="text-sm text-muted-foreground">{anomaly.message}</p>
                       </div>
                     </div>
                     <div className="flex items-center space-x-2">
-                      {anomaly.is_resolved ? (
+                      {(anomaly.details as any)?.is_resolved ? (
                         <Badge variant="secondary">Résolu</Badge>
                       ) : (
                         <Button variant="outline" size="sm">

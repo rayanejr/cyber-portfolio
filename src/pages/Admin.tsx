@@ -39,7 +39,7 @@ import AdminUsers from "@/components/admin/AdminUsers";
 import AdminSecurity from "@/components/admin/AdminSecurity";
 import { SecurityTestPanel } from "@/components/admin/SecurityTestPanel";
 import AdminAuth from "@/components/auth/AdminAuth";
-
+import { DebugAdminInfo } from "@/components/DebugAdminInfo";
 import type { User } from '@supabase/supabase-js';
 
 const Admin = () => {
@@ -227,6 +227,10 @@ const Admin = () => {
           <div className="max-w-md mx-auto space-y-6">
             <h1 className="text-2xl font-bold text-center mb-8">Administration</h1>
             <AdminAuth onAuthenticated={handleAuthenticated} />
+            {/* Debug component - remove in production */}
+            <div className="mt-8">
+              <DebugAdminInfo />
+            </div>
           </div>
         </div>
       </div>

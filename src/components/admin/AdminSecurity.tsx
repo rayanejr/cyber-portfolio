@@ -99,20 +99,8 @@ const AdminSecurity = ({ currentUser }: AdminSecurityProps) => {
     }
   });
 
-  // Récupérer les sessions actives
-  const { data: activeSessions } = useQuery({
-    queryKey: ['admin-sessions'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('admin_sessions')
-        .select('*')
-        .eq('is_active', true)
-        .order('last_activity', { ascending: false });
-      if (error) throw error;
-      return data;
-    },
-    refetchInterval: 30000, // Actualiser toutes les 30 secondes
-  });
+  // Note: admin_sessions table was removed, commenting out for now
+  const activeSessions = [];
 
   const { data: securityMetrics } = useQuery({
     queryKey: ['security-metrics'],
@@ -122,13 +110,14 @@ const AdminSecurity = ({ currentUser }: AdminSecurityProps) => {
 
       const [logsResult, anomaliesResult, rateLimit] = await Promise.all([
         supabase
-          .from('security_logs')
+          .from('security_events')
           .select('*', { count: 'exact' })
+          .eq('kind', 'security_log')
           .gte('created_at', last24h),
         supabase
-          .from('anomaly_detections')
+          .from('security_events')
           .select('*', { count: 'exact' })
-          .eq('is_resolved', false),
+          .eq('kind', 'anomaly'),
         supabase
           .from('rate_limit_contact')
           .select('*', { count: 'exact' })
