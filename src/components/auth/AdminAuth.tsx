@@ -16,7 +16,6 @@ const AdminAuth: React.FC<AdminAuthProps> = ({ onAuthenticated }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [isSignUp, setIsSignUp] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -47,36 +46,15 @@ const AdminAuth: React.FC<AdminAuthProps> = ({ onAuthenticated }) => {
     setLoading(true);
 
     try {
-      if (isSignUp) {
-        const { data, error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            emailRedirectTo: `${window.location.origin}/admin`
-          }
-        });
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-        if (error) throw error;
+      if (error) throw error;
 
-        if (data.user && !data.user.email_confirmed_at) {
-          toast({
-            title: "Email de confirmation envoyé",
-            description: "Veuillez vérifier votre email pour confirmer votre compte.",
-          });
-        } else if (data.user) {
-          onAuthenticated(data.user);
-        }
-      } else {
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
-
-        if (error) throw error;
-
-        if (data.user) {
-          onAuthenticated(data.user);
-        }
+      if (data.user) {
+        onAuthenticated(data.user);
       }
     } catch (error: any) {
       console.error('Auth error:', error);
@@ -137,19 +115,10 @@ const AdminAuth: React.FC<AdminAuthProps> = ({ onAuthenticated }) => {
 
               <Button type="submit" className="w-full btn-cyber fade-in-delay-4" disabled={loading}>
                 <User className="w-4 h-4 mr-2" />
-                {loading ? 'Connexion...' : (isSignUp ? "S'inscrire" : 'Se connecter')}
+                {loading ? 'Connexion...' : 'Se connecter'}
               </Button>
             </form>
 
-            <div className="text-center">
-              <Button 
-                variant="ghost" 
-                onClick={() => setIsSignUp(!isSignUp)}
-                className="text-sm"
-              >
-                {isSignUp ? 'Déjà un compte ? Se connecter' : 'Créer un compte'}
-              </Button>
-            </div>
 
             <div className="mt-6 p-4 bg-muted/50 rounded-lg fade-in-delay-5">
               <p className="text-sm text-muted-foreground text-center">
