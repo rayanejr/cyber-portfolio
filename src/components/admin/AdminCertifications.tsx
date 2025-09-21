@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { FileUploader } from "./FileUploader";
 
 export default function AdminCertifications() {
   const [certifications, setCertifications] = useState<any[]>([]);
@@ -305,25 +306,22 @@ export default function AdminCertifications() {
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="pdf_url">URL du PDF</Label>
-              <Input
-                id="pdf_url"
-                type="url"
-                value={formData.pdf_url}
-                onChange={(e) => setFormData({ ...formData, pdf_url: e.target.value })}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="image_url">URL de l'image</Label>
-              <Input
-                id="image_url"
-                type="url"
-                value={formData.image_url}
-                onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-              />
-            </div>
+            <FileUploader
+              label="Fichier PDF ou Image de certification"
+              accept=".pdf,image/*"
+              bucket="admin-files"
+              folder="certifications"
+              maxSizeMB={20}
+              currentFile={formData.pdf_url || formData.image_url}
+              onUpload={(url, type) => {
+                if (type === 'pdf') {
+                  setFormData({ ...formData, pdf_url: url, image_url: "" });
+                } else {
+                  setFormData({ ...formData, image_url: url, pdf_url: "" });
+                }
+              }}
+              onRemove={() => setFormData({ ...formData, pdf_url: "", image_url: "" })}
+            />
 
             <div className="flex items-center space-x-2">
               <Switch

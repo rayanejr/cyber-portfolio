@@ -144,11 +144,10 @@ export default function Home() {
   useEffect(() => {
     (async () => {
       try {
-        // === Skills (groupés par catégorie, sans niveaux) ===
+        // === Skills (TOUTES les compétences) ===
         const { data: skillsData, error: skillsErr } = await supabase
           .from("skills")
           .select("*")
-          .eq("is_featured", true)
           .order("category", { ascending: true });
 
         if (skillsErr) throw skillsErr;

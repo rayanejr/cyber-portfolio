@@ -33,10 +33,13 @@ import AdminCertifications from "@/components/admin/AdminCertifications";
 import AdminSkills from "@/components/admin/AdminSkills";
 import AdminTools from "@/components/admin/AdminTools";
 import AdminFiles from "@/components/admin/AdminFiles";
-import AdminIcons from "@/components/admin/AdminIcons";
+
 import GitHubSync from "@/components/admin/GitHubSync";
 import AdminSecurity from "@/components/admin/AdminSecurity";
 import { SecurityTestPanel } from "@/components/admin/SecurityTestPanel";
+import { AdminSecurityAdvanced } from "@/components/admin/AdminSecurityAdvanced";
+import { AdminUsersManagement } from "@/components/admin/AdminUsersManagement";
+import { AdminLogoManagement } from "@/components/admin/AdminLogoManagement";
 import AdminAuth from "@/components/auth/AdminAuth";
 
 import type { User } from '@supabase/supabase-js';
@@ -431,7 +434,7 @@ const Admin = () => {
           </TabsContent>
 
           <TabsContent value="icons">
-            <AdminIcons />
+            <AdminLogoManagement currentUser={currentUser} />
           </TabsContent>
 
           <TabsContent value="messages">
@@ -514,13 +517,11 @@ const Admin = () => {
           </TabsContent>
 
           <TabsContent value="users">
-            <div className="text-center py-8">
-              <p className="text-muted-foreground">Gestion des utilisateurs simplifiée avec Supabase Auth uniquement.</p>
-            </div>
+            <AdminUsersManagement currentUser={currentUser} />
           </TabsContent>
 
           <TabsContent value="security">
-            <AdminSecurity currentUser={currentUser ? { id: currentUser.id, full_name: currentUser.email || 'Admin' } : null} />
+            <AdminSecurityAdvanced currentUser={currentUser} />
           </TabsContent>
 
           <TabsContent value="security-tests">
