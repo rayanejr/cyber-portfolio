@@ -31,7 +31,16 @@ if (!error && first) setLogoUrl(first);
 
 
       } catch (error) {
-        console.error("Error fetching logo:", error);
+        const timestamp = new Intl.DateTimeFormat('fr-FR', {
+          timeZone: 'Europe/Paris',
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit'
+        }).format(new Date());
+        console.error(`[Footer] ${timestamp} - Erreur lors de la récupération du logo:`, error);
       }
     };
 

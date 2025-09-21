@@ -25,7 +25,16 @@ export default function CVDownloadButton() {
           setResumeUrl(data.file_url);
         }
       } catch (error) {
-        console.error("Erreur lors de la récupération du CV:", error);
+        const timestamp = new Intl.DateTimeFormat('fr-FR', {
+          timeZone: 'Europe/Paris',
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit'
+        }).format(new Date());
+        console.error(`[CVDownload] ${timestamp} - Erreur lors de la récupération du CV:`, error);
       } finally {
         setIsLoading(false);
       }

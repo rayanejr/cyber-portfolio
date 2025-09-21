@@ -11,13 +11,13 @@ export function Navbar() {
   const location = useLocation();
 
   const navigation = [
-    { name: "Accueil", href: "/" },
-    { name: "Projets", href: "/projects" },
-    { name: "Veille Techno", href: "/veille" },
-    { name: "Formation", href: "/formation" },
-    { name: "Expérience", href: "/experience" },
-    { name: "Outils", href: "/tools" },
-    { name: "Contact", href: "/contact" },
+    { name: "Accueil", href: "/", short: "Accueil" },
+    { name: "Projets", href: "/projects", short: "Projets" },
+    { name: "Veille Techno", href: "/veille", short: "Veille" },
+    { name: "Formation", href: "/formation", short: "Form." },
+    { name: "Expérience", href: "/experience", short: "Exp." },
+    { name: "Outils", href: "/tools", short: "Outils" },
+    { name: "Contact", href: "/contact", short: "Contact" },
   ];
 
   const isActive = (href: string) => location.pathname === href;
@@ -40,7 +40,7 @@ export function Navbar() {
         setLogoUrl(data.file_url);
       }
     } catch (error) {
-      console.error('Error fetching logo:', error);
+      console.error('[Admin] Erreur lors de la récupération du logo:', error);
     }
   };
 
@@ -68,19 +68,19 @@ export function Navbar() {
           </div>
 
           {/* Desktop navigation */}
-          <div className="hidden lg:flex items-center space-x-3 xl:space-x-6">
+          <div className="hidden lg:flex items-center space-x-1 xl:space-x-3">
             {navigation.map((item) => (
               <Link
                 key={item.name}
                 to={item.href}
-                className={`px-2 xl:px-3 py-2 rounded-md text-xs xl:text-sm font-medium transition-all duration-300 whitespace-nowrap ${
+                className={`px-2 py-2 rounded-md text-xs font-medium transition-all duration-300 whitespace-nowrap ${
                   isActive(item.href)
                     ? "text-primary bg-primary/10 border border-primary/30"
                     : "text-muted-foreground hover:text-primary hover:bg-primary/5"
                 }`}
               >
-                <span className="hidden xl:inline">{item.name}</span>
-                <span className="xl:hidden">{item.name.length > 8 ? item.name.slice(0, 8) + '...' : item.name}</span>
+                <span className="hidden 2xl:inline">{item.name}</span>
+                <span className="2xl:hidden">{item.short}</span>
               </Link>
             ))}
             
