@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { Lock, User } from 'lucide-react';
-import type { User as SupabaseUser, Session } from '@supabase/supabase-js';
+import type { User as SupabaseUser } from '@supabase/supabase-js';
 
 interface AdminAuthProps {
   onAuthenticated: (user: SupabaseUser) => void;
@@ -16,7 +16,7 @@ const AdminAuth: React.FC<AdminAuthProps> = ({ onAuthenticated }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [isSignUp] = useState(false);
+  const [isSignUp, setIsSignUp] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -24,17 +24,7 @@ const AdminAuth: React.FC<AdminAuthProps> = ({ onAuthenticated }) => {
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session?.user) {
-        // Vérifier si c'est un admin
-        const { data: adminData } = await supabase
-          .from('admin_users')
-          .select('*')
-          .eq('id', session.user.id)
-          .eq('is_active', true)
-          .maybeSingle();
-        
-        if (adminData) {
-          onAuthenticated(session.user);
-        }
+        onAuthenticated(session.user);
       }
     };
 
@@ -44,82 +34,48 @@ const AdminAuth: React.FC<AdminAuthProps> = ({ onAuthenticated }) => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         if (event === 'SIGNED_IN' && session?.user) {
-          // Vérifier si c'est un admin
-          const { data: adminData } = await supabase
-            .from('admin_users')
-            .select('*')
-            .eq('id', session.user.id)
-            .eq('is_active', true)
-            .maybeSingle();
-          
-          if (adminData) {
-            onAuthenticated(session.user);
-          } else {
-            toast({
-              title: "Accès refusé",
-              description: "Vous n'avez pas les permissions d'administrateur",
-              variant: "destructive"
-            });
-            await supabase.auth.signOut();
-          }
+          onAuthenticated(session.user);
         }
       }
     );
 
     return () => subscription.unsubscribe();
-  }, [onAuthenticated, toast]);
-
-  // Helper function to validate password strength
-  const validatePassword = (password: string): boolean => {
-    const minLength = 12;
-    const hasUppercase = /[A-Z]/.test(password);
-    const hasLowercase = /[a-z]/.test(password);
-    const hasDigit = /[0-9]/.test(password);
-    const hasSymbol = /[^a-zA-Z0-9]/.test(password);
-    
-    return password.length >= minLength && hasUppercase && hasLowercase && hasDigit && hasSymbol;
-  };
+  }, [onAuthenticated]);
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      // Validate password strength for admin
-      if (!validatePassword(password)) {
-        toast({
-          title: "Mot de passe invalide",
-          description: "Le mot de passe doit contenir au moins 12 caractères avec majuscules, minuscules, chiffres et caractères spéciaux",
-          variant: "destructive"
+      if (isSignUp) {
+        const { data, error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            emailRedirectTo: `${window.location.origin}/admin`
+          }
         });
-        return;
-      }
 
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+        if (error) throw error;
 
-      if (error) throw error;
-
-      if (data.user) {
-        // Check admin status
-        const { data: adminData } = await supabase
-          .from('admin_users')
-          .select('*')
-          .eq('id', data.user.id)
-          .eq('is_active', true)
-          .maybeSingle();
-        
-        if (adminData) {
-          onAuthenticated(data.user);
-        } else {
-          await supabase.auth.signOut();
+        if (data.user && !data.user.email_confirmed_at) {
           toast({
-            title: "Accès refusé",
-            description: "Vous n'avez pas les permissions d'administrateur",
-            variant: "destructive"
+            title: "Email de confirmation envoyé",
+            description: "Veuillez vérifier votre email pour confirmer votre compte.",
           });
+        } else if (data.user) {
+          onAuthenticated(data.user);
+        }
+      } else {
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+
+        if (error) throw error;
+
+        if (data.user) {
+          onAuthenticated(data.user);
         }
       }
     } catch (error: any) {
@@ -143,7 +99,7 @@ const AdminAuth: React.FC<AdminAuthProps> = ({ onAuthenticated }) => {
               <Lock className="h-8 w-8 text-primary" />
             </div>
             <CardTitle className="text-2xl font-orbitron cyber-text">
-              Administration Sécurisée
+              Administration
             </CardTitle>
             <p className="text-muted-foreground fade-in-delay-1">
               Authentification Supabase sécurisée
@@ -170,28 +126,35 @@ const AdminAuth: React.FC<AdminAuthProps> = ({ onAuthenticated }) => {
                 <Input
                   id="password"
                   type="password"
-                  placeholder="••••••••••••"
+                  placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="mt-1"
                   required
-                  minLength={12}
+                  minLength={6}
                 />
-                <p className="text-xs text-muted-foreground mt-1">
-                  Minimum 12 caractères avec majuscules, minuscules, chiffres et symboles
-                </p>
               </div>
 
               <Button type="submit" className="w-full btn-cyber fade-in-delay-4" disabled={loading}>
                 <User className="w-4 h-4 mr-2" />
-                {loading ? 'Connexion...' : 'Se connecter'}
+                {loading ? 'Connexion...' : (isSignUp ? "S'inscrire" : 'Se connecter')}
               </Button>
             </form>
 
+            <div className="text-center">
+              <Button 
+                variant="ghost" 
+                onClick={() => setIsSignUp(!isSignUp)}
+                className="text-sm"
+              >
+                {isSignUp ? 'Déjà un compte ? Se connecter' : 'Créer un compte'}
+              </Button>
+            </div>
+
             <div className="mt-6 p-4 bg-muted/50 rounded-lg fade-in-delay-5">
               <p className="text-sm text-muted-foreground text-center">
-                <strong>Sécurité renforcée :</strong><br />
-                Authentification via Supabase Auth avec tokens JWT sécurisés
+                <strong>Sécurité :</strong><br />
+                Authentification Supabase avec tokens JWT sécurisés
               </p>
             </div>
           </CardContent>

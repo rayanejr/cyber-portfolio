@@ -35,11 +35,10 @@ import AdminTools from "@/components/admin/AdminTools";
 import AdminFiles from "@/components/admin/AdminFiles";
 import AdminIcons from "@/components/admin/AdminIcons";
 import GitHubSync from "@/components/admin/GitHubSync";
-import AdminUsers from "@/components/admin/AdminUsers";
 import AdminSecurity from "@/components/admin/AdminSecurity";
 import { SecurityTestPanel } from "@/components/admin/SecurityTestPanel";
 import AdminAuth from "@/components/auth/AdminAuth";
-import { DebugAdminInfo } from "@/components/DebugAdminInfo";
+
 import type { User } from '@supabase/supabase-js';
 
 const Admin = () => {
@@ -64,23 +63,14 @@ const Admin = () => {
   const isMobile = useIsMobile();
 
   useEffect(() => {
-    // Vérifier l'authentification via Supabase Auth
+    // Vérifier l'authentification via Supabase Auth uniquement
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session?.user) {
-        const { data: adminData } = await supabase
-          .from('admin_users')
-          .select('*')
-          .eq('id', session.user.id)
-          .eq('is_active', true)
-          .single();
-        
-        if (adminData) {
-          setCurrentUser(session.user);
-          setIsAuthenticated(true);
-          await fetchStats();
-          await fetchContactMessages();
-        }
+        setCurrentUser(session.user);
+        setIsAuthenticated(true);
+        await fetchStats();
+        await fetchContactMessages();
       }
       setLoading(false);
     };
@@ -96,7 +86,7 @@ const Admin = () => {
     
     toast({
       title: "Connexion réussie",
-      description: `Bienvenue dans l'administration sécurisée!`,
+      description: `Bienvenue dans l'administration!`,
     });
   };
 
@@ -227,10 +217,6 @@ const Admin = () => {
           <div className="max-w-md mx-auto space-y-6">
             <h1 className="text-2xl font-bold text-center mb-8">Administration</h1>
             <AdminAuth onAuthenticated={handleAuthenticated} />
-            {/* Debug component - remove in production */}
-            <div className="mt-8">
-              <DebugAdminInfo />
-            </div>
           </div>
         </div>
       </div>
@@ -528,7 +514,9 @@ const Admin = () => {
           </TabsContent>
 
           <TabsContent value="users">
-            <AdminUsers currentUser={currentUser ? { id: currentUser.id, full_name: currentUser.email || 'Admin' } : null} />
+            <div className="text-center py-8">
+              <p className="text-muted-foreground">Gestion des utilisateurs simplifiée avec Supabase Auth uniquement.</p>
+            </div>
           </TabsContent>
 
           <TabsContent value="security">

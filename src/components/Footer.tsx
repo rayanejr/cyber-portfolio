@@ -37,14 +37,14 @@ if (!error && first) setLogoUrl(first);
 
     const fetchProfile = async () => {
       try {
-        const { data } = await supabase
-          .from("admin_users")
-          .select("full_name, email")
-          .eq("is_active", true)
-          .limit(1);
-
-        if (data && data.length > 0 && mounted) {
-          setProfile(data[0]);
+        // Plus besoin de admin_users, on utilise directement Supabase Auth
+        const { data: { user } } = await supabase.auth.getUser();
+        
+        if (user && mounted) {
+          setProfile({
+            full_name: user.user_metadata?.full_name || user.email || 'Administrateur',
+            email: user.email || ''
+          });
         }
       } catch (error) {
         console.error("Error fetching profile:", error);

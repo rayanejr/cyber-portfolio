@@ -47,45 +47,6 @@ export type Database = {
         }
         Relationships: []
       }
-      admin_users: {
-        Row: {
-          created_at: string | null
-          email: string
-          failed_login_attempts: number | null
-          full_name: string
-          id: string
-          is_active: boolean | null
-          last_login_at: string | null
-          locked_until: string | null
-          password_changed_at: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          email: string
-          failed_login_attempts?: number | null
-          full_name: string
-          id?: string
-          is_active?: boolean | null
-          last_login_at?: string | null
-          locked_until?: string | null
-          password_changed_at?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          email?: string
-          failed_login_attempts?: number | null
-          full_name?: string
-          id?: string
-          is_active?: boolean | null
-          last_login_at?: string | null
-          locked_until?: string | null
-          password_changed_at?: string | null
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
       certifications: {
         Row: {
           created_at: string
@@ -648,26 +609,6 @@ export type Database = {
       }
     }
     Functions: {
-      bootstrap_admin_if_none_exists: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
-      change_admin_password: {
-        Args: {
-          p_admin_id: string
-          p_current_password: string
-          p_new_password: string
-        }
-        Returns: boolean
-      }
-      change_own_password: {
-        Args: { p_current_password: string; p_new_password: string }
-        Returns: boolean
-      }
-      check_rate_limit: {
-        Args: { p_email?: string; p_ip: unknown }
-        Returns: boolean
-      }
       cleanup_expired_sessions: {
         Args: Record<PropertyKey, never>
         Returns: number
@@ -676,40 +617,11 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: string
       }
-      create_admin_auth_user: {
-        Args: { p_email: string; p_full_name: string; p_password: string }
-        Returns: Json
-      }
-      create_admin_user: {
-        Args: {
-          p_email: string
-          p_full_name: string
-          p_is_super_admin?: boolean
-          p_password: string
-        }
-        Returns: string
-      }
-      create_first_super_admin: {
-        Args: { p_email: string; p_full_name: string; p_password: string }
-        Returns: string
-      }
       debug_whoami: {
         Args: Record<PropertyKey, never>
         Returns: Json
       }
       is_admin: {
-        Args: Record<PropertyKey, never> | { p_uid: string }
-        Returns: boolean
-      }
-      is_admin_authenticated: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
-      is_admin_uuid: {
-        Args: { p: string }
-        Returns: boolean
-      }
-      is_authenticated_admin: {
         Args: Record<PropertyKey, never>
         Returns: boolean
       }
@@ -733,25 +645,12 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: number
       }
-      secure_admin_login: {
-        Args: { p_email: string; p_ip?: unknown; p_password: string }
-        Returns: {
-          admin_id: string
-          full_name: string
-          session_token: string
-          success: boolean
-        }[]
-      }
       validate_encryption_key: {
         Args: Record<PropertyKey, never>
         Returns: boolean
       }
       validate_password_strength: {
         Args: { password: string }
-        Returns: boolean
-      }
-      verify_admin_access: {
-        Args: Record<PropertyKey, never>
         Returns: boolean
       }
     }
