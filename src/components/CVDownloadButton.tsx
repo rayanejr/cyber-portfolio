@@ -48,34 +48,20 @@ export default function CVDownloadButton() {
     }
 
     try {
-      // Utiliser l'edge function pour un téléchargement sécurisé
-      const { data, error } = await supabase.functions.invoke('secure-cv-download', {
-        body: {}
-      });
-
-      if (error) {
-        console.error('Erreur edge function:', error);
-        // Fallback: téléchargement direct
-        window.open(resumeUrl, '_blank');
-        return;
-      }
-
-      if (data?.downloadUrl) {
-        const link = document.createElement('a');
-        link.href = data.downloadUrl;
-        link.download = data.filename || 'CV_Rayane_Jerbi.pdf';
-        link.target = '_blank';
-        link.rel = 'noopener noreferrer';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      } else {
-        // Fallback: téléchargement direct
-        window.open(resumeUrl, '_blank');
-      }
+      // Téléchargement direct - plus simple et fiable
+      const link = document.createElement('a');
+      link.href = resumeUrl;
+      link.download = 'CV_Rayane_Jerbi.pdf';
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      console.log('CV téléchargé depuis:', resumeUrl);
     } catch (error: any) {
       console.error('Error downloading CV:', error);
-      // Fallback: téléchargement direct
+      // Fallback: ouverture dans nouvel onglet
       window.open(resumeUrl, '_blank');
     }
   };

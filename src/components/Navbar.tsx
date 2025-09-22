@@ -24,6 +24,17 @@ export function Navbar() {
 
   useEffect(() => {
     fetchLogo();
+    
+    // Écouter les mises à jour du logo
+    const handleLogoUpdate = () => {
+      fetchLogo();
+    };
+    
+    window.addEventListener('logoUpdated', handleLogoUpdate);
+    
+    return () => {
+      window.removeEventListener('logoUpdated', handleLogoUpdate);
+    };
   }, []);
 
   const fetchLogo = async () => {

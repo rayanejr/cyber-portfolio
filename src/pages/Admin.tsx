@@ -39,7 +39,7 @@ import AdminSecurity from "@/components/admin/AdminSecurity";
 import { SecurityTestPanel } from "@/components/admin/SecurityTestPanel";
 import { AdminSecurityAdvanced } from "@/components/admin/AdminSecurityAdvanced";
 import { AdminUsersManagement } from "@/components/admin/AdminUsersManagement";
-import { AdminLogoManagement } from "@/components/admin/AdminLogoManagement";
+import AdminLogoManagement from "@/components/admin/AdminLogoManagement";
 import AdminAuth from "@/components/auth/AdminAuth";
 
 import type { User } from '@supabase/supabase-js';

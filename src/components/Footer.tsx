@@ -20,15 +20,14 @@ export function Footer() {
     const fetchLogo = async () => {
       try {
         const { data, error } = await supabase
-  .from("admin_files")
-  .select("file_url")
-  .eq("file_category", "icons")
-  .eq("file_type", "logo")
-  .eq("is_active", true); // pas de .single()
+          .from("admin_files")
+          .select("file_url")
+          .eq("file_category", "icons")
+          .eq("file_type", "logo")
+          .eq("is_active", true);
 
-const first = data?.[0]?.file_url ?? null;
-if (!error && first) setLogoUrl(first);
-
+        const first = data?.[0]?.file_url ?? null;
+        if (!error && first && mounted) setLogoUrl(first);
 
       } catch (error) {
         const timestamp = new Intl.DateTimeFormat('fr-FR', {
@@ -60,11 +59,19 @@ if (!error && first) setLogoUrl(first);
       }
     };
 
+    // Écouter les mises à jour du logo
+    const handleLogoUpdate = () => {
+      if (mounted) fetchLogo();
+    };
+    
+    window.addEventListener('logoUpdated', handleLogoUpdate);
+
     // séquentiel pour simplifier les types et debuggability
     fetchLogo().finally(fetchProfile);
 
     return () => {
       mounted = false;
+      window.removeEventListener('logoUpdated', handleLogoUpdate);
     };
   }, []);
 
