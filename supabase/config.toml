@@ -26,3 +26,6 @@ verify_jwt = false
 
 [functions.admin-bootstrap]
 verify_jwt = false
+
+[functions.user-management]
+verify_jwt = true

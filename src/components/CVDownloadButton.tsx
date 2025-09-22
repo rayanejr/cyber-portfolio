@@ -10,19 +10,17 @@ export default function CVDownloadButton() {
   useEffect(() => {
     const fetchResume = async () => {
       try {
-        // Récupérer directement le CV depuis admin_files (accessible en public pour les CVs)
+        // Récupérer directement le CV depuis admin_files
         const { data, error } = await supabase
           .from("admin_files")
           .select("file_url, filename")
           .eq("file_category", "cv")
           .eq("is_active", true)
-          .like("file_type", "%pdf%") // Filtrer seulement les PDFs
           .order("created_at", { ascending: false })
-          .limit(1)
-          .single();
+          .limit(1);
 
-        if (!error && data) {
-          setResumeUrl(data.file_url);
+        if (!error && data && data.length > 0) {
+          setResumeUrl(data[0].file_url);
         }
       } catch (error) {
         const timestamp = new Intl.DateTimeFormat('fr-FR', {
@@ -49,7 +47,15 @@ export default function CVDownloadButton() {
       className="btn-cyber group w-full sm:w-auto"
       onClick={() => {
         if (resumeUrl) {
-          window.open(resumeUrl, '_blank', 'noopener,noreferrer');
+          // Créer un lien de téléchargement
+          const link = document.createElement('a');
+          link.href = resumeUrl;
+          link.download = 'CV_Rayane_Jerbi.pdf';
+          link.target = '_blank';
+          link.rel = 'noopener noreferrer';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
         } else {
           alert('CV temporairement indisponible');
         }
