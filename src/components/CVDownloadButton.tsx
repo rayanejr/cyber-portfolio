@@ -41,25 +41,33 @@ export default function CVDownloadButton() {
     fetchResume();
   }, []);
 
+  const handleDownload = async () => {
+    if (!resumeUrl) {
+      alert('CV temporairement indisponible');
+      return;
+    }
+
+    try {
+      // Téléchargement direct depuis l'URL publique
+      const link = document.createElement('a');
+      link.href = resumeUrl;
+      link.download = 'CV_Rayane_Jerbi.pdf';
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error: any) {
+      console.error('Error downloading CV:', error);
+      alert('Erreur lors du téléchargement du CV');
+    }
+  };
+
   return (
     <Button 
       size="lg" 
       className="btn-cyber group w-full sm:w-auto"
-      onClick={() => {
-        if (resumeUrl) {
-          // Créer un lien de téléchargement
-          const link = document.createElement('a');
-          link.href = resumeUrl;
-          link.download = 'CV_Rayane_Jerbi.pdf';
-          link.target = '_blank';
-          link.rel = 'noopener noreferrer';
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-        } else {
-          alert('CV temporairement indisponible');
-        }
-      }}
+      onClick={handleDownload}
       disabled={isLoading}
     >
       {isLoading ? 'Chargement...' : (resumeUrl ? 'Télécharger mon CV' : 'CV bientôt disponible')}

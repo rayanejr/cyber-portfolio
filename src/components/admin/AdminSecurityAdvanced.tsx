@@ -1,192 +1,107 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
-import { Textarea } from '@/components/ui/textarea';
 import { 
   Shield, 
   AlertTriangle, 
-  Activity, 
   Lock, 
   Eye, 
-  Settings, 
-  Zap,
-  Network,
+  Activity,
+  Server,
   Database,
-  Key,
-  Bell,
-  Users,
   Globe,
-  RefreshCw,
+  Users,
+  Zap,
+  Bell,
+  FileText,
   CheckCircle,
   XCircle,
   Clock,
-  Wifi,
-  Server,
+  TrendingUp,
+  Cpu,
   HardDrive,
-  Monitor
+  Wifi,
+  BarChart3
 } from 'lucide-react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
-interface SecurityAdvancedProps {
-  currentUser: any;
+interface SecurityMetrics {
+  score: number;
+  threats: number;
+  vulnerabilities: number;
+  incidents: number;
+  compliance: number;
 }
 
-export const AdminSecurityAdvanced: React.FC<SecurityAdvancedProps> = ({ currentUser }) => {
+interface ThreatIntel {
+  id: string;
+  type: string;
+  severity: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+  description: string;
+  source: string;
+  timestamp: string;
+  status: 'ACTIVE' | 'MITIGATED' | 'INVESTIGATING';
+}
+
+export const AdminSecurityAdvanced: React.FC<{ currentUser: any }> = ({ currentUser }) => {
   const { toast } = useToast();
-  const queryClient = useQueryClient();
-  const [activeMonitoring, setActiveMonitoring] = useState(true);
-
-  // Données de sécurité en temps réel
-  const { data: securityMetrics, isLoading } = useQuery({
-    queryKey: ['security-advanced-metrics'],
-    queryFn: async () => {
-      const [
-        securityEvents,
-        anomalies,
-        blockedIPs,
-        activeSessions
-      ] = await Promise.all([
-        supabase.from('security_events').select('*', { count: 'exact' }).gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()),
-        supabase.from('security_events').select('*', { count: 'exact' }).eq('kind', 'anomaly').eq('severity', 'HIGH'),
-        supabase.from('rate_limit_contact').select('*', { count: 'exact' }).eq('is_blocked', true),
-        supabase.auth.admin.listUsers()
-      ]);
-
-      return {
-        eventsLast24h: securityEvents.count || 0,
-        criticalAnomalies: anomalies.count || 0,
-        blockedIPs: blockedIPs.count || 0,
-        activeSessions: activeSessions.data?.users?.length || 0,
-        securityScore: Math.max(85 - (anomalies.count || 0) * 5, 60),
-        systemStatus: 'optimal'
-      };
-    },
-    refetchInterval: 5000
+  const [metrics, setMetrics] = useState<SecurityMetrics>({
+    score: 92,
+    threats: 3,
+    vulnerabilities: 7,
+    incidents: 1,
+    compliance: 98
   });
-
-  const securityModules = [
+  
+  const [threats, setThreats] = useState<ThreatIntel[]>([
     {
-      id: 'firewall',
-      name: 'Pare-feu Avancé',
-      status: 'active',
-      icon: Shield,
-      description: 'Protection périmétrique multicouche',
-      metrics: { blocked: 1247, allowed: 89432, rules: 156 }
+      id: '1',
+      type: 'Brute Force Attack',
+      severity: 'HIGH',
+      description: 'Multiple failed login attempts detected from IP 192.168.1.100',
+      source: 'IDS',
+      timestamp: new Date().toISOString(),
+      status: 'ACTIVE'
     },
     {
-      id: 'ids',
-      name: 'Détection d\'Intrusion',
-      status: 'active',
-      icon: Eye,
-      description: 'Surveillance comportementale en temps réel',
-      metrics: { alerts: 23, signatures: 45678, accuracy: '99.2%' }
+      id: '2',
+      type: 'SQL Injection Attempt',
+      severity: 'CRITICAL',
+      description: 'Malicious SQL queries detected in web application logs',
+      source: 'WAF',
+      timestamp: new Date(Date.now() - 3600000).toISOString(),
+      status: 'MITIGATED'
     },
     {
-      id: 'dlp',
-      name: 'Prévention de Fuite',
-      status: 'active',
-      icon: Lock,
-      description: 'Protection des données sensibles',
-      metrics: { policies: 12, violations: 0, scanned: 234567 }
-    },
-    {
-      id: 'siem',
-      name: 'SIEM Centralisé',
-      status: 'active',
-      icon: Activity,
-      description: 'Corrélation et analyse des événements',
-      metrics: { events: 156789, correlations: 89, storage: '2.3TB' }
-    },
-    {
-      id: 'endpoint',
-      name: 'Protection Endpoints',
-      status: 'active',
-      icon: Monitor,
-      description: 'Sécurité des postes de travail',
-      metrics: { protected: 245, threats: 12, updates: '100%' }
-    },
-    {
-      id: 'network',
-      name: 'Segmentation Réseau',
-      status: 'active',
-      icon: Network,
-      description: 'Isolation et micro-segmentation',
-      metrics: { vlans: 23, policies: 145, compliance: '98.7%' }
+      id: '3',
+      type: 'Suspicious File Upload',
+      severity: 'MEDIUM',
+      description: 'Potentially malicious file upload attempt blocked',
+      source: 'File Scanner',
+      timestamp: new Date(Date.now() - 7200000).toISOString(),
+      status: 'INVESTIGATING'
     }
-  ];
+  ]);
 
-  const threatIntelligence = [
-    {
-      type: 'Malware',
-      count: 0,
-      trend: 'stable',
-      severity: 'low',
-      lastUpdate: '2 min'
+  const [scanResults, setScanResults] = useState({
+    lastScan: '2025-01-22 08:30:00',
+    vulnerabilities: {
+      critical: 1,
+      high: 3,
+      medium: 8,
+      low: 15
     },
-    {
-      type: 'Phishing',
-      count: 2,
-      trend: 'increasing',
-      severity: 'medium',
-      lastUpdate: '5 min'
-    },
-    {
-      type: 'Brute Force',
-      count: 8,
-      trend: 'decreasing',
-      severity: 'high',
-      lastUpdate: '1 min'
-    },
-    {
-      type: 'Data Exfiltration',
-      count: 0,
-      trend: 'stable',
-      severity: 'low',
-      lastUpdate: '3 min'
+    compliance: {
+      anssi: 95,
+      iso27001: 92,
+      gdpr: 98,
+      nist: 89
     }
-  ];
-
-  const complianceFrameworks = [
-    { name: 'ANSSI', status: 'compliant', score: 94 },
-    { name: 'ISO 27001', status: 'compliant', score: 91 },
-    { name: 'NIST', status: 'compliant', score: 89 },
-    { name: 'GDPR', status: 'compliant', score: 96 },
-    { name: 'SOC 2', status: 'partial', score: 78 }
-  ];
-
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'active':
-      case 'compliant':
-        return <CheckCircle className="h-4 w-4 text-green-500" />;
-      case 'partial':
-        return <AlertTriangle className="h-4 w-4 text-yellow-500" />;
-      case 'inactive':
-      case 'non-compliant':
-        return <XCircle className="h-4 w-4 text-red-500" />;
-      default:
-        return <Clock className="h-4 w-4 text-gray-500" />;
-    }
-  };
-
-  const getTrendIcon = (trend: string) => {
-    switch (trend) {
-      case 'increasing':
-        return '↗️';
-      case 'decreasing':
-        return '↘️';
-      default:
-        return '➡️';
-    }
-  };
+  });
 
   if (!currentUser) {
     return (
@@ -198,148 +113,458 @@ export const AdminSecurityAdvanced: React.FC<SecurityAdvancedProps> = ({ current
     );
   }
 
+  const getSeverityColor = (severity: string) => {
+    switch (severity) {
+      case 'CRITICAL': return 'bg-red-500 text-white';
+      case 'HIGH': return 'bg-orange-500 text-white';
+      case 'MEDIUM': return 'bg-yellow-500 text-black';
+      case 'LOW': return 'bg-blue-500 text-white';
+      default: return 'bg-gray-500 text-white';
+    }
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'ACTIVE': return 'bg-red-100 text-red-800';
+      case 'MITIGATED': return 'bg-green-100 text-green-800';
+      case 'INVESTIGATING': return 'bg-yellow-100 text-yellow-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const runSecurityScan = async () => {
+    toast({
+      title: "Scan de sécurité lancé",
+      description: "Analyse complète en cours...",
+    });
+
+    // Simulation d'un scan
+    setTimeout(() => {
+      setScanResults({
+        ...scanResults,
+        lastScan: new Date().toLocaleString('fr-FR')
+      });
+      
+      toast({
+        title: "Scan terminé",
+        description: "Aucune nouvelle vulnérabilité critique détectée",
+      });
+    }, 3000);
+  };
+
   return (
     <div className="space-y-6">
-      {/* Header avec statut global */}
+      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-3xl font-bold">Sécurité Avancée</h2>
+          <h2 className="text-2xl font-bold flex items-center gap-2">
+            <Shield className="h-6 w-6 text-primary" />
+            Sécurité Avancée
+          </h2>
           <p className="text-muted-foreground">
-            Centre de commandement et surveillance en temps réel
+            Surveillance et analyse avancée de la sécurité système
           </p>
         </div>
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-            <span className="text-sm font-medium">Système Sécurisé</span>
-          </div>
-          <Badge variant="secondary" className="bg-green-100 text-green-800">
-            Score: {securityMetrics?.securityScore || 0}/100
-          </Badge>
-        </div>
+        <Button onClick={runSecurityScan} className="flex items-center gap-2">
+          <Activity className="h-4 w-4" />
+          Lancer Scan Complet
+        </Button>
       </div>
 
-      {/* Métriques en temps réel */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="border-l-4 border-l-blue-500">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Événements 24h</CardTitle>
-            <Activity className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{securityMetrics?.eventsLast24h || 0}</div>
-            <p className="text-xs text-muted-foreground">
-              +2.3% par rapport à hier
-            </p>
+      {/* Métriques de sécurité */}
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Score Sécurité</p>
+                <div className="text-2xl font-bold text-green-600">{metrics.score}%</div>
+              </div>
+              <Shield className="h-8 w-8 text-green-600" />
+            </div>
+            <Progress value={metrics.score} className="mt-2" />
           </CardContent>
         </Card>
 
-        <Card className="border-l-4 border-l-red-500">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Anomalies Critiques</CardTitle>
-            <AlertTriangle className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-red-600">{securityMetrics?.criticalAnomalies || 0}</div>
-            <p className="text-xs text-muted-foreground">
-              Nécessitent une action immédiate
-            </p>
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Menaces Actives</p>
+                <div className="text-2xl font-bold text-red-600">{metrics.threats}</div>
+              </div>
+              <AlertTriangle className="h-8 w-8 text-red-600" />
+            </div>
           </CardContent>
         </Card>
 
-        <Card className="border-l-4 border-l-yellow-500">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">IPs Bloquées</CardTitle>
-            <Shield className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-yellow-600">{securityMetrics?.blockedIPs || 0}</div>
-            <p className="text-xs text-muted-foreground">
-              Protection automatique active
-            </p>
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Vulnérabilités</p>
+                <div className="text-2xl font-bold text-orange-600">{metrics.vulnerabilities}</div>
+              </div>
+              <Eye className="h-8 w-8 text-orange-600" />
+            </div>
           </CardContent>
         </Card>
 
-        <Card className="border-l-4 border-l-green-500">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Sessions Actives</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-green-600">{securityMetrics?.activeSessions || 0}</div>
-            <p className="text-xs text-muted-foreground">
-              Utilisateurs connectés
-            </p>
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Incidents</p>
+                <div className="text-2xl font-bold text-yellow-600">{metrics.incidents}</div>
+              </div>
+              <Bell className="h-8 w-8 text-yellow-600" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Conformité</p>
+                <div className="text-2xl font-bold text-blue-600">{metrics.compliance}%</div>
+              </div>
+              <FileText className="h-8 w-8 text-blue-600" />
+            </div>
           </CardContent>
         </Card>
       </div>
 
-      <Tabs defaultValue="modules" className="space-y-4">
+      <Tabs defaultValue="threats" className="space-y-4">
         <TabsList className="grid w-full grid-cols-5">
-          <TabsTrigger value="modules">Modules</TabsTrigger>
-          <TabsTrigger value="threats">Menaces</TabsTrigger>
+          <TabsTrigger value="threats">Threat Intelligence</TabsTrigger>
+          <TabsTrigger value="monitoring">Monitoring</TabsTrigger>
           <TabsTrigger value="compliance">Conformité</TabsTrigger>
-          <TabsTrigger value="monitoring">Surveillance</TabsTrigger>
-          <TabsTrigger value="config">Configuration</TabsTrigger>
+          <TabsTrigger value="infrastructure">Infrastructure</TabsTrigger>
+          <TabsTrigger value="reports">Rapports</TabsTrigger>
         </TabsList>
 
-        {/* Modules de Sécurité */}
-        <TabsContent value="modules" className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {securityModules.map((module) => (
-              <Card key={module.id} className="hover:shadow-lg transition-shadow">
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <div className="flex items-center gap-2">
-                    <module.icon className="h-5 w-5 text-primary" />
-                    <CardTitle className="text-sm font-medium">{module.name}</CardTitle>
-                  </div>
-                  {getStatusIcon(module.status)}
-                </CardHeader>
-                <CardContent>
-                  <p className="text-xs text-muted-foreground mb-3">{module.description}</p>
-                  <div className="space-y-2">
-                    {Object.entries(module.metrics).map(([key, value]) => (
-                      <div key={key} className="flex justify-between text-xs">
-                        <span className="capitalize">{key}:</span>
-                        <span className="font-medium">{value}</span>
+        {/* Threat Intelligence */}
+        <TabsContent value="threats" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <AlertTriangle className="h-5 w-5" />
+                Menaces en Temps Réel
+              </CardTitle>
+              <CardDescription>
+                Surveillance et analyse des menaces de sécurité
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {threats.map((threat) => (
+                  <div key={threat.id} className="flex items-center justify-between p-4 border rounded-lg">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <Badge className={getSeverityColor(threat.severity)}>
+                          {threat.severity}
+                        </Badge>
+                        <h4 className="font-medium">{threat.type}</h4>
+                        <Badge variant="outline" className={getStatusColor(threat.status)}>
+                          {threat.status}
+                        </Badge>
                       </div>
-                    ))}
+                      <p className="text-sm text-muted-foreground">{threat.description}</p>
+                      <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                        <span>Source: {threat.source}</span>
+                        <span>Détecté: {new Date(threat.timestamp).toLocaleString('fr-FR')}</span>
+                      </div>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button size="sm" variant="outline">
+                        <Eye className="h-4 w-4" />
+                      </Button>
+                      <Button size="sm">
+                        Traiter
+                      </Button>
+                    </div>
                   </div>
-                </CardContent>
-              </Card>
-            ))}
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Monitoring */}
+        <TabsContent value="monitoring" className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium flex items-center gap-2">
+                  <Server className="h-4 w-4" />
+                  Serveurs
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">12/12</div>
+                <p className="text-sm text-green-600">Tous opérationnels</p>
+                <Progress value={100} className="mt-2" />
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium flex items-center gap-2">
+                  <Database className="h-4 w-4" />
+                  Bases de Données
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">8/8</div>
+                <p className="text-sm text-green-600">Sécurisées</p>
+                <Progress value={100} className="mt-2" />
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium flex items-center gap-2">
+                  <Globe className="h-4 w-4" />
+                  Pare-feu
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">99.9%</div>
+                <p className="text-sm text-green-600">Uptime</p>
+                <Progress value={99.9} className="mt-2" />
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium flex items-center gap-2">
+                  <Cpu className="h-4 w-4" />
+                  CPU Usage
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">24%</div>
+                <p className="text-sm text-green-600">Normal</p>
+                <Progress value={24} className="mt-2" />
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium flex items-center gap-2">
+                  <HardDrive className="h-4 w-4" />
+                  Stockage
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">67%</div>
+                <p className="text-sm text-yellow-600">Surveiller</p>
+                <Progress value={67} className="mt-2" />
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium flex items-center gap-2">
+                  <Wifi className="h-4 w-4" />
+                  Réseau
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">156 MB/s</div>
+                <p className="text-sm text-green-600">Optimal</p>
+                <Progress value={85} className="mt-2" />
+              </CardContent>
+            </Card>
           </div>
         </TabsContent>
 
-        {/* Intelligence des Menaces */}
-        <TabsContent value="threats" className="space-y-4">
+        {/* Conformité */}
+        <TabsContent value="compliance" className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Standards de Conformité</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span className="font-medium">ANSSI</span>
+                    <span className="text-sm text-green-600">{scanResults.compliance.anssi}%</span>
+                  </div>
+                  <Progress value={scanResults.compliance.anssi} />
+                </div>
+                
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span className="font-medium">ISO 27001</span>
+                    <span className="text-sm text-green-600">{scanResults.compliance.iso27001}%</span>
+                  </div>
+                  <Progress value={scanResults.compliance.iso27001} />
+                </div>
+                
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span className="font-medium">RGPD</span>
+                    <span className="text-sm text-green-600">{scanResults.compliance.gdpr}%</span>
+                  </div>
+                  <Progress value={scanResults.compliance.gdpr} />
+                </div>
+                
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span className="font-medium">NIST</span>
+                    <span className="text-sm text-yellow-600">{scanResults.compliance.nist}%</span>
+                  </div>
+                  <Progress value={scanResults.compliance.nist} />
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Analyse des Vulnérabilités</CardTitle>
+                <CardDescription>
+                  Dernier scan: {scanResults.lastScan}
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="text-center p-4 border rounded-lg">
+                    <div className="text-2xl font-bold text-red-600">{scanResults.vulnerabilities.critical}</div>
+                    <p className="text-sm text-muted-foreground">Critiques</p>
+                  </div>
+                  <div className="text-center p-4 border rounded-lg">
+                    <div className="text-2xl font-bold text-orange-600">{scanResults.vulnerabilities.high}</div>
+                    <p className="text-sm text-muted-foreground">Élevées</p>
+                  </div>
+                  <div className="text-center p-4 border rounded-lg">
+                    <div className="text-2xl font-bold text-yellow-600">{scanResults.vulnerabilities.medium}</div>
+                    <p className="text-sm text-muted-foreground">Moyennes</p>
+                  </div>
+                  <div className="text-center p-4 border rounded-lg">
+                    <div className="text-2xl font-bold text-blue-600">{scanResults.vulnerabilities.low}</div>
+                    <p className="text-sm text-muted-foreground">Faibles</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        {/* Infrastructure */}
+        <TabsContent value="infrastructure" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Server className="h-5 w-5" />
+                État de l'Infrastructure
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="space-y-4">
+                  <h4 className="font-medium">Services Critiques</h4>
+                  <div className="space-y-2">
+                    {[
+                      { name: 'Web Server', status: 'online' },
+                      { name: 'Database', status: 'online' },
+                      { name: 'Mail Server', status: 'warning' },
+                      { name: 'DNS', status: 'online' },
+                      { name: 'Backup', status: 'online' }
+                    ].map((service) => (
+                      <div key={service.name} className="flex items-center justify-between p-2 border rounded">
+                        <span className="text-sm">{service.name}</span>
+                        {service.status === 'online' ? (
+                          <CheckCircle className="h-4 w-4 text-green-600" />
+                        ) : service.status === 'warning' ? (
+                          <AlertTriangle className="h-4 w-4 text-yellow-600" />
+                        ) : (
+                          <XCircle className="h-4 w-4 text-red-600" />
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <h4 className="font-medium">Sécurité Réseau</h4>
+                  <div className="space-y-2">
+                    {[
+                      { name: 'Firewall Principal', status: 'online' },
+                      { name: 'IDS/IPS', status: 'online' },
+                      { name: 'VPN Gateway', status: 'online' },
+                      { name: 'WAF', status: 'online' },
+                      { name: 'Proxy', status: 'warning' }
+                    ].map((service) => (
+                      <div key={service.name} className="flex items-center justify-between p-2 border rounded">
+                        <span className="text-sm">{service.name}</span>
+                        {service.status === 'online' ? (
+                          <CheckCircle className="h-4 w-4 text-green-600" />
+                        ) : service.status === 'warning' ? (
+                          <AlertTriangle className="h-4 w-4 text-yellow-600" />
+                        ) : (
+                          <XCircle className="h-4 w-4 text-red-600" />
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <h4 className="font-medium">Monitoring</h4>
+                  <div className="space-y-2">
+                    {[
+                      { name: 'SIEM', status: 'online' },
+                      { name: 'Log Collector', status: 'online' },
+                      { name: 'Vulnerability Scanner', status: 'online' },
+                      { name: 'Network Monitor', status: 'online' },
+                      { name: 'Alerting System', status: 'online' }
+                    ].map((service) => (
+                      <div key={service.name} className="flex items-center justify-between p-2 border rounded">
+                        <span className="text-sm">{service.name}</span>
+                        {service.status === 'online' ? (
+                          <CheckCircle className="h-4 w-4 text-green-600" />
+                        ) : service.status === 'warning' ? (
+                          <AlertTriangle className="h-4 w-4 text-yellow-600" />
+                        ) : (
+                          <XCircle className="h-4 w-4 text-red-600" />
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Rapports */}
+        <TabsContent value="reports" className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <AlertTriangle className="h-5 w-5" />
-                  Détection en Temps Réel
+                  <BarChart3 className="h-5 w-5" />
+                  Rapports Automatisés
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                {threatIntelligence.map((threat, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
-                    <div className="flex items-center gap-3">
-                      <div className={`w-3 h-3 rounded-full ${
-                        threat.severity === 'high' ? 'bg-red-500' :
-                        threat.severity === 'medium' ? 'bg-yellow-500' : 'bg-green-500'
-                      }`} />
-                      <div>
-                        <p className="font-medium">{threat.type}</p>
-                        <p className="text-xs text-muted-foreground">
-                          Dernière mise à jour: {threat.lastUpdate}
-                        </p>
-                      </div>
+                {[
+                  { name: 'Rapport Journalier Sécurité', status: 'Généré', time: '08:00' },
+                  { name: 'Analyse Vulnérabilités', status: 'En cours', time: '14:30' },
+                  { name: 'Conformité Mensuelle', status: 'Planifié', time: 'Demain' },
+                  { name: 'Audit Logs', status: 'Généré', time: '06:00' }
+                ].map((report) => (
+                  <div key={report.name} className="flex items-center justify-between p-3 border rounded">
+                    <div>
+                      <h4 className="font-medium text-sm">{report.name}</h4>
+                      <p className="text-xs text-muted-foreground">{report.time}</p>
                     </div>
-                    <div className="text-right">
-                      <p className="text-lg font-bold">{threat.count}</p>
-                      <p className="text-xs">{getTrendIcon(threat.trend)}</p>
-                    </div>
+                    <Badge variant={report.status === 'Généré' ? 'default' : 'secondary'}>
+                      {report.status}
+                    </Badge>
                   </div>
                 ))}
               </CardContent>
@@ -348,193 +573,29 @@ export const AdminSecurityAdvanced: React.FC<SecurityAdvancedProps> = ({ current
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Globe className="h-5 w-5" />
-                  Sources de Menaces
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <span>MITRE ATT&CK</span>
-                    <Badge variant="secondary" className="bg-green-100 text-green-800">Actif</Badge>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span>ANSSI-FR CERT</span>
-                    <Badge variant="secondary" className="bg-green-100 text-green-800">Actif</Badge>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span>Threat Intelligence Feeds</span>
-                    <Badge variant="secondary" className="bg-green-100 text-green-800">Actif</Badge>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span>CVE Database</span>
-                    <Badge variant="secondary" className="bg-green-100 text-green-800">Actif</Badge>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
-
-        {/* Conformité */}
-        <TabsContent value="compliance" className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {complianceFrameworks.map((framework, index) => (
-              <Card key={index}>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">{framework.name}</CardTitle>
-                  {getStatusIcon(framework.status)}
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-2xl font-bold">{framework.score}%</span>
-                    <Badge variant={framework.status === 'compliant' ? 'secondary' : 'destructive'}>
-                      {framework.status === 'compliant' ? 'Conforme' : 
-                       framework.status === 'partial' ? 'Partiel' : 'Non conforme'}
-                    </Badge>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div 
-                      className={`h-2 rounded-full ${
-                        framework.score >= 90 ? 'bg-green-500' :
-                        framework.score >= 70 ? 'bg-yellow-500' : 'bg-red-500'
-                      }`}
-                      style={{ width: `${framework.score}%` }}
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </TabsContent>
-
-        {/* Surveillance */}
-        <TabsContent value="monitoring" className="space-y-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Monitor className="h-5 w-5" />
-                  Surveillance Active
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="monitoring">Surveillance en temps réel</Label>
-                  <Switch
-                    id="monitoring"
-                    checked={activeMonitoring}
-                    onCheckedChange={setActiveMonitoring}
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <p className="font-medium">Logs analysés/sec</p>
-                    <p className="text-2xl font-bold text-blue-600">1,247</p>
-                  </div>
-                  <div>
-                    <p className="font-medium">Alertes actives</p>
-                    <p className="text-2xl font-bold text-orange-600">3</p>
-                  </div>
-                  <div>
-                    <p className="font-medium">Règles de corrélation</p>
-                    <p className="text-2xl font-bold text-green-600">156</p>
-                  </div>
-                  <div>
-                    <p className="font-medium">Précision détection</p>
-                    <p className="text-2xl font-bold text-purple-600">99.2%</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Bell className="h-5 w-5" />
-                  Alertes et Notifications
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <Alert>
-                  <AlertTriangle className="h-4 w-4" />
-                  <AlertDescription>
-                    <strong>Tentative de connexion suspecte détectée</strong><br />
-                    IP: 192.168.1.100 | Heure: 14:32:15 | Sévérité: Moyenne
-                  </AlertDescription>
-                </Alert>
-                <Alert>
-                  <CheckCircle className="h-4 w-4" />
-                  <AlertDescription>
-                    <strong>Mise à jour de sécurité appliquée</strong><br />
-                    Module: Firewall | Version: 2.1.3 | Status: Succès
-                  </AlertDescription>
-                </Alert>
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
-
-        {/* Configuration */}
-        <TabsContent value="config" className="space-y-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Settings className="h-5 w-5" />
-                  Paramètres de Sécurité
+                  <TrendingUp className="h-5 w-5" />
+                  Tendances Sécurité
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="session-timeout">Timeout de session (minutes)</Label>
-                  <Input id="session-timeout" type="number" defaultValue="480" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="max-attempts">Tentatives de connexion max</Label>
-                  <Input id="max-attempts" type="number" defaultValue="5" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="lockout-duration">Durée de verrouillage (minutes)</Label>
-                  <Input id="lockout-duration" type="number" defaultValue="15" />
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Switch id="2fa" />
-                  <Label htmlFor="2fa">Authentification à deux facteurs</Label>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Key className="h-5 w-5" />
-                  Chiffrement et Clés
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <p className="font-medium">Algorithme</p>
-                    <p className="text-lg font-bold">AES-256</p>
+                  <div className="flex justify-between">
+                    <span className="text-sm">Incidents cette semaine</span>
+                    <span className="text-sm font-medium text-green-600">-23%</span>
                   </div>
-                  <div>
-                    <p className="font-medium">Mode</p>
-                    <p className="text-lg font-bold">GCM</p>
+                  <div className="flex justify-between">
+                    <span className="text-sm">Vulnérabilités corrigées</span>
+                    <span className="text-sm font-medium text-green-600">+15%</span>
                   </div>
-                  <div>
-                    <p className="font-medium">Rotation clés</p>
-                    <p className="text-lg font-bold">30 jours</p>
+                  <div className="flex justify-between">
+                    <span className="text-sm">Temps de réponse moyen</span>
+                    <span className="text-sm font-medium text-green-600">-12min</span>
                   </div>
-                  <div>
-                    <p className="font-medium">HSM</p>
-                    <p className="text-lg font-bold">Actif</p>
+                  <div className="flex justify-between">
+                    <span className="text-sm">Score de conformité</span>
+                    <span className="text-sm font-medium text-green-600">+3%</span>
                   </div>
                 </div>
-                <Button className="w-full">
-                  <RefreshCw className="h-4 w-4 mr-2" />
-                  Rotation Manuelle des Clés
-                </Button>
               </CardContent>
             </Card>
           </div>
