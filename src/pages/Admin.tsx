@@ -525,7 +525,7 @@ const Admin = () => {
           </TabsContent>
 
           <TabsContent value="security-tests">
-            <SecurityTestPanel currentUser={user} />
+            <SecurityTestPanel currentUser={currentUser} />
           </TabsContent>
         </Tabs>
       </div>
