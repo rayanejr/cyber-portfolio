@@ -5,6 +5,7 @@ import {
 } from "lucide-react";
 import CVDownloadButton from "@/components/CVDownloadButton";
 import CertificationViewer from "@/components/CertificationViewer";
+import AIChat from "@/components/AIChat";
 import { Button } from "@/components/ui/button";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -750,6 +751,9 @@ export default function Home() {
           credential_url: selectedCert.credential_url
         } : null}
       />
+
+      {/* AI Assistant */}
+      <AIChat />
     </div>
   );
 }
