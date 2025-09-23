@@ -5,7 +5,7 @@ import {
 } from "lucide-react";
 import CVDownloadButton from "@/components/CVDownloadButton";
 import CertificationViewer from "@/components/CertificationViewer";
-import AIChat from "@/components/AIChat";
+import AIAssistantSection from "@/components/AIAssistantSection";
 import { Button } from "@/components/ui/button";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -667,6 +667,9 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ===== ASSISTANT IA ===== */}
+      <AIAssistantSection />
+
       {/* ===== CONTACT ===== */}
       <section className="py-20 bg-card/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -751,9 +754,6 @@ export default function Home() {
           credential_url: selectedCert.credential_url
         } : null}
       />
-
-      {/* AI Assistant */}
-      <AIChat />
     </div>
   );
 }
