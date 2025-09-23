@@ -89,7 +89,11 @@ const AIChat: React.FC = () => {
         <Button
           onClick={() => setIsExpanded(true)}
           size="lg"
-          className="rounded-full shadow-lg cyber-border bg-primary hover:bg-primary/90 text-primary-foreground"
+          className="rounded-full shadow-2xl cyber-border bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white animate-pulse"
+          style={{ 
+            boxShadow: '0 0 20px hsl(var(--primary)), 0 0 40px hsl(var(--primary)/0.5)',
+            border: '2px solid hsl(var(--primary))'
+          }}
         >
           <MessageCircle className="h-6 w-6 mr-2" />
           Assistant IA
