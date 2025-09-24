@@ -111,13 +111,12 @@ EXEMPLES DE RÉPONSES :
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'gpt-5-mini-2025-08-07',
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: message }
         ],
-        max_tokens: 800,
-        temperature: 0.7,
+        max_completion_tokens: 800,
         frequency_penalty: 0.3,
         presence_penalty: 0.3
       }),
