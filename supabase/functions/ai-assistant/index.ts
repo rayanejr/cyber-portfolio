@@ -74,11 +74,11 @@ serve(async (req) => {
       throw new Error('Message is required');
     }
 
-    const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
-    console.log('OpenAI API Key exists:', !!openAIApiKey);
+    const anthropicApiKey = Deno.env.get('ANTHROPIC_API_KEY');
+    console.log('Anthropic API Key exists:', !!anthropicApiKey);
     
-    if (!openAIApiKey) {
-      throw new Error('OpenAI API key not configured');
+    if (!anthropicApiKey) {
+      throw new Error('Anthropic API key not configured');
     }
 
     const systemPrompt = `Tu es l'assistant IA personnel de Rayane Jerbi, expert en cybersécurité.
@@ -103,37 +103,35 @@ EXEMPLES DE RÉPONSES :
 - Questions générales : Réponds avec l'expertise cybersécurité de Rayane
 `;
 
-    console.log('Making OpenAI API call...');
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    console.log('Making Anthropic API call...');
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
+        'x-api-key': anthropicApiKey,
         'Content-Type': 'application/json',
+        'anthropic-version': '2023-06-01',
       },
       body: JSON.stringify({
-        model: 'gpt-5-mini-2025-08-07',
+        model: 'claude-3-5-haiku-20241022',
+        max_tokens: 800,
         messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: message }
-        ],
-        max_completion_tokens: 800,
-        frequency_penalty: 0.3,
-        presence_penalty: 0.3
+          { role: 'user', content: `${systemPrompt}\n\nQuestion de l'utilisateur: ${message}` }
+        ]
       }),
     });
 
-    console.log('OpenAI API response status:', response.status);
+    console.log('Anthropic API response status:', response.status);
 
     if (!response.ok) {
       const errorData = await response.json();
-      console.error('OpenAI API error details:', errorData);
-      throw new Error(`OpenAI API error: ${response.status} - ${errorData.error?.message || 'Unknown error'}`);
+      console.error('Anthropic API error details:', errorData);
+      throw new Error(`Anthropic API error: ${response.status} - ${errorData.error?.message || 'Unknown error'}`);
     }
 
     const data = await response.json();
-    console.log('OpenAI API response received successfully');
+    console.log('Anthropic API response received successfully');
     
-    const aiResponse = data.choices[0].message.content;
+    const aiResponse = data.content[0].text;
 
     return new Response(JSON.stringify({ 
       response: aiResponse,
