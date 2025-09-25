@@ -84,8 +84,10 @@ export default function AdminFormations() {
 
     const submitData = {
       ...formData,
-      skills: formData.skills.split(',').map(s => s.trim()).filter(s => s)
+      skills: formData.skills ? formData.skills.split(',').map(s => s.trim()).filter(s => s) : []
     };
+
+    console.log('Submitting formation data:', submitData);
 
     try {
       if (editingFormation) {
@@ -94,7 +96,10 @@ export default function AdminFormations() {
           .update(submitData)
           .eq('id', editingFormation.id);
 
-        if (error) throw error;
+        if (error) {
+          console.error('Update error:', error);
+          throw error;
+        }
         
         toast({
           title: "Succès",
@@ -105,7 +110,10 @@ export default function AdminFormations() {
           .from('formations')
           .insert([submitData]);
 
-        if (error) throw error;
+        if (error) {
+          console.error('Insert error:', error);
+          throw error;
+        }
         
         toast({
           title: "Succès",
@@ -115,11 +123,11 @@ export default function AdminFormations() {
 
       setIsDialogOpen(false);
       fetchFormations();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error saving formation:', error);
       toast({
         title: "Erreur",
-        description: "Impossible de sauvegarder la formation",
+        description: error.message || "Impossible de sauvegarder la formation",
         variant: "destructive"
       });
     }
@@ -129,12 +137,16 @@ export default function AdminFormations() {
     if (!confirm('Êtes-vous sûr de vouloir supprimer cette formation ?')) return;
 
     try {
+      console.log('Deleting formation:', id);
       const { error } = await supabase
         .from('formations')
         .delete()
         .eq('id', id);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Delete error:', error);
+        throw error;
+      }
 
       toast({
         title: "Succès",
@@ -142,11 +154,11 @@ export default function AdminFormations() {
       });
       
       fetchFormations();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error deleting formation:', error);
       toast({
         title: "Erreur",
-        description: "Impossible de supprimer la formation",
+        description: error.message || "Impossible de supprimer la formation",
         variant: "destructive"
       });
     }

@@ -314,10 +314,18 @@ export default function AdminCertifications() {
               maxSizeMB={20}
               currentFile={formData.pdf_url || formData.image_url}
               onUpload={(url, type) => {
-                if (type === 'pdf') {
+                console.log('File uploaded:', url, type);
+                if (type === 'pdf' || type === 'application/pdf') {
                   setFormData({ ...formData, pdf_url: url, image_url: "" });
-                } else {
+                } else if (type === 'image' || type.startsWith('image/')) {
                   setFormData({ ...formData, image_url: url, pdf_url: "" });
+                } else {
+                  // Fallback basé sur l'URL
+                  if (url.toLowerCase().includes('.pdf')) {
+                    setFormData({ ...formData, pdf_url: url, image_url: "" });
+                  } else {
+                    setFormData({ ...formData, image_url: url, pdf_url: "" });
+                  }
                 }
               }}
               onRemove={() => setFormData({ ...formData, pdf_url: "", image_url: "" })}

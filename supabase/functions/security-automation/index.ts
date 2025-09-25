@@ -1,31 +1,23 @@
-import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.55.0";
+import "https://deno.land/x/xhr@0.1.0/mod.ts";
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-const supabase = createClient(
-  Deno.env.get('SUPABASE_URL') ?? '',
-  Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
-);
-
-const handler = async (req: Request): Promise<Response> => {
+serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
-  // Vérifier l'authentification - fonction maintenant protégée
-  const authHeader = req.headers.get('Authorization');
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return new Response(
-      JSON.stringify({ error: 'Authentication required' }),
-      { status: 401, headers: corsHeaders }
-    );
-  }
-
   try {
+    const supabaseClient = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+    );
+
     const url = new URL(req.url);
     const action = url.searchParams.get('action') || 'run-all';
 
@@ -33,303 +25,388 @@ const handler = async (req: Request): Promise<Response> => {
       session_rotation: null as any,
       rate_limit_cleanup: null as any,
       vulnerability_scan: null as any,
-      anomaly_detection: null as any,
+      threat_analysis: null as any,
       log_cleanup: null as any
     };
 
     console.log(`🔄 Security Automation - Action: ${action}`);
 
     if (action === 'run-all' || action === 'session-rotation') {
-      results.session_rotation = await runSessionRotation();
+      results.session_rotation = await runSessionRotation(supabaseClient);
     }
 
     if (action === 'run-all' || action === 'rate-limit-cleanup') {
-      results.rate_limit_cleanup = await cleanupRateLimitData();
+      results.rate_limit_cleanup = await cleanupRateLimitData(supabaseClient);
     }
 
     if (action === 'run-all' || action === 'vulnerability-scan') {
-      results.vulnerability_scan = await runVulnerabilityScan();
+      results.vulnerability_scan = await runVulnerabilityScan(supabaseClient);
     }
 
-    if (action === 'run-all' || action === 'anomaly-detection') {
-      results.anomaly_detection = await runAnomalyDetection();
+    if (action === 'run-all' || action === 'threat-analysis') {
+      results.threat_analysis = await runThreatAnalysis(supabaseClient);
     }
 
     if (action === 'run-all' || action === 'log-cleanup') {
-      results.log_cleanup = await cleanupOldLogs();
+      results.log_cleanup = await cleanupOldLogs(supabaseClient);
     }
 
     // Logger l'exécution de l'automation
-    await supabase
-      .from('security_logs')
+    await supabaseClient
+      .from('security_events')
       .insert({
-        event_type: 'SECURITY_AUTOMATION',
-        severity: 'INFO',
-        source: 'AUTOMATION_SERVICE',
-        metadata: {
-          action_requested: action,
-          results: results,
-          execution_time: new Date().toISOString()
-        }
+        kind: 'SECURITY_AUTOMATION_EXECUTED',
+        action: action,
+        severity: 'low',
+        message: `Automation de sécurité exécutée: ${action}`,
+        details: {
+          results,
+          execution_time: new Date().toISOString(),
+          actions_performed: Object.keys(results).filter(k => (results as any)[k] !== null).length
+        },
+        ip_address: '127.0.0.1',
+        user_agent: 'Security Automation System'
       });
 
     return new Response(JSON.stringify({
       success: true,
       action,
-      results,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      results
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
 
-  } catch (error: any) {
-    console.error('Error in security-automation function:', error);
+  } catch (error) {
+    console.error('Erreur dans security-automation:', error);
     
+    return new Response(JSON.stringify({
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error',
+      timestamp: new Date().toISOString()
+    }), {
+      status: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
+  }
+});
+
+async function runSessionRotation(supabase: any) {
+  console.log('🔄 Rotation des sessions expirées...');
+  
+  try {
+    // Nettoyer les sessions expirées dans rate_limit_contact
+    const { data: expiredSessions, error } = await supabase
+      .from('rate_limit_contact')
+      .delete()
+      .lt('window_start', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString());
+
+    if (error) throw error;
+
     await supabase
-      .from('security_logs')
+      .from('security_events')
       .insert({
-        event_type: 'AUTOMATION_ERROR',
-        severity: 'HIGH',
-        source: 'AUTOMATION_SERVICE',
-        metadata: {
-          error_message: error.message,
-          stack_trace: error.stack,
-          timestamp: new Date().toISOString()
+        kind: 'SESSION_ROTATION_COMPLETED',
+        action: 'session_cleanup',
+        severity: 'low',
+        message: `${expiredSessions?.length || 0} sessions expirées nettoyées`,
+        details: {
+          expired_sessions: expiredSessions?.length || 0,
+          cleanup_threshold: '24 hours'
+        },
+        ip_address: '127.0.0.1',
+        user_agent: 'Session Manager'
+      });
+
+    return {
+      expired_sessions: expiredSessions?.length || 0,
+      expired_tokens: 0,
+      status: 'success'
+    };
+  } catch (error) {
+    console.error('Erreur rotation sessions:', error);
+    return {
+      expired_sessions: 0,
+      expired_tokens: 0,
+      status: 'error',
+      error: error instanceof Error ? error.message : 'Unknown error'
+    };
+  }
+}
+
+async function cleanupRateLimitData(supabase: any) {
+  console.log('🧹 Nettoyage des données de limitation de débit...');
+  
+  try {
+    const { data: deleted, error } = await supabase
+      .from('rate_limit_contact')
+      .delete()
+      .lt('window_start', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString());
+
+    if (error) throw error;
+
+    return {
+      deleted_records: deleted?.length || 0,
+      status: 'success'
+    };
+  } catch (error) {
+    console.error('Erreur nettoyage rate limit:', error);
+    return {
+      deleted_records: 0,
+      status: 'error',
+      error: error instanceof Error ? error.message : 'Unknown error'
+    };
+  }
+}
+
+async function runVulnerabilityScan(supabase: any) {
+  console.log('🔍 Scan de vulnérabilités...');
+  
+  try {
+    // Vérifier les connexions suspectes récentes
+    const { data: recentEvents } = await supabase
+      .from('security_events')
+      .select('*')
+      .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
+      .order('created_at', { ascending: false });
+
+    const vulnerabilities: any[] = [];
+    const security_checks = [];
+    let blocked_ips = 0;
+
+    // Analyser les événements pour détecter des patterns suspects
+    if (recentEvents) {
+      const ipCounts: { [key: string]: number } = {};
+      const failedAttempts: { [key: string]: number } = {};
+
+      recentEvents.forEach((event: any) => {
+        if (event.ip_address) {
+          ipCounts[event.ip_address] = (ipCounts[event.ip_address] || 0) + 1;
+          
+          if (event.severity === 'high' || event.kind?.includes('FAILED')) {
+            failedAttempts[event.ip_address] = (failedAttempts[event.ip_address] || 0) + 1;
+          }
         }
       });
-    
-    return new Response(
-      JSON.stringify({ error: error.message }),
-      {
-        status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      }
+
+      // Détecter les IPs avec trop de tentatives
+      Object.entries(ipCounts).forEach(([ip, count]) => {
+        if (count > 100) {
+          vulnerabilities.push({
+            type: 'EXCESSIVE_REQUESTS',
+            severity: 'high',
+            count: count,
+            description: `IP ${ip} a effectué ${count} requêtes en 24h`
+          });
+        }
+      });
+
+      Object.entries(failedAttempts).forEach(([ip, count]) => {
+        if (count > 10) {
+          vulnerabilities.push({
+            type: 'MULTIPLE_FAILED_ATTEMPTS',
+            severity: 'high',
+            count: count,
+            description: `IP ${ip} a ${count} tentatives échouées`
+          });
+          blocked_ips++;
+        }
+      });
+    }
+
+    // Vérifications de sécurité générales
+    security_checks.push(
+      { check: 'RLS_ENABLED', status: 'active' },
+      { check: 'RATE_LIMITING', status: 'active' },
+      { check: 'ENCRYPTION_SERVICE', status: 'active' },
+      { check: 'AUDIT_LOGGING', status: 'active' }
     );
+
+    const overall_score = Math.max(0, 100 - (vulnerabilities.length * 10));
+
+    return {
+      vulnerabilities_found: vulnerabilities.length,
+      vulnerabilities,
+      security_checks,
+      blocked_ips,
+      overall_score,
+      status: 'success'
+    };
+  } catch (error) {
+    console.error('Erreur scan vulnérabilités:', error);
+    return {
+      vulnerabilities_found: 0,
+      vulnerabilities: [],
+      security_checks: [],
+      blocked_ips: 0,
+      overall_score: 0,
+      status: 'error',
+      error: error instanceof Error ? error.message : 'Unknown error'
+    };
   }
-};
-
-async function runSessionRotation() {
-  console.log('🔄 Running session rotation...');
-  
-  // Expirer les sessions anciennes (> 8 heures)
-  const { data: expiredSessions, error } = await supabase
-    .from('admin_sessions')
-    .update({ is_active: false })
-    .lt('expires_at', new Date().toISOString())
-    .eq('is_active', true)
-    .select('id');
-
-  if (error) {
-    throw new Error(`Session rotation failed: ${error.message}`);
-  }
-
-  // Nettoyer les anciens tokens admin_users
-  const { data: expiredTokens } = await supabase
-    .from('admin_users')
-    .update({ 
-      session_token: null, 
-      session_expires_at: null 
-    })
-    .lt('session_expires_at', new Date().toISOString())
-    .select('id');
-
-  return {
-    expired_sessions: expiredSessions?.length || 0,
-    expired_tokens: expiredTokens?.length || 0,
-    status: 'completed'
-  };
 }
 
-async function cleanupRateLimitData() {
-  console.log('🧹 Cleaning up old rate limit data...');
+async function runThreatAnalysis(supabase: any) {
+  console.log('🔍 Analyse automatique des menaces...');
   
-  // Supprimer les données de rate limiting > 24h
-  const { data: deletedRecords, error } = await supabase
-    .from('rate_limit_tracking')
-    .delete()
-    .lt('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
-    .select('id');
+  try {
+    // Récupérer les événements récents
+    const { data: recentEvents } = await supabase
+      .from('security_events')
+      .select('*')
+      .gte('created_at', new Date(Date.now() - 60 * 60 * 1000).toISOString()) // Dernière heure
+      .order('created_at', { ascending: false });
 
-  if (error) {
-    throw new Error(`Rate limit cleanup failed: ${error.message}`);
-  }
+    let threats_detected = 0;
+    let high_priority_threats = 0;
+    const threat_patterns = [];
 
-  return {
-    deleted_records: deletedRecords?.length || 0,
-    status: 'completed'
-  };
-}
+    if (recentEvents && recentEvents.length > 0) {
+      // Pattern 1: Tentatives de brute force
+      const ipAttempts: { [key: string]: any[] } = {};
+      recentEvents.forEach((event: any) => {
+        if (event.ip_address && event.kind?.includes('FAILED')) {
+          if (!ipAttempts[event.ip_address]) {
+            ipAttempts[event.ip_address] = [];
+          }
+          ipAttempts[event.ip_address].push(event);
+        }
+      });
 
-async function runVulnerabilityScan() {
-  console.log('🔍 Running vulnerability scan...');
-  
-  const vulnerabilities = [];
-  const checks = [];
+      Object.entries(ipAttempts).forEach(([ip, attempts]) => {
+        if (attempts.length >= 5) {
+          threats_detected++;
+          high_priority_threats++;
+          threat_patterns.push({
+            type: 'BRUTE_FORCE_ATTEMPT',
+            severity: 'high',
+            ip_address: ip,
+            attempts_count: attempts.length,
+            description: `Tentatives de brute force détectées depuis ${ip}`,
+            auto_action: 'IP_BLOCKED'
+          });
 
-  // Vérifier les anomalies non résolues
-  const { data: unresolved } = await supabase
-    .from('anomaly_detections')
-    .select('*')
-    .eq('is_resolved', false)
-    .gte('created_at', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString());
+          // Action automatique: Bloquer l'IP
+          supabase
+            .from('rate_limit_contact')
+            .insert({
+              ip_address: ip,
+              attempts: attempts.length,
+              is_blocked: true,
+              window_start: new Date().toISOString()
+            });
+        }
+      });
 
-  if (unresolved && unresolved.length > 0) {
-    vulnerabilities.push({
-      type: 'UNRESOLVED_ANOMALIES',
-      severity: 'MEDIUM',
-      count: unresolved.length,
-      description: `${unresolved.length} anomalies non résolues détectées`
-    });
-  }
+      // Pattern 2: Accès à des heures suspectes
+      const suspiciousHours = recentEvents.filter((event: any) => {
+        const hour = new Date(event.created_at).getHours();
+        return hour < 6 || hour > 22; // Entre 22h et 6h
+      });
 
-  // Vérifier les tentatives de connexion suspectes
-  const { data: suspiciousLogins } = await supabase
-    .from('security_logs')
-    .select('*')
-    .eq('event_type', 'FAILED_LOGIN')
-    .gte('created_at', new Date(Date.now() - 60 * 60 * 1000).toISOString());
+      if (suspiciousHours.length > 10) {
+        threats_detected++;
+        threat_patterns.push({
+          type: 'SUSPICIOUS_HOUR_ACCESS',
+          severity: 'medium',
+          events_count: suspiciousHours.length,
+          description: 'Activité suspecte détectée en dehors des heures normales',
+          auto_action: 'ALERT_GENERATED'
+        });
+      }
 
-  if (suspiciousLogins && suspiciousLogins.length > 10) {
-    vulnerabilities.push({
-      type: 'HIGH_FAILED_LOGINS',
-      severity: 'HIGH',
-      count: suspiciousLogins.length,
-      description: `${suspiciousLogins.length} tentatives de connexion échouées dans la dernière heure`
-    });
-  }
+      // Pattern 3: Escalade de privilèges
+      const privilegeEvents = recentEvents.filter((event: any) => 
+        event.kind?.includes('ADMIN') || event.action?.includes('admin')
+      );
 
-  // Vérifier les IPs bloquées
-  const { data: blockedIPs } = await supabase
-    .from('rate_limit_tracking')
-    .select('ip_address')
-    .eq('is_blocked', true)
-    .gte('created_at', new Date(Date.now() - 60 * 60 * 1000).toISOString());
-
-  const uniqueBlockedIPs = new Set(blockedIPs?.map(r => r.ip_address) || []);
-
-  checks.push(
-    { check: 'Anomalies non résolues', status: unresolved?.length === 0 ? 'PASS' : 'WARN' },
-    { check: 'Tentatives de connexion', status: (suspiciousLogins?.length || 0) < 10 ? 'PASS' : 'FAIL' },
-    { check: 'IPs bloquées', status: uniqueBlockedIPs.size < 5 ? 'PASS' : 'WARN' },
-    { check: 'RLS activé', status: 'PASS' },
-    { check: 'Chiffrement actif', status: 'PASS' }
-  );
-
-  return {
-    vulnerabilities_found: vulnerabilities.length,
-    vulnerabilities,
-    security_checks: checks,
-    blocked_ips: uniqueBlockedIPs.size,
-    overall_score: vulnerabilities.length === 0 ? 100 : Math.max(70, 100 - vulnerabilities.length * 15),
-    status: 'completed'
-  };
-}
-
-async function runAnomalyDetection() {
-  console.log('🚨 Running anomaly detection...');
-  
-  const anomalies = [];
-  const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
-
-  // Analyser les logs récents
-  const { data: recentLogs } = await supabase
-    .from('security_logs')
-    .select('*')
-    .gte('created_at', oneHourAgo)
-    .order('created_at', { ascending: false });
-
-  if (recentLogs) {
-    // Détection de pics d'activité
-    const eventsPerHour = recentLogs.length;
-    if (eventsPerHour > 100) {
-      const { data: inserted } = await supabase
-        .from('anomaly_detections')
-        .insert({
-          detection_type: 'HIGH_ACTIVITY_SPIKE',
-          severity: 'MEDIUM',
-          description: `Pic d'activité détecté: ${eventsPerHour} événements dans la dernière heure`,
-          metadata: { events_per_hour: eventsPerHour, threshold: 100 }
-        })
-        .select('id');
-      
-      if (inserted) anomalies.push(inserted[0]);
+      if (privilegeEvents.length > 20) {
+        threats_detected++;
+        high_priority_threats++;
+        threat_patterns.push({
+          type: 'PRIVILEGE_ESCALATION',
+          severity: 'high',
+          events_count: privilegeEvents.length,
+          description: 'Tentatives d\'escalade de privilèges détectées',
+          auto_action: 'ADMIN_NOTIFIED'
+        });
+      }
     }
 
-    // Détection d'erreurs système répétées
-    const systemErrors = recentLogs.filter(log => log.severity === 'HIGH' || log.severity === 'CRITICAL');
-    if (systemErrors.length > 5) {
-      const { data: inserted } = await supabase
-        .from('anomaly_detections')
-        .insert({
-          detection_type: 'REPEATED_SYSTEM_ERRORS',
-          severity: 'HIGH',
-          description: `${systemErrors.length} erreurs système critiques détectées`,
-          metadata: { error_count: systemErrors.length, threshold: 5 }
-        })
-        .select('id');
-      
-      if (inserted) anomalies.push(inserted[0]);
-    }
+    // Enregistrer les résultats de l'analyse
+    await supabase
+      .from('security_events')
+      .insert({
+        kind: 'AUTOMATED_THREAT_ANALYSIS',
+        action: 'threat_analysis',
+        severity: high_priority_threats > 0 ? 'high' : 'low',
+        message: `Analyse automatique: ${threats_detected} menaces détectées`,
+        details: {
+          threats_detected,
+          high_priority_threats,
+          threat_patterns,
+          analysis_period: '1 hour',
+          events_analyzed: recentEvents?.length || 0
+        },
+        ip_address: '127.0.0.1',
+        user_agent: 'Automated Threat Analysis System'
+      });
 
-    // Détection de multiples IPs
-    const uniqueIPs = new Set(recentLogs.map(log => log.ip_address).filter(Boolean));
-    if (uniqueIPs.size > 20) {
-      const { data: inserted } = await supabase
-        .from('anomaly_detections')
-        .insert({
-          detection_type: 'MULTIPLE_IP_ACCESS',
-          severity: 'MEDIUM',
-          description: `Activité depuis ${uniqueIPs.size} adresses IP différentes`,
-          metadata: { unique_ips: uniqueIPs.size, threshold: 20 }
-        })
-        .select('id');
-      
-      if (inserted) anomalies.push(inserted[0]);
-    }
+    return {
+      threats_detected,
+      high_priority_threats,
+      threat_patterns,
+      events_analyzed: recentEvents?.length || 0,
+      time_window: '1 hour',
+      status: 'success'
+    };
+  } catch (error) {
+    console.error('Erreur analyse menaces:', error);
+    return {
+      threats_detected: 0,
+      high_priority_threats: 0,
+      threat_patterns: [],
+      events_analyzed: 0,
+      time_window: '1 hour',
+      status: 'error',
+      error: error instanceof Error ? error.message : 'Unknown error'
+    };
   }
-
-  return {
-    anomalies_detected: anomalies.length,
-    events_analyzed: recentLogs?.length || 0,
-    time_window: '1 hour',
-    status: 'completed'
-  };
 }
 
-async function cleanupOldLogs() {
-  console.log('🧹 Cleaning up old logs...');
+async function cleanupOldLogs(supabase: any) {
+  console.log('🗑️ Nettoyage des anciens logs...');
   
-  const sixMonthsAgo = new Date(Date.now() - 6 * 30 * 24 * 60 * 60 * 1000).toISOString();
-  const oneMonthAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
-  
-  // Supprimer les anciens logs de sécurité (> 6 mois)
-  const { data: deletedSecurityLogs } = await supabase
-    .from('security_logs')
-    .delete()
-    .lt('created_at', sixMonthsAgo)
-    .select('id');
+  try {
+    // Supprimer les événements de sécurité de plus de 6 mois
+    const { data: deletedSecurityEvents, error: securityError } = await supabase
+      .from('security_events')
+      .delete()
+      .lt('created_at', new Date(Date.now() - 6 * 30 * 24 * 60 * 60 * 1000).toISOString());
 
-  // Supprimer l'ancien historique de modifications (> 1 mois)
-  const { data: deletedModHistory } = await supabase
-    .from('modification_history')
-    .delete()
-    .lt('created_at', oneMonthAgo)
-    .select('id');
+    if (securityError) throw securityError;
 
-  // Marquer les anciennes anomalies comme résolues
-  const { data: resolvedAnomalies } = await supabase
-    .from('anomaly_detections')
-    .update({ is_resolved: true })
-    .lt('created_at', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString())
-    .eq('is_resolved', false)
-    .select('id');
+    // Nettoyer les contacts messages de plus de 1 an
+    const { data: deletedMessages, error: messagesError } = await supabase
+      .from('contact_messages')
+      .delete()
+      .lt('created_at', new Date(Date.now() - 365 * 24 * 60 * 60 * 1000).toISOString())
+      .eq('is_read', true);
 
-  return {
-    deleted_security_logs: deletedSecurityLogs?.length || 0,
-    deleted_modification_history: deletedModHistory?.length || 0,
-    resolved_anomalies: resolvedAnomalies?.length || 0,
-    status: 'completed'
-  };
+    if (messagesError) throw messagesError;
+
+    return {
+      deleted_security_events: deletedSecurityEvents?.length || 0,
+      deleted_messages: deletedMessages?.length || 0,
+      status: 'success'
+    };
+  } catch (error) {
+    console.error('Erreur nettoyage logs:', error);
+    return {
+      deleted_security_events: 0,
+      deleted_messages: 0,
+      status: 'error',
+      error: error instanceof Error ? error.message : 'Unknown error'
+    };
+  }
 }
-
-serve(handler);

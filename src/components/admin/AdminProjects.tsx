@@ -115,8 +115,10 @@ const AdminProjects = () => {
     try {
       const projectData = {
         ...formData,
-        technologies: formData.technologies ? formData.technologies.split(',').map(t => t.trim()) : []
+        technologies: formData.technologies ? formData.technologies.split(',').map(t => t.trim()).filter(t => t) : []
       };
+
+      console.log('Saving project data:', projectData);
 
       if (editingProject) {
         const { error } = await supabase
@@ -124,7 +126,10 @@ const AdminProjects = () => {
           .update(projectData)
           .eq('id', editingProject.id);
 
-        if (error) throw error;
+        if (error) {
+          console.error('Update error:', error);
+          throw error;
+        }
         
         toast({
           title: "Projet modifié",
@@ -135,7 +140,10 @@ const AdminProjects = () => {
           .from('projects')
           .insert([projectData]);
 
-        if (error) throw error;
+        if (error) {
+          console.error('Insert error:', error);
+          throw error;
+        }
         
         toast({
           title: "Projet créé",
@@ -145,28 +153,29 @@ const AdminProjects = () => {
 
       resetForm();
       fetchProjects();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error saving project:', error);
       toast({
         title: "Erreur",
-        description: "Impossible de sauvegarder le projet.",
+        description: error.message || "Impossible de sauvegarder le projet.",
         variant: "destructive",
       });
     }
   };
 
   const handleEdit = (project: Project) => {
+    console.log('Editing project:', project);
     setEditingProject(project);
     setFormData({
-      title: project.title,
-      description: project.description,
-      content: project.content,
-      image_url: project.image_url,
-      demo_url: project.demo_url,
-      github_url: project.github_url,
-      technologies: project.technologies.join(', '),
-      featured: project.featured,
-      is_active: project.is_active
+      title: project.title || "",
+      description: project.description || "",
+      content: project.content || "",
+      image_url: project.image_url || "",
+      demo_url: project.demo_url || "",
+      github_url: project.github_url || "",
+      technologies: Array.isArray(project.technologies) ? project.technologies.join(', ') : "",
+      featured: project.featured || false,
+      is_active: project.is_active !== undefined ? project.is_active : true
     });
     setIsDialogOpen(true);
   };
@@ -175,12 +184,16 @@ const AdminProjects = () => {
     if (!confirm('Êtes-vous sûr de vouloir supprimer ce projet ?')) return;
 
     try {
+      console.log('Deleting project:', id);
       const { error } = await supabase
         .from('projects')
         .delete()
         .eq('id', id);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Delete error:', error);
+        throw error;
+      }
       
       toast({
         title: "Projet supprimé",
@@ -188,11 +201,11 @@ const AdminProjects = () => {
       });
       
       fetchProjects();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error deleting project:', error);
       toast({
         title: "Erreur",
-        description: "Impossible de supprimer le projet.",
+        description: error.message || "Impossible de supprimer le projet.",
         variant: "destructive",
       });
     }

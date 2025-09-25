@@ -35,6 +35,7 @@ const AdminLogoManagement: React.FC<AdminLogoManagementProps> = ({ currentUser }
 
   const [formData, setFormData] = useState({
     filename: '',
+    file_url: '',
     file_type: 'logo',
     description: '',
     is_active: false
@@ -76,31 +77,38 @@ const AdminLogoManagement: React.FC<AdminLogoManagementProps> = ({ currentUser }
       const fileName = `logo-${Date.now()}.${fileExt}`;
       const filePath = `logos/${fileName}`;
 
+      console.log(`Uploading logo to: ${filePath}`);
+
       const { error: uploadError } = await supabase.storage
         .from('admin-files')
         .upload(filePath, file);
 
-      if (uploadError) throw uploadError;
+      if (uploadError) {
+        console.error('Upload error:', uploadError);
+        throw uploadError;
+      }
 
       const { data } = supabase.storage
         .from('admin-files')
         .getPublicUrl(filePath);
 
+      console.log('Logo uploaded successfully:', data.publicUrl);
+
       setFormData(prev => ({ 
         ...prev, 
-        filename: data.publicUrl,
-        file_type: formData.file_type || 'logo'
+        filename: fileName,
+        file_url: data.publicUrl
       }));
       
       toast({
         title: "Logo uploadé",
         description: "Le logo a été uploadé avec succès.",
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error uploading logo:', error);
       toast({
         title: "Erreur",
-        description: "Impossible d'uploader le logo.",
+        description: error.message || "Impossible d'uploader le logo.",
         variant: "destructive",
       });
     } finally {
@@ -111,7 +119,7 @@ const AdminLogoManagement: React.FC<AdminLogoManagementProps> = ({ currentUser }
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.filename) {
+    if (!formData.file_url) {
       toast({
         title: "Erreur",
         description: "Veuillez sélectionner un fichier.",
@@ -121,9 +129,11 @@ const AdminLogoManagement: React.FC<AdminLogoManagementProps> = ({ currentUser }
     }
 
     try {
+      console.log('Saving logo data:', formData);
+
       const logoData = {
-        filename: formData.filename.split('/').pop() || '',
-        file_url: formData.filename,
+        filename: formData.filename,
+        file_url: formData.file_url,
         file_type: formData.file_type,
         file_category: 'icons',
         is_active: formData.is_active
@@ -135,7 +145,10 @@ const AdminLogoManagement: React.FC<AdminLogoManagementProps> = ({ currentUser }
           .update(logoData)
           .eq('id', editingLogo.id);
 
-        if (error) throw error;
+        if (error) {
+          console.error('Update error:', error);
+          throw error;
+        }
         
         toast({
           title: "Logo modifié",
@@ -146,7 +159,10 @@ const AdminLogoManagement: React.FC<AdminLogoManagementProps> = ({ currentUser }
           .from('admin_files')
           .insert([logoData]);
 
-        if (error) throw error;
+        if (error) {
+          console.error('Insert error:', error);
+          throw error;
+        }
         
         toast({
           title: "Logo ajouté",
@@ -158,11 +174,11 @@ const AdminLogoManagement: React.FC<AdminLogoManagementProps> = ({ currentUser }
       fetchLogos();
       window.dispatchEvent(new CustomEvent('logoUpdated'));
       
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error saving logo:', error);
       toast({
         title: "Erreur",
-        description: "Impossible de sauvegarder le logo.",
+        description: error.message || "Impossible de sauvegarder le logo.",
         variant: "destructive",
       });
     }
@@ -204,6 +220,7 @@ const AdminLogoManagement: React.FC<AdminLogoManagementProps> = ({ currentUser }
   const resetForm = () => {
     setFormData({
       filename: '',
+      file_url: '',
       file_type: 'logo',
       description: '',
       is_active: false
@@ -259,9 +276,9 @@ const AdminLogoManagement: React.FC<AdminLogoManagementProps> = ({ currentUser }
                       onChange={handleFileUpload}
                       disabled={uploading}
                     />
-                    {formData.filename && (
+                    {formData.file_url && (
                       <div className="mt-2">
-                        <img src={formData.filename} alt="Preview" className="w-24 h-24 object-contain rounded border" />
+                        <img src={formData.file_url} alt="Preview" className="w-24 h-24 object-contain rounded border" />
                       </div>
                     )}
                   </div>
@@ -276,7 +293,7 @@ const AdminLogoManagement: React.FC<AdminLogoManagementProps> = ({ currentUser }
                   </div>
 
                   <div className="flex gap-2">
-                    <Button type="submit" disabled={!formData.filename}>
+                    <Button type="submit" disabled={!formData.file_url}>
                       {editingLogo ? 'Modifier' : 'Ajouter'}
                     </Button>
                     <Button type="button" variant="outline" onClick={resetForm}>

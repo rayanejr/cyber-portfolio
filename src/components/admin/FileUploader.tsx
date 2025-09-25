@@ -50,22 +50,32 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
       const fileName = `${Date.now()}_${Math.random().toString(36).substr(2, 9)}.${fileExt}`;
       const filePath = folder ? `${folder}/${fileName}` : fileName;
 
+      console.log(`Uploading to bucket: ${bucket}, path: ${filePath}`);
+
       const { error: uploadError } = await supabase.storage
         .from(bucket)
         .upload(filePath, file);
 
-      if (uploadError) throw uploadError;
+      if (uploadError) {
+        console.error('Upload error:', uploadError);
+        throw uploadError;
+      }
 
       const { data } = supabase.storage
         .from(bucket)
         .getPublicUrl(filePath);
 
-      const fileType = file.type.startsWith('image/') ? 'image' : 'pdf';
+      console.log('File uploaded successfully:', data.publicUrl);
+
+      const fileType = file.type.startsWith('image/') ? 'image' : 
+                      file.type === 'application/pdf' ? 'pdf' : 
+                      file.type;
+      
       onUpload(data.publicUrl, fileType);
       
       toast({
         title: "Fichier uploadé",
-        description: "Le fichier a été uploadé avec succès",
+        description: `Le fichier ${file.name} a été uploadé avec succès`,
       });
     } catch (error: any) {
       console.error('Error uploading file:', error);

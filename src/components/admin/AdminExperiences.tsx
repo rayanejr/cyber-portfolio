@@ -87,9 +87,11 @@ export default function AdminExperiences() {
 
     const submitData = {
       ...formData,
-      technologies: formData.technologies.split(',').map(t => t.trim()).filter(t => t),
-      achievements: formData.achievements.split('\n').filter(a => a.trim())
+      technologies: formData.technologies ? formData.technologies.split(',').map(t => t.trim()).filter(t => t) : [],
+      achievements: formData.achievements ? formData.achievements.split('\n').filter(a => a.trim()) : []
     };
+
+    console.log('Submitting experience data:', submitData);
 
     try {
       if (editingExp) {
@@ -98,7 +100,10 @@ export default function AdminExperiences() {
           .update(submitData)
           .eq('id', editingExp.id);
 
-        if (error) throw error;
+        if (error) {
+          console.error('Update error:', error);
+          throw error;
+        }
         
         toast({
           title: "Succès",
@@ -109,7 +114,10 @@ export default function AdminExperiences() {
           .from('experiences')
           .insert([submitData]);
 
-        if (error) throw error;
+        if (error) {
+          console.error('Insert error:', error);
+          throw error;
+        }
         
         toast({
           title: "Succès",
@@ -119,11 +127,11 @@ export default function AdminExperiences() {
 
       setIsDialogOpen(false);
       fetchExperiences();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error saving experience:', error);
       toast({
         title: "Erreur",
-        description: "Impossible de sauvegarder l'expérience",
+        description: error.message || "Impossible de sauvegarder l'expérience",
         variant: "destructive"
       });
     }
@@ -133,12 +141,16 @@ export default function AdminExperiences() {
     if (!confirm('Êtes-vous sûr de vouloir supprimer cette expérience ?')) return;
 
     try {
+      console.log('Deleting experience:', id);
       const { error } = await supabase
         .from('experiences')
         .delete()
         .eq('id', id);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Delete error:', error);
+        throw error;
+      }
 
       toast({
         title: "Succès",
@@ -146,11 +158,11 @@ export default function AdminExperiences() {
       });
       
       fetchExperiences();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error deleting experience:', error);
       toast({
         title: "Erreur",
-        description: "Impossible de supprimer l'expérience",
+        description: error.message || "Impossible de supprimer l'expérience",
         variant: "destructive"
       });
     }
