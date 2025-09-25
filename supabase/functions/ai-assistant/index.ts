@@ -74,11 +74,11 @@ serve(async (req) => {
       throw new Error('Message is required');
     }
 
-    const anthropicApiKey = Deno.env.get('ANTHROPIC_API_KEY');
-    console.log('Anthropic API Key exists:', !!anthropicApiKey);
+    const groqApiKey = Deno.env.get('GROQ_API_KEY');
+    console.log('Groq API Key exists:', !!groqApiKey);
     
-    if (!anthropicApiKey) {
-      throw new Error('Anthropic API key not configured');
+    if (!groqApiKey) {
+      throw new Error('Groq API key not configured');
     }
 
     const systemPrompt = `Tu es l'assistant IA personnel de Rayane Jerbi, expert en cybersécurité.
@@ -103,35 +103,36 @@ EXEMPLES DE RÉPONSES :
 - Questions générales : Réponds avec l'expertise cybersécurité de Rayane
 `;
 
-    console.log('Making Anthropic API call...');
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
+    console.log('Making Groq API call...');
+    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'x-api-key': anthropicApiKey,
+        'Authorization': `Bearer ${groqApiKey}`,
         'Content-Type': 'application/json',
-        'anthropic-version': '2023-06-01',
       },
       body: JSON.stringify({
-        model: 'claude-3-5-haiku-20241022',
-        max_tokens: 800,
+        model: 'llama-3.1-70b-versatile',
         messages: [
-          { role: 'user', content: `${systemPrompt}\n\nQuestion de l'utilisateur: ${message}` }
-        ]
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: message }
+        ],
+        max_tokens: 800,
+        temperature: 0.7
       }),
     });
 
-    console.log('Anthropic API response status:', response.status);
+    console.log('Groq API response status:', response.status);
 
     if (!response.ok) {
       const errorData = await response.json();
-      console.error('Anthropic API error details:', errorData);
-      throw new Error(`Anthropic API error: ${response.status} - ${errorData.error?.message || 'Unknown error'}`);
+      console.error('Groq API error details:', errorData);
+      throw new Error(`Groq API error: ${response.status} - ${errorData.error?.message || 'Unknown error'}`);
     }
 
     const data = await response.json();
-    console.log('Anthropic API response received successfully');
+    console.log('Groq API response received successfully');
     
-    const aiResponse = data.content[0].text;
+    const aiResponse = data.choices[0].message.content;
 
     return new Response(JSON.stringify({ 
       response: aiResponse,
@@ -141,11 +142,11 @@ EXEMPLES DE RÉPONSES :
     });
 
   } catch (error) {
-    console.error('Error in ai-assistant function:', error.message);
-    console.error('Stack trace:', error.stack);
+    console.error('Error in ai-assistant function:', error instanceof Error ? error.message : 'Unknown error');
+    console.error('Stack trace:', error instanceof Error ? error.stack : error);
     
     return new Response(JSON.stringify({ 
-      error: error.message,
+      error: error instanceof Error ? error.message : 'Unknown error',
       response: "Désolé, je rencontre un problème technique en ce moment. Vous pouvez contacter directement Rayane à rayane.jerbi@yahoo.com ou au +33 6 20 28 41 14 pour toute question urgente.",
       success: false
     }), {
