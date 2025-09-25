@@ -42,12 +42,12 @@ const handler = async (req: Request): Promise<Response> => {
     console.log(`Security Monitor - IP: ${clientIP}, User-Agent: ${userAgent}`);
 
     // Lire le body pour déterminer l'action
-    let body = {};
+    let body: any = {};
     let action = 'vulnerability-scan'; // Action par défaut
     
     try {
       body = await req.json();
-      action = body.action || 'vulnerability-scan';
+      action = body?.action || 'vulnerability-scan';
     } catch (e) {
       // Body vide ou invalide, utiliser l'action par défaut
       console.log('Body vide, utilisation de action par défaut:', action);
@@ -215,7 +215,7 @@ async function handleVulnerabilityScan(): Promise<Response> {
 
   await logSecurityEvent({
     type: 'VULNERABILITY_SCAN',
-    severity: 'INFO',
+    severity: 'LOW',
     description: 'Scan de vulnérabilités automatique effectué',
     metadata: { 
       checks_performed: securityChecks.length,

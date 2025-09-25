@@ -405,7 +405,7 @@ async function testEmailAlerts() {
         alert_type: alert.event_type,
         severity: alert.severity,
         processed: false,
-        error: error.message
+        error: error instanceof Error ? error.message : 'Unknown error'
       });
     }
   }

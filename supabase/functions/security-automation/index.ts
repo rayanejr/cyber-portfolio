@@ -30,11 +30,11 @@ const handler = async (req: Request): Promise<Response> => {
     const action = url.searchParams.get('action') || 'run-all';
 
     let results = {
-      session_rotation: null,
-      rate_limit_cleanup: null,
-      vulnerability_scan: null,
-      anomaly_detection: null,
-      log_cleanup: null
+      session_rotation: null as any,
+      rate_limit_cleanup: null as any,
+      vulnerability_scan: null as any,
+      anomaly_detection: null as any,
+      log_cleanup: null as any
     };
 
     console.log(`🔄 Security Automation - Action: ${action}`);

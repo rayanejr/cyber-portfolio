@@ -103,7 +103,7 @@ const handler = async (req: Request): Promise<Response> => {
 
 async function generateKey(): Promise<CryptoKey> {
   const encoder = new TextEncoder();
-  const keyData = encoder.encode(ENCRYPTION_KEY.slice(0, 32));
+  const keyData = encoder.encode(ENCRYPTION_KEY!.slice(0, 32));
   
   return await crypto.subtle.importKey(
     'raw',

@@ -33,12 +33,12 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    let body = {};
+    let body: any = {};
     let action = 'test-encryption';
     
     try {
       body = await req.json();
-      action = body.action || 'test-encryption';
+      action = body?.action || 'test-encryption';
     } catch (e) {
       console.log('Body vide ou invalide, utilisation de action par défaut:', action);
     }
@@ -77,7 +77,7 @@ const handler = async (req: Request): Promise<Response> => {
 async function generateKey(): Promise<CryptoKey> {
   // Générer une clé AES-256 à partir de la chaîne de caractères sécurisée
   const encoder = new TextEncoder();
-  const keyData = encoder.encode(ENCRYPTION_KEY.slice(0, 32));
+  const keyData = encoder.encode(ENCRYPTION_KEY!.slice(0, 32));
   
   return await crypto.subtle.importKey(
     'raw',
@@ -169,7 +169,7 @@ async function handleDecrypt(body: any): Promise<Response> {
   } catch (error) {
     return new Response(JSON.stringify({ 
       error: 'Decryption failed', 
-      details: error.message 
+      details: error instanceof Error ? error.message : 'Unknown error'
     }), {
       status: 400,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -198,7 +198,7 @@ async function handleEncryptSensitiveData(): Promise<Response> {
     testResults.push({
       test: 'encryption_roundtrip',
       status: 'error',
-      error: error.message
+      error: error instanceof Error ? error.message : 'Unknown error'
     });
   }
 
