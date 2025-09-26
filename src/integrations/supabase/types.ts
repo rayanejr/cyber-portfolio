@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_audit_log: {
+        Row: {
+          action: string
+          admin_id: string | null
+          created_at: string | null
+          id: string
+          new_values: Json | null
+          old_values: Json | null
+          record_id: string | null
+          table_name: string
+        }
+        Insert: {
+          action: string
+          admin_id?: string | null
+          created_at?: string | null
+          id?: string
+          new_values?: Json | null
+          old_values?: Json | null
+          record_id?: string | null
+          table_name: string
+        }
+        Update: {
+          action?: string
+          admin_id?: string | null
+          created_at?: string | null
+          id?: string
+          new_values?: Json | null
+          old_values?: Json | null
+          record_id?: string | null
+          table_name?: string
+        }
+        Relationships: []
+      }
       admin_files: {
         Row: {
           created_at: string
@@ -499,114 +532,7 @@ export type Database = {
       }
     }
     Views: {
-      admin_audit_log_v: {
-        Row: {
-          action: string | null
-          admin_id: string | null
-          created_at: string | null
-          id: string | null
-          ip_address: unknown | null
-          new_values: Json | null
-          old_values: Json | null
-          record_id: string | null
-          table_name: string | null
-          user_agent: string | null
-        }
-        Insert: {
-          action?: string | null
-          admin_id?: string | null
-          created_at?: string | null
-          id?: string | null
-          ip_address?: unknown | null
-          new_values?: never
-          old_values?: never
-          record_id?: string | null
-          table_name?: string | null
-          user_agent?: string | null
-        }
-        Update: {
-          action?: string | null
-          admin_id?: string | null
-          created_at?: string | null
-          id?: string | null
-          ip_address?: unknown | null
-          new_values?: never
-          old_values?: never
-          record_id?: string | null
-          table_name?: string | null
-          user_agent?: string | null
-        }
-        Relationships: []
-      }
-      anomaly_detections_v: {
-        Row: {
-          created_at: string | null
-          description: string | null
-          id: string | null
-          ip_address: unknown | null
-          is_resolved: boolean | null
-          metadata: Json | null
-          severity: string | null
-          user_id: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          description?: string | null
-          id?: string | null
-          ip_address?: unknown | null
-          is_resolved?: never
-          metadata?: Json | null
-          severity?: never
-          user_id?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          description?: string | null
-          id?: string | null
-          ip_address?: unknown | null
-          is_resolved?: never
-          metadata?: Json | null
-          severity?: never
-          user_id?: string | null
-        }
-        Relationships: []
-      }
-      security_logs_v: {
-        Row: {
-          created_at: string | null
-          event_type: string | null
-          id: string | null
-          ip_address: unknown | null
-          metadata: Json | null
-          severity: string | null
-          source: string | null
-          user_agent: string | null
-          user_id: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          event_type?: string | null
-          id?: string | null
-          ip_address?: unknown | null
-          metadata?: Json | null
-          severity?: never
-          source?: string | null
-          user_agent?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          event_type?: string | null
-          id?: string | null
-          ip_address?: unknown | null
-          metadata?: Json | null
-          severity?: never
-          source?: string | null
-          user_agent?: string | null
-          user_id?: string | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
       cleanup_expired_sessions: {

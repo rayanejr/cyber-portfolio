@@ -50,7 +50,7 @@ const AdminLogoManagement: React.FC<AdminLogoManagementProps> = ({ currentUser }
       const { data, error } = await supabase
         .from('admin_files')
         .select('*')
-        .eq('file_category', 'icons')
+        .eq('file_category', 'logo')
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -135,7 +135,7 @@ const AdminLogoManagement: React.FC<AdminLogoManagementProps> = ({ currentUser }
         filename: formData.filename,
         file_url: formData.file_url,
         file_type: formData.file_type,
-        file_category: 'icons',
+        file_category: 'logo',
         is_active: formData.is_active
       };
 
@@ -189,8 +189,7 @@ const AdminLogoManagement: React.FC<AdminLogoManagementProps> = ({ currentUser }
       await supabase
         .from('admin_files')
         .update({ is_active: false })
-        .eq('file_category', 'icons')
-        .eq('file_type', file_type);
+        .eq('file_category', 'logo');
 
       const { error } = await supabase
         .from('admin_files')

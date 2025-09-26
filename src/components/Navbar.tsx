@@ -42,13 +42,13 @@ export function Navbar() {
       const { data, error } = await supabase
         .from('admin_files')
         .select('file_url')
-        .eq('file_category', 'icons')
-        .eq('file_type', 'logo')
+        .eq('file_category', 'logo')
         .eq('is_active', true)
-        .single();
+        .order('created_at', { ascending: false })
+        .limit(1);
 
-      if (!error && data) {
-        setLogoUrl(data.file_url);
+      if (!error && data && data.length > 0) {
+        setLogoUrl(data[0].file_url);
       }
     } catch (error) {
       console.error('[Admin] Erreur lors de la récupération du logo:', error);

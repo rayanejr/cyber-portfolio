@@ -22,9 +22,10 @@ export function Footer() {
         const { data, error } = await supabase
           .from("admin_files")
           .select("file_url")
-          .eq("file_category", "icons")
-          .eq("file_type", "logo")
-          .eq("is_active", true);
+          .eq("file_category", "logo")
+          .eq("is_active", true)
+          .order('created_at', { ascending: false })
+          .limit(1);
 
         const first = data?.[0]?.file_url ?? null;
         if (!error && first && mounted) setLogoUrl(first);

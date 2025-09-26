@@ -158,6 +158,12 @@ export default function AdminCertifications() {
       window.open(cert.image_url, '_blank');
     } else if (cert.credential_url) {
       window.open(cert.credential_url, '_blank');
+    } else {
+      toast({
+        title: "Aucun fichier",
+        description: "Aucun document ou lien n'est disponible pour cette certification",
+        variant: "destructive"
+      });
     }
   };
 
@@ -315,17 +321,12 @@ export default function AdminCertifications() {
               currentFile={formData.pdf_url || formData.image_url}
               onUpload={(url, type) => {
                 console.log('File uploaded:', url, type);
-                if (type === 'pdf' || type === 'application/pdf') {
+                if (type === 'pdf' || type === 'application/pdf' || url.toLowerCase().includes('.pdf')) {
                   setFormData({ ...formData, pdf_url: url, image_url: "" });
-                } else if (type === 'image' || type.startsWith('image/')) {
+                } else if (type === 'image' || type?.startsWith('image/') || /\.(jpg|jpeg|png|gif|webp)$/i.test(url)) {
                   setFormData({ ...formData, image_url: url, pdf_url: "" });
                 } else {
-                  // Fallback basé sur l'URL
-                  if (url.toLowerCase().includes('.pdf')) {
-                    setFormData({ ...formData, pdf_url: url, image_url: "" });
-                  } else {
-                    setFormData({ ...formData, image_url: url, pdf_url: "" });
-                  }
+                  setFormData({ ...formData, pdf_url: url });
                 }
               }}
               onRemove={() => setFormData({ ...formData, pdf_url: "", image_url: "" })}
