@@ -30,7 +30,7 @@ const AdminIcons = () => {
       const { data, error } = await supabase
         .from('admin_files')
         .select('*')
-        .eq('file_category', 'icons')
+        .eq('file_category', 'logos')
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -90,7 +90,7 @@ const AdminIcons = () => {
       await supabase
         .from('admin_files')
         .update({ is_active: false })
-        .eq('file_category', 'icons')
+        .eq('file_category', 'logos')
         .eq('file_type', 'logo');
 
       // Enregistrer le nouveau logo
@@ -100,7 +100,7 @@ const AdminIcons = () => {
           filename: fileName,
           file_url: data.publicUrl,
           file_type: 'logo',
-          file_category: 'icons',
+          file_category: 'logos',
           is_active: true
         });
 
@@ -132,7 +132,7 @@ const AdminIcons = () => {
       await supabase
         .from('admin_files')
         .update({ is_active: false })
-        .eq('file_category', 'icons')
+        .eq('file_category', 'logos')
         .eq('file_type', 'logo');
 
       // Activer le logo sélectionné
