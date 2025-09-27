@@ -87,10 +87,19 @@ export default function AdminCertifications() {
     e.preventDefault();
 
     try {
+      // Nettoyer les données avant envoi
+      const cleanedData = {
+        ...formData,
+        expiry_date: formData.expiry_date === "" ? null : formData.expiry_date,
+        credential_url: formData.credential_url === "" ? null : formData.credential_url,
+        pdf_url: formData.pdf_url === "" ? null : formData.pdf_url,
+        image_url: formData.image_url === "" ? null : formData.image_url,
+        credential_id: formData.credential_id === "" ? null : formData.credential_id
+      };
       if (editingCert) {
         const { error } = await supabase
           .from('certifications')
-          .update(formData)
+          .update(cleanedData)
           .eq('id', editingCert.id);
 
         if (error) throw error;
@@ -102,7 +111,7 @@ export default function AdminCertifications() {
       } else {
         const { error } = await supabase
           .from('certifications')
-          .insert([formData]);
+          .insert([cleanedData]);
 
         if (error) throw error;
         

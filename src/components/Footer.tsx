@@ -22,7 +22,7 @@ export function Footer() {
         const { data, error } = await supabase
           .from("admin_files")
           .select("file_url")
-          .eq("file_category", "logo")
+          .eq("file_category", "logos")
           .eq("is_active", true)
           .order('created_at', { ascending: false })
           .limit(1);

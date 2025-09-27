@@ -581,7 +581,7 @@ export type Database = {
       }
     }
     Enums: {
-      security_event_kind: "audit" | "anomaly" | "security_log"
+      security_event_kind: "audit" | "anomaly" | "security_log" | "ADMIN_ACTION"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -709,7 +709,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      security_event_kind: ["audit", "anomaly", "security_log"],
+      security_event_kind: ["audit", "anomaly", "security_log", "ADMIN_ACTION"],
     },
   },
 } as const
