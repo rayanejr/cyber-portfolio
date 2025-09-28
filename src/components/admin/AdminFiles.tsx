@@ -81,9 +81,23 @@ const AdminFiles = () => {
         .from('admin-files')
         .getPublicUrl(filePath);
 
+      // Mapper le type MIME vers nos contraintes de BD
+      let dbFileType = 'other';
+      if (file.type.startsWith('image/')) {
+        dbFileType = 'image';
+      } else if (file.type === 'application/pdf') {
+        dbFileType = 'pdf';
+      } else if (file.type.startsWith('video/')) {
+        dbFileType = 'video';
+      } else if (file.type.startsWith('audio/')) {
+        dbFileType = 'audio';
+      } else {
+        dbFileType = 'document';
+      }
+
       const fileData = {
         filename: formData.filename || file.name,
-        file_type: file.type,
+        file_type: dbFileType,
         file_url: data.publicUrl,
         file_category: formData.file_category,
         is_active: formData.is_active
@@ -208,9 +222,11 @@ const AdminFiles = () => {
   const getCategoryLabel = (category: string) => {
     const labels: { [key: string]: string } = {
       cv: "CV",
-      avatar: "Avatar",
-      project: "Projet",
-      blog: "Blog"
+      logos: "Logos",
+      certificates: "Certificats",
+      documents: "Documents",
+      images: "Images",
+      other: "Autre"
     };
     return labels[category] || category;
   };
@@ -218,9 +234,11 @@ const AdminFiles = () => {
   const getCategoryBadgeVariant = (category: string) => {
     const variants: { [key: string]: "default" | "secondary" | "destructive" | "outline" } = {
       cv: "default",
-      avatar: "secondary",
-      project: "outline",
-      blog: "destructive"
+      logos: "secondary",
+      certificates: "outline",
+      documents: "outline",
+      images: "secondary",
+      other: "destructive"
     };
     return variants[category] || "outline";
   };
@@ -272,9 +290,11 @@ const AdminFiles = () => {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="cv">CV</SelectItem>
-                        <SelectItem value="avatar">Avatar</SelectItem>
-                        <SelectItem value="project">Projet</SelectItem>
-                        <SelectItem value="blog">Blog</SelectItem>
+                        <SelectItem value="logos">Logos</SelectItem>
+                        <SelectItem value="certificates">Certificats</SelectItem>
+                        <SelectItem value="documents">Documents</SelectItem>
+                        <SelectItem value="images">Images</SelectItem>
+                        <SelectItem value="other">Autre</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -318,9 +338,11 @@ const AdminFiles = () => {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="cv">CV</SelectItem>
-                        <SelectItem value="avatar">Avatar</SelectItem>
-                        <SelectItem value="project">Projet</SelectItem>
-                        <SelectItem value="blog">Blog</SelectItem>
+                        <SelectItem value="logos">Logos</SelectItem>
+                        <SelectItem value="certificates">Certificats</SelectItem>
+                        <SelectItem value="documents">Documents</SelectItem>
+                        <SelectItem value="images">Images</SelectItem>
+                        <SelectItem value="other">Autre</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
