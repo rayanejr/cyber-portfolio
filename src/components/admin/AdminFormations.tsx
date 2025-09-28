@@ -84,6 +84,7 @@ export default function AdminFormations() {
 
     const submitData = {
       ...formData,
+      end_date: formData.end_date || null, // Convertir string vide en null
       skills: formData.skills ? formData.skills.split(',').map(s => s.trim()).filter(s => s) : []
     };
 
