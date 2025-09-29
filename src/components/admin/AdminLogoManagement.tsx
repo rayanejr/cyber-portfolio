@@ -240,7 +240,7 @@ const AdminLogoManagement: React.FC<AdminLogoManagementProps> = ({ currentUser }
 
   if (loading) return <div>Chargement...</div>;
 
-  const activeLogo = logos.find(logo => logo.is_active && logo.file_type === 'logo');
+  const activeLogo = logos.find(logo => logo.is_active);
 
   return (
     <div className="space-y-6">
@@ -276,16 +276,18 @@ const AdminLogoManagement: React.FC<AdminLogoManagementProps> = ({ currentUser }
                       disabled={uploading}
                     />
                     {formData.file_url && (
-                       <div className="mt-2">
+                       <div className="mt-2 p-2 border rounded bg-muted">
                          <img 
                            src={formData.file_url} 
                            alt="Preview" 
                            className="w-24 h-24 object-contain rounded border bg-white" 
+                           onLoad={() => console.log('Image loaded successfully:', formData.file_url)}
                            onError={(e) => {
-                             console.error('Image preview error:', e);
+                             console.error('Image preview error:', formData.file_url);
                              e.currentTarget.style.display = 'none';
                            }}
                          />
+                         <p className="text-xs text-muted-foreground mt-1">Preview du logo</p>
                        </div>
                     )}
                   </div>

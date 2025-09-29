@@ -61,11 +61,22 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
         throw uploadError;
       }
 
+      // Générer l'URL publique correcte
       const { data } = supabase.storage
         .from(bucket)
         .getPublicUrl(filePath);
 
       console.log('File uploaded successfully:', data.publicUrl);
+      
+      // Vérifier que l'URL est accessible
+      try {
+        const response = await fetch(data.publicUrl, { method: 'HEAD' });
+        if (!response.ok) {
+          console.warn('File may not be publicly accessible:', response.status);
+        }
+      } catch (e) {
+        console.warn('Unable to verify file accessibility:', e);
+      }
 
       const fileType = file.type.startsWith('image/') ? 'image' : 
                       file.type === 'application/pdf' ? 'pdf' : 
@@ -110,7 +121,10 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
             type="button"
             variant="outline"
             size="sm"
-            onClick={() => window.open(currentFile, '_blank')}
+            onClick={() => {
+              console.log('Opening file:', currentFile);
+              window.open(currentFile, '_blank');
+            }}
           >
             Voir
           </Button>
