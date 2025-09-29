@@ -90,8 +90,7 @@ const AdminIcons = () => {
       await supabase
         .from('admin_files')
         .update({ is_active: false })
-        .eq('file_category', 'logos')
-        .eq('file_type', 'logo');
+        .eq('file_category', 'logos');
 
       // Enregistrer le nouveau logo
       const { error: dbError } = await supabase
@@ -99,7 +98,7 @@ const AdminIcons = () => {
         .insert({
           filename: fileName,
           file_url: data.publicUrl,
-          file_type: 'logo',
+          file_type: 'image',
           file_category: 'logos',
           is_active: true
         });
@@ -132,8 +131,7 @@ const AdminIcons = () => {
       await supabase
         .from('admin_files')
         .update({ is_active: false })
-        .eq('file_category', 'logos')
-        .eq('file_type', 'logo');
+        .eq('file_category', 'logos');
 
       // Activer le logo sélectionné
       await supabase

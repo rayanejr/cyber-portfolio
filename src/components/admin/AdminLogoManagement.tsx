@@ -36,7 +36,7 @@ const AdminLogoManagement: React.FC<AdminLogoManagementProps> = ({ currentUser }
   const [formData, setFormData] = useState({
     filename: '',
     file_url: '',
-    file_type: 'logo',
+    file_type: 'image',
     description: '',
     is_active: false
   });
@@ -134,7 +134,7 @@ const AdminLogoManagement: React.FC<AdminLogoManagementProps> = ({ currentUser }
       const logoData = {
         filename: formData.filename,
         file_url: formData.file_url,
-        file_type: formData.file_type,
+        file_type: 'image', // Type correct pour les images
         file_category: 'logos', // Utiliser 'logos' au lieu de 'logo'
         is_active: formData.is_active
       };
@@ -220,7 +220,7 @@ const AdminLogoManagement: React.FC<AdminLogoManagementProps> = ({ currentUser }
     setFormData({
       filename: '',
       file_url: '',
-      file_type: 'logo',
+      file_type: 'image',
       description: '',
       is_active: false
     });
@@ -276,9 +276,17 @@ const AdminLogoManagement: React.FC<AdminLogoManagementProps> = ({ currentUser }
                       disabled={uploading}
                     />
                     {formData.file_url && (
-                      <div className="mt-2">
-                        <img src={formData.file_url} alt="Preview" className="w-24 h-24 object-contain rounded border" />
-                      </div>
+                       <div className="mt-2">
+                         <img 
+                           src={formData.file_url} 
+                           alt="Preview" 
+                           className="w-24 h-24 object-contain rounded border bg-white" 
+                           onError={(e) => {
+                             console.error('Image preview error:', e);
+                             e.currentTarget.style.display = 'none';
+                           }}
+                         />
+                       </div>
                     )}
                   </div>
 
