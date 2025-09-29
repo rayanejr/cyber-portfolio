@@ -39,7 +39,7 @@ import AdminSecurity from "@/components/admin/AdminSecurity";
 import { SecurityTestPanel } from "@/components/admin/SecurityTestPanel";
 import { AdminSecurityAdvanced } from "@/components/admin/AdminSecurityAdvanced";
 import { AdminUsersManagement } from "@/components/admin/AdminUsersManagement";
-import AdminLogoManagement from "@/components/admin/AdminLogoManagement";
+
 import AdminAuth from "@/components/auth/AdminAuth";
 
 import type { User } from '@supabase/supabase-js';
@@ -338,10 +338,6 @@ const Admin = () => {
                 <Upload className="w-3 h-3" />
                 <span className="hidden xs:inline">Fichiers</span>
               </TabsTrigger>
-              <TabsTrigger value="icons" className="flex items-center gap-1 text-xs px-2 py-1">
-                <Image className="w-3 h-3" />
-                <span className="hidden xs:inline">Logo</span>
-              </TabsTrigger>
               <TabsTrigger value="messages" className="flex items-center gap-1 text-xs px-2 py-1">
                 <MessageSquare className="w-3 h-3" />
                 <span className="hidden xs:inline">Messages</span>
@@ -433,9 +429,6 @@ const Admin = () => {
             <AdminFiles />
           </TabsContent>
 
-          <TabsContent value="icons">
-            <AdminLogoManagement currentUser={currentUser} />
-          </TabsContent>
 
           <TabsContent value="messages">
             <Card>
