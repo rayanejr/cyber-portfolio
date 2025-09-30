@@ -629,24 +629,14 @@ export default function Home() {
                       <Button
                         size="sm"
                         onClick={() => viewCertification(cert)}
-                        className="btn-matrix flex-1"
+                        className="btn-cyber flex-1"
                         disabled={!canView}
-                        title={canView ? "Ouvrir le document" : "PDF/JPG requis"}
+                        title={canView ? "Voir la certification" : "Document non disponible"}
                       >
-                        Voir
+                        <ExternalLink className="h-4 w-4 mr-1" />
+                        Voir certification
                       </Button>
 
-                      {(cert.pdf_url || cert.image_url) && (
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => viewCertification(cert)}
-                          className="btn-ghost-cyber"
-                          title="Voir la certification"
-                        >
-                          <ExternalLink className="h-4 w-4" />
-                        </Button>
-                      )}
                       {cert.credential_url && (
                         <Button
                           size="sm"
