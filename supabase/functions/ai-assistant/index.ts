@@ -7,56 +7,52 @@ const corsHeaders = {
 };
 
 const RAYANE_PROFILE = `
-PROFIL PROFESSIONNEL DE RAYANE JERBI - EXPERT CYBERSÉCURITÉ
+PROFIL PROFESSIONNEL DE RAYANE JERBI - ÉTUDIANT CYBERSÉCURITÉ
 
-🎯 EXPERTISE PRINCIPALE :
-Expert en cybersécurité avec plus de 5 ans d'expérience, spécialisé dans l'audit de sécurité, la protection d'infrastructures critiques et la mise en conformité réglementaire.
+🎯 PROFIL ACTUEL :
+Étudiant en 2ᵉ année de Master IRS (Informatique, Réseaux et Systèmes) spécialité Cybersécurité à l'Université Paris-Saclay (2024-2026). Recherche activement une alternance (3 semaines entreprise / 1 semaine école) pour développer ses compétences en cybersécurité et DevSecOps.
 
 📚 FORMATION & CERTIFICATIONS :
-- Master 2 en Cybersécurité et Cryptologie
-- CISSP (Certified Information Systems Security Professional)
-- CEH (Certified Ethical Hacker)
-- Security+ CompTIA
-- OSCP (Offensive Security Certified Professional)
+- Master 2 IRS Cybersécurité (Université Paris-Saclay, 2024-2026)
+- Sécurité du Cloud (DataScientest, 03/2024)
+- Bash & Linux (DataScientest, 01/2024)
+- Introduction à Python (DataScientest, 01/2024)
+- Prévention Sup' (INRS, 02/2024)
 
-💼 DOMAINES D'EXPERTISE :
-• SÉCURITÉ OFFENSIVE : Pentesting, audit de sécurité, analyse de vulnérabilités
-• SÉCURITÉ DÉFENSIVE : SOC, SIEM, détection d'intrusion, réponse aux incidents
-• CONFORMITÉ : RGPD, ISO 27001, ANSSI, audit de conformité
-• CLOUD SECURITY : AWS Security, Azure Security, GCP, architecture sécurisée
-• DEVOPS/DEVSECOPS : CI/CD sécurisé, container security, infrastructure as code
-• RÉSEAUX : Configuration sécurisée, pare-feu, VPN, monitoring réseau
+💼 DOMAINES D'EXPERTISE EN DÉVELOPPEMENT :
+• CYBERSÉCURITÉ : Pentesting, audit de sécurité, analyse de vulnérabilités
+• DEVSECOPS : CI/CD sécurisé, intégration de la sécurité dans le pipeline
+• SYSTÈMES & RÉSEAUX : Administration, configuration sécurisée
+• CLOUD : AWS, Terraform, infrastructure as code
+• AUTOMATISATION : Python, Bash, PowerShell
 
 🛠️ TECHNOLOGIES MAÎTRISÉES :
-• Langages : Python, JavaScript, Bash, PowerShell, Go
-• Outils Sécurité : Nessus, Metasploit, Burp Suite, OWASP ZAP, Nmap
-• SIEM/SOC : Splunk, ELK Stack, QRadar, Sentinel
-• Cloud : AWS, Azure, GCP, Terraform, Docker, Kubernetes
-• OS : Linux (Ubuntu, CentOS, Kali), Windows Server
+• Langages : Python, C, Java, Bash, PowerShell
+• Outils DevOps : Jenkins, GitLab CI, Docker, Kubernetes, Terraform
+• Sécurité : Kali Linux, Metasploit, Nessus, pfSense, Fortinet
+• Systèmes : Linux (Ubuntu, CentOS), Windows Server, VMware
+• Réseaux : TCP/IP, VLAN, Firewall, VPN, Cisco Packet Tracer
 
 🚀 PROJETS RÉCENTS :
-1. Plateforme SOC automatisée avec IA pour détection d'anomalies
-2. Infrastructure cloud sécurisée multi-région avec chiffrement bout en bout
-3. Solution de backup sécurisé avec récupération disaster recovery
-4. Audit de sécurité complet pour entreprise du CAC 40
-5. Système de détection d'intrusion basé sur machine learning
+1. Système de Sécurité Cyber - Solution complète avec détection d'intrusions
+2. Plateforme E-commerce Sécurisée - Architecture microservices avec sécurité renforcée
+3. Blue Team DFIR Cheats - Kit DFIR avec scripts de collecte et analyse
+4. Infrastructure cloud sécurisée avec Terraform
+5. Projets d'automatisation DevSecOps
 
 📞 CONTACT :
 Email : rayane.jerbi@yahoo.com
 Téléphone : +33 6 20 28 41 14
 Localisation : Paris 15ème, France
-LinkedIn : [Profil LinkedIn disponible]
 
-🎯 SERVICES PROPOSÉS :
-• Audit et tests d'intrusion
-• Conception d'architectures sécurisées
-• Formation et sensibilisation cybersécurité
-• Consulting en conformité réglementaire
-• Mise en place de SOC/SIEM
-• Support technique et maintenance sécurité
+🎯 RECHERCHE D'ALTERNANCE :
+• Rythme : 3 semaines entreprise / 1 semaine école
+• Domaines d'intérêt : Cybersécurité, DevSecOps, Cloud Security, SOC/SIEM
+• Objectif : Acquérir une expérience professionnelle en cybersécurité
+• Disponibilité : Immédiate
 
-💡 PHILOSOPHIE :
-"La cybersécurité n'est pas qu'une question technique, c'est une culture d'entreprise à développer."
+💡 MOTIVATION :
+"Passionné par la cybersécurité et l'automatisation, je cherche à allier sécurité et efficacité opérationnelle dans un environnement professionnel stimulant."
 `;
 
 serve(async (req) => {
