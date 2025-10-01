@@ -4,7 +4,6 @@ import {
   Mail, Phone, MapPin
 } from "lucide-react";
 import CVDownloadButton from "@/components/CVDownloadButton";
-import CertificationViewer from "@/components/CertificationViewer";
 import AIAssistantSection from "@/components/AIAssistantSection";
 import { Button } from "@/components/ui/button";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
@@ -224,12 +223,21 @@ export default function Home() {
     return u.endsWith(".pdf") || u.endsWith(".jpg") || u.endsWith(".jpeg");
   }
 
-  const [selectedCert, setSelectedCert] = useState<CertRow | null>(null);
-  const [showCertViewer, setShowCertViewer] = useState(false);
 
   function viewCertification(cert: CertRow) {
-    setSelectedCert(cert);
-    setShowCertViewer(true);
+    if (cert.pdf_url) {
+      window.open(cert.pdf_url, '_blank');
+    } else if (cert.image_url) {
+      window.open(cert.image_url, '_blank');
+    } else if (cert.credential_url) {
+      window.open(cert.credential_url, '_blank');
+    } else {
+      toast({
+        title: "Aucun fichier",
+        description: "Aucun document ou lien n'est disponible pour cette certification",
+        variant: "destructive"
+      });
+    }
   }
 
   return (
@@ -730,20 +738,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Certification Viewer Modal */}
-      <CertificationViewer
-        isOpen={showCertViewer}
-        onClose={() => setShowCertViewer(false)}
-        certification={selectedCert ? {
-          name: selectedCert.name,
-          issuer: selectedCert.issuer || '',
-          issue_date: selectedCert.issue_date,
-          expiry_date: selectedCert.expiry_date,
-          pdf_url: selectedCert.pdf_url,
-          image_url: selectedCert.image_url,
-          credential_url: selectedCert.credential_url
-        } : null}
-      />
     </div>
   );
 }
