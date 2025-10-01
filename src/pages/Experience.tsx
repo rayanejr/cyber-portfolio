@@ -144,7 +144,7 @@ const Experience = () => {
                             </div>
                           </div>
                           {experience.is_current && (
-                            <Badge className="bg-success text-success-foreground shadow-lg shadow-success/50 animate-pulse">
+                            <Badge className="bg-green-500 text-white shadow-lg shadow-green-500/50 animate-pulse">
                               <Sparkles className="w-3 h-3 mr-1" />
                               Actuel
                             </Badge>

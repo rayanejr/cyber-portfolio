@@ -143,7 +143,7 @@ const Formation = () => {
                             </div>
                           </div>
                           {formation.is_current && (
-                            <Badge className="bg-success text-success-foreground shadow-lg shadow-success/50 animate-pulse">
+                            <Badge className="bg-green-500 text-white shadow-lg shadow-green-500/50 animate-pulse">
                               En cours
                             </Badge>
                           )}

@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ExternalLink, Github, Eye, Search, Filter } from "lucide-react";
+import { ExternalLink, Github, Eye, Search, Filter, FolderGit2, Sparkles } from "lucide-react";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 
 interface Project {
@@ -59,7 +59,6 @@ const Projects = () => {
   const filterAndSortProjects = () => {
     let filtered = [...projects];
 
-    // Filter by search term
     if (searchTerm) {
       filtered = filtered.filter(project =>
         project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -70,7 +69,6 @@ const Projects = () => {
       );
     }
 
-    // Filter by technology
     if (selectedTech !== "all") {
       filtered = filtered.filter(project =>
         project.technologies.some(tech => 
@@ -79,7 +77,6 @@ const Projects = () => {
       );
     }
 
-    // Sort projects
     switch (sortBy) {
       case "title":
         filtered.sort((a, b) => a.title.localeCompare(b.title));
@@ -100,7 +97,6 @@ const Projects = () => {
     setFilteredProjects(filtered);
   };
 
-  // Get unique technologies for filter
   const getAllTechnologies = () => {
     const techSet = new Set<string>();
     projects.forEach(project => {
@@ -111,15 +107,12 @@ const Projects = () => {
 
   if (loading) {
     return (
-      <div className="container mx-auto px-4 sm:px-6 py-12 sm:py-20">
-        <div className="text-center">
-          <div className="animate-pulse space-y-4">
-            <div className="h-8 bg-muted rounded w-2/3 sm:w-1/3 mx-auto"></div>
-            <div className="h-4 bg-muted rounded w-4/5 sm:w-1/2 mx-auto"></div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mt-8">
-              {[...Array(6)].map((_, i) => (
-                <div key={i} className="h-64 bg-muted rounded-lg"></div>
-              ))}
+      <div className="min-h-screen bg-background py-12 sm:py-20">
+        <div className="container mx-auto px-4 sm:px-6">
+          <div className="text-center">
+            <div className="animate-pulse space-y-4">
+              <div className="h-8 bg-muted rounded w-2/3 sm:w-1/3 mx-auto"></div>
+              <div className="h-4 bg-muted rounded w-4/5 sm:w-1/2 mx-auto"></div>
             </div>
           </div>
         </div>
@@ -128,195 +121,214 @@ const Projects = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 sm:px-6 py-12 sm:py-20">
-      {/* Header */}
-      <div className="text-center mb-12 sm:mb-16">
-        <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold font-orbitron mb-4 sm:mb-6 cyber-text animate-fade-in">
-          Mes Projets
-        </h1>
-        <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto px-4 animate-fade-in" style={{ animationDelay: '0.3s', animationFillMode: 'both' }}>
-          Découvrez mes réalisations en cybersécurité, développement web et analyse de sécurité
-        </p>
-      </div>
-
-      {/* Search and Filters */}
-      <div className="mb-8 sm:mb-12 space-y-4 sm:space-y-6">
-        {/* Search Bar */}
-        <div className="relative max-w-md mx-auto">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-          <Input
-            type="text"
-            placeholder="Rechercher un projet..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10 cyber-border bg-card/50 backdrop-blur-sm"
-          />
-        </div>
-
-        {/* Filters */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-          <div className="flex items-center gap-2">
-            <Filter className="w-4 h-4 text-muted-foreground" />
-            <span className="text-sm text-muted-foreground font-medium">Filtres:</span>
+    <div className="min-h-screen bg-background relative overflow-hidden">
+      {/* Background effects */}
+      <div className="absolute inset-0 cyber-grid opacity-10"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-accent/5 via-transparent to-primary/5"></div>
+      
+      <div className="relative container mx-auto px-4 sm:px-6 py-12 sm:py-20">
+        {/* Enhanced Header */}
+        <div className="text-center mb-12 sm:mb-16 animate-fade-in">
+          <div className="flex items-center justify-center gap-4 mb-6">
+            <div className="w-3 h-3 bg-accent rounded-full animate-ping"></div>
+            <FolderGit2 className="w-10 h-10 text-accent animate-float" />
+            <div className="w-3 h-3 bg-primary rounded-full animate-ping" style={{ animationDelay: '0.5s' }}></div>
           </div>
           
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-            {/* Technology Filter */}
-            <Select value={selectedTech} onValueChange={setSelectedTech}>
-              <SelectTrigger className="w-full sm:w-48 cyber-border bg-card/50 backdrop-blur-sm">
-                <SelectValue placeholder="Technologie" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Toutes les technologies</SelectItem>
-                {getAllTechnologies().map((tech) => (
-                  <SelectItem key={tech} value={tech}>{tech}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            {/* Sort Filter */}
-            <Select value={sortBy} onValueChange={setSortBy}>
-              <SelectTrigger className="w-full sm:w-48 cyber-border bg-card/50 backdrop-blur-sm">
-                <SelectValue placeholder="Trier par" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="featured">Mis en avant</SelectItem>
-                <SelectItem value="title">Nom (A-Z)</SelectItem>
-                <SelectItem value="date">Plus récent</SelectItem>
-              </SelectContent>
-            </Select>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-orbitron font-bold mb-6">
+            <span className="bg-gradient-to-r from-accent via-primary to-secondary bg-clip-text text-transparent">
+              Mes Projets
+            </span>
+          </h1>
+          
+          <div className="relative max-w-3xl mx-auto">
+            <p className="text-lg sm:text-xl text-muted-foreground px-4 animate-fade-in" style={{ animationDelay: '0.3s', animationFillMode: 'both' }}>
+              Découvrez mes réalisations en cybersécurité, développement web et analyse de sécurité
+            </p>
+            <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-32 h-1 bg-gradient-to-r from-transparent via-accent to-transparent"></div>
           </div>
         </div>
 
-        {/* Results count */}
-        <div className="text-center">
-          <p className="text-sm text-muted-foreground">
-            {filteredProjects.length} projet{filteredProjects.length !== 1 ? 's' : ''} trouvé{filteredProjects.length !== 1 ? 's' : ''}
-          </p>
-        </div>
-      </div>
+        {/* Search and Filters */}
+        <div className="mb-8 sm:mb-12 space-y-6 animate-fade-in" style={{ animationDelay: '0.6s', animationFillMode: 'both' }}>
+          {/* Search Bar */}
+          <div className="relative max-w-2xl mx-auto">
+            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
+            <Input
+              type="text"
+              placeholder="Rechercher un projet..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-12 cyber-border bg-card/50 backdrop-blur-sm h-12 text-base"
+            />
+          </div>
 
-      {/* Projects Grid */}
-      {filteredProjects.length === 0 ? (
-        <div className="text-center py-12">
-          <p className="text-muted-foreground text-lg">
-            {projects.length === 0 ? "Aucun projet disponible pour le moment." : "Aucun projet ne correspond à vos critères de recherche."}
-          </p>
-          {searchTerm || selectedTech !== "all" ? (
-            <Button 
-              variant="outline" 
-              onClick={() => {
-                setSearchTerm("");
-                setSelectedTech("all");
-                setSortBy("featured");
-              }}
-              className="mt-4"
-            >
-              Réinitialiser les filtres
-            </Button>
-          ) : null}
+          {/* Filters */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <div className="flex items-center gap-2">
+              <Filter className="w-5 h-5 text-primary" />
+              <span className="text-sm text-muted-foreground font-medium">Filtres:</span>
+            </div>
+            
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+              <Select value={selectedTech} onValueChange={setSelectedTech}>
+                <SelectTrigger className="w-full sm:w-52 cyber-border bg-card/50 backdrop-blur-sm">
+                  <SelectValue placeholder="Technologie" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Toutes les technologies</SelectItem>
+                  {getAllTechnologies().map((tech) => (
+                    <SelectItem key={tech} value={tech}>{tech}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              <Select value={sortBy} onValueChange={setSortBy}>
+                <SelectTrigger className="w-full sm:w-52 cyber-border bg-card/50 backdrop-blur-sm">
+                  <SelectValue placeholder="Trier par" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="featured">Mis en avant</SelectItem>
+                  <SelectItem value="title">Nom (A-Z)</SelectItem>
+                  <SelectItem value="date">Plus récent</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          {/* Results count */}
+          <div className="text-center">
+            <p className="text-sm text-muted-foreground">
+              {filteredProjects.length} projet{filteredProjects.length !== 1 ? 's' : ''} trouvé{filteredProjects.length !== 1 ? 's' : ''}
+            </p>
+          </div>
         </div>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
-          {filteredProjects.map((project, index) => (
-            <Card 
-              key={project.id} 
-              className="cyber-border hover:cyber-glow transition-all duration-300 group bg-card/50 backdrop-blur-sm h-full flex flex-col animate-fade-in"
-              style={{ 
-                animationDelay: `${0.6 + (index * 0.1)}s`, 
-                animationFillMode: 'both' 
-              }}
-            >
-              {project.image_url && (
-                <div className="relative overflow-hidden rounded-t-lg">
-                  <img
-                    src={project.image_url}
-                    alt={project.title}
-                    className="w-full h-40 sm:h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  {project.featured && (
-                    <Badge className="absolute top-3 left-3 bg-primary/90 text-primary-foreground text-xs">
-                      Mis en avant
-                    </Badge>
+
+        {/* Projects Grid */}
+        {filteredProjects.length === 0 ? (
+          <div className="text-center py-16 animate-fade-in">
+            <p className="text-muted-foreground text-lg mb-4">
+              {projects.length === 0 ? "Aucun projet disponible pour le moment." : "Aucun projet ne correspond à vos critères de recherche."}
+            </p>
+            {searchTerm || selectedTech !== "all" ? (
+              <Button 
+                variant="outline" 
+                onClick={() => {
+                  setSearchTerm("");
+                  setSelectedTech("all");
+                  setSortBy("featured");
+                }}
+                className="btn-ghost-cyber"
+              >
+                Réinitialiser les filtres
+              </Button>
+            ) : null}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-8">
+            {filteredProjects.map((project, index) => (
+              <Card 
+                key={project.id} 
+                className="cyber-border hover:cyber-glow transition-all duration-500 group bg-card/50 backdrop-blur-sm h-full flex flex-col hover:scale-[1.02] hover:-translate-y-1 animate-fade-in"
+                style={{ 
+                  animationDelay: `${0.9 + (index * 0.1)}s`, 
+                  animationFillMode: 'both' 
+                }}
+              >
+                {project.image_url && (
+                  <div className="relative overflow-hidden rounded-t-lg">
+                    {/* Animated overlay on hover */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"></div>
+                    <img
+                      src={project.image_url}
+                      alt={project.title}
+                      className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    {project.featured && (
+                      <Badge className="absolute top-3 right-3 bg-gradient-to-r from-accent to-primary text-white shadow-lg shadow-accent/50 z-20">
+                        <Sparkles className="w-3 h-3 mr-1" />
+                        Mis en avant
+                      </Badge>
+                    )}
+                  </div>
+                )}
+
+                <CardHeader className="pb-3 relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-r from-accent/0 via-accent/5 to-accent/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
+                  <CardTitle className="text-lg sm:text-xl font-orbitron line-clamp-2 relative group-hover:text-accent transition-colors">
+                    {project.title}
+                  </CardTitle>
+                  {project.description && (
+                    <p className="text-sm sm:text-base text-muted-foreground line-clamp-3 leading-relaxed">
+                      {project.description}
+                    </p>
                   )}
-                </div>
-              )}
+                </CardHeader>
 
-              <CardHeader className="pb-3">
-                <CardTitle className="text-lg sm:text-xl font-orbitron cyber-text line-clamp-2">
-                  {project.title}
-                </CardTitle>
-                {project.description && (
-                  <p className="text-sm sm:text-base text-muted-foreground line-clamp-3">
-                    {project.description}
-                  </p>
-                )}
-              </CardHeader>
-
-              <CardContent className="flex-1 flex flex-col justify-between space-y-4">
-                {/* Technologies */}
-                {project.technologies && project.technologies.length > 0 && (
-                  <div className="flex flex-wrap gap-1.5 sm:gap-2">
-                    {project.technologies.slice(0, 4).map((tech, index) => (
-                      <Badge key={index} variant="outline" className="text-xs cyber-border bg-muted/50">
-                        {tech}
-                      </Badge>
-                    ))}
-                    {project.technologies.length > 4 && (
-                      <Badge variant="outline" className="text-xs cyber-border bg-muted/50">
-                        +{project.technologies.length - 4}
-                      </Badge>
-                    )}
-                  </div>
-                )}
-
-                {/* Action Buttons */}
-                <div className="flex flex-col sm:flex-row gap-2 pt-2">
-                  {/* Détails (route interne) */}
-                  <Button asChild size="sm" className="flex-1 min-w-0">
-                    <Link to={`/projects/${project.id}`}>
-                      <Eye className="w-4 h-4 mr-1.5" />
-                      <span className="truncate">Détails</span>
-                    </Link>
-                  </Button>
-
-                  <div className="flex gap-2">
-                    {/* Démo (lien externe) */}
-                    {project.demo_url && (
-                      <Button asChild size="sm" variant="outline" className="cyber-border bg-card/50">
-                        <a
-                          href={project.demo_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1.5"
+                <CardContent className="flex-1 flex flex-col justify-between space-y-4 pt-0">
+                  {/* Technologies */}
+                  {project.technologies && project.technologies.length > 0 && (
+                    <div className="flex flex-wrap gap-2">
+                      {project.technologies.slice(0, 4).map((tech, techIndex) => (
+                        <Badge 
+                          key={techIndex} 
+                          variant="outline" 
+                          className="text-xs cyber-border bg-muted/50 hover:bg-accent hover:text-accent-foreground hover:border-accent transition-all duration-300 cursor-default"
                         >
-                          <ExternalLink className="w-4 h-4" />
-                          <span className="sr-only sm:not-sr-only">Démo</span>
-                        </a>
-                      </Button>
-                    )}
+                          {tech}
+                        </Badge>
+                      ))}
+                      {project.technologies.length > 4 && (
+                        <Badge variant="outline" className="text-xs cyber-border bg-muted/50">
+                          +{project.technologies.length - 4}
+                        </Badge>
+                      )}
+                    </div>
+                  )}
 
-                    {/* GitHub (lien externe) */}
-                    {project.github_url && (
-                      <Button asChild size="sm" variant="outline" className="cyber-border bg-card/50">
-                        <a
-                          href={project.github_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1.5"
-                        >
-                          <Github className="w-4 h-4" />
-                          <span className="sr-only sm:not-sr-only">Code</span>
-                        </a>
-                      </Button>
-                    )}
+                  {/* Action Buttons */}
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <Button asChild size="sm" className="flex-1 btn-cyber">
+                      <Link to={`/projects/${project.id}`}>
+                        <Eye className="w-4 h-4 mr-1.5" />
+                        Détails
+                      </Link>
+                    </Button>
+
+                    <div className="flex gap-2">
+                      {project.demo_url && (
+                        <Button asChild size="sm" variant="outline" className="cyber-border bg-card/50 hover:bg-accent/10 hover:border-accent">
+                          <a
+                            href={project.demo_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1.5"
+                          >
+                            <ExternalLink className="w-4 h-4" />
+                          </a>
+                        </Button>
+                      )}
+
+                      {project.github_url && (
+                        <Button asChild size="sm" variant="outline" className="cyber-border bg-card/50 hover:bg-primary/10 hover:border-primary">
+                          <a
+                            href={project.github_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1.5"
+                          >
+                            <Github className="w-4 h-4" />
+                          </a>
+                        </Button>
+                      )}
+                    </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      )}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
