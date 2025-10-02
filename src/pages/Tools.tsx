@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Shield, Key, AlertTriangle, Users, Lock, Globe, Terminal, Wifi, Search, Bug, Code, Database, Activity } from "lucide-react";
+import { Shield, Key, AlertTriangle, Users, Lock, Globe, Terminal, Wifi, Search, Bug, Code, Database, Activity, Wrench } from "lucide-react";
 
 interface Tool {
   id: string;
@@ -798,39 +798,62 @@ const Tools = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background py-12 sm:py-20">
-      <div className="container mx-auto px-4 sm:px-6">
-        <div className="text-center mb-12 sm:mb-16">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6 cyber-text">
-            Outils Cybersécurité
-          </h1>
-          <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto px-4">
-            Collection d'outils gratuits pour tester et améliorer votre sécurité
-          </p>
-        </div>
+    <div className="min-h-screen bg-background relative overflow-hidden">
+      {/* Background effects */}
+      <div className="absolute inset-0 cyber-grid opacity-10"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5"></div>
+      
+      <div className="relative py-12 sm:py-20">
+        <div className="container mx-auto px-4 sm:px-6">
+          {/* Enhanced header */}
+          <div className="text-center mb-12 sm:mb-16 animate-fade-in">
+            <div className="flex items-center justify-center gap-4 mb-6">
+              <div className="w-3 h-3 bg-secondary rounded-full animate-ping"></div>
+              <Wrench className="w-10 h-10 text-secondary animate-float" />
+              <div className="w-3 h-3 bg-accent rounded-full animate-ping" style={{ animationDelay: '0.5s' }}></div>
+            </div>
+            
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-orbitron font-bold mb-6">
+              <span className="bg-gradient-to-r from-secondary via-accent to-primary bg-clip-text text-transparent">
+                Outils Cybersécurité
+              </span>
+            </h1>
+            
+            <div className="relative max-w-3xl mx-auto">
+              <p className="text-lg sm:text-xl text-muted-foreground px-4 animate-fade-in" style={{ animationDelay: '0.3s', animationFillMode: 'both' }}>
+                Collection d'outils gratuits pour tester et améliorer votre sécurité
+              </p>
+              <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-32 h-1 bg-gradient-to-r from-transparent via-secondary to-transparent"></div>
+            </div>
+          </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-          {tools.map((tool) => (
-            <Card key={tool.id} className="cyber-border hover:cyber-glow transition-all duration-300 h-full flex flex-col">
-              <CardHeader className="pb-3">
-                <div className="flex items-center gap-3">
-                  <div className={`p-2 rounded-lg ${getCategoryColor(tool.category)}`}>
-                    {getCategoryIcon(tool.category)}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+            {tools.map((tool, idx) => (
+              <Card 
+                key={tool.id} 
+                className="cyber-border hover:cyber-glow transition-all duration-500 h-full flex flex-col bg-card/50 backdrop-blur-sm hover:scale-105 hover:-translate-y-1 group/card animate-fade-in"
+                style={{ animationDelay: `${0.6 + (idx * 0.1)}s`, animationFillMode: 'both' }}
+              >
+                <CardHeader className="pb-3">
+                  <div className="flex items-center gap-3">
+                    <div className={`p-2 rounded-lg ${getCategoryColor(tool.category)} pulse-glow`}>
+                      {getCategoryIcon(tool.category)}
+                    </div>
+                    <div>
+                      <CardTitle className="text-lg group-hover/card:text-secondary transition-colors">{tool.name}</CardTitle>
+                      <Badge variant="outline" className="text-xs mt-1 hover:bg-secondary hover:text-secondary-foreground hover:border-secondary transition-all duration-300">
+                        {tool.category}
+                      </Badge>
+                    </div>
                   </div>
-                  <div>
-                    <CardTitle className="text-lg">{tool.name}</CardTitle>
-                    <Badge variant="outline" className="text-xs mt-1">
-                      {tool.category}
-                    </Badge>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground mb-4">{tool.description}</p>
-                {renderToolInterface(tool)}
-              </CardContent>
-            </Card>
-          ))}
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground mb-4 group-hover/card:text-foreground transition-colors">{tool.description}</p>
+                  {renderToolInterface(tool)}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </div>
       </div>
     </div>

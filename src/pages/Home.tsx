@@ -241,12 +241,16 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Background effects */}
+      <div className="absolute inset-0 cyber-grid opacity-10"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-secondary/5 via-transparent to-accent/5"></div>
+      
       {/* ===== HERO ===== */}
       <section className="relative py-20 overflow-hidden">
-        <div className="absolute inset-0 cyber-grid opacity-20 animate-fade-in" />
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-secondary/10"></div>
         <div
-          className="absolute inset-0 bg-cover bg-center opacity-10 animate-scale-in"
+          className="absolute inset-0 bg-cover bg-center opacity-5 animate-scale-in"
           style={{ backgroundImage: `url(${heroImage})` }}
         />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -285,9 +289,20 @@ export default function Home() {
       </section>
 
       {/* ===== À PROPOS ===== */}
-      <section className="py-12 sm:py-20 bg-card/30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-orbitron font-bold text-center mb-8 sm:mb-12 animate-fade-in">À propos</h2>
+      <section className="py-12 sm:py-20 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-accent/5 via-transparent to-primary/5"></div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="text-center mb-12 animate-fade-in">
+            <div className="flex items-center justify-center gap-4 mb-6">
+              <div className="w-3 h-3 bg-accent rounded-full animate-ping"></div>
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-orbitron font-bold">
+                <span className="bg-gradient-to-r from-accent via-primary to-secondary bg-clip-text text-transparent">
+                  À propos
+                </span>
+              </h2>
+              <div className="w-3 h-3 bg-primary rounded-full animate-ping" style={{ animationDelay: '0.5s' }}></div>
+            </div>
+          </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_2fr] xl:grid-cols-[320px_1fr] gap-8 lg:gap-10 items-start">
             {/* Colonne gauche : portrait */}
@@ -310,7 +325,7 @@ export default function Home() {
 
             {/* Colonne droite : pitch + 3 piliers */}
             <div className="space-y-8">
-              <Card className="cyber-border">
+              <Card className="cyber-border hover:cyber-glow transition-all duration-500 bg-card/50 backdrop-blur-sm animate-fade-in" style={{ animationDelay: '0.6s', animationFillMode: 'both' }}>
                 <CardContent className="p-6">
                   <p className="text-lg text-muted-foreground leading-relaxed">
                     Étudiant en Master IRS spécialité Cybersécurité, orienté DevSecOps et sécurité des infrastructures. 
@@ -329,26 +344,26 @@ export default function Home() {
               </Card>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                <Card className="cyber-border hover:cyber-glow transition">
+                <Card className="cyber-border hover:cyber-glow transition-all duration-500 group/card hover:scale-105 hover:-translate-y-1 animate-fade-in" style={{ animationDelay: '0.9s', animationFillMode: 'both' }}>
                   <CardHeader className="p-4">
-                    <Shield className="h-6 w-6 sm:h-8 sm:w-8 text-primary mb-2" />
-                    <CardTitle className="text-sm sm:text-base">Cybersécurité</CardTitle>
+                    <Shield className="h-6 w-6 sm:h-8 sm:w-8 text-primary mb-2 animate-pulse" />
+                    <CardTitle className="text-sm sm:text-base group-hover/card:text-primary transition-colors">Cybersécurité</CardTitle>
                     <CardDescription className="text-xs sm:text-sm">Pentest, audit, durcissement</CardDescription>
                   </CardHeader>
                 </Card>
 
-                <Card className="cyber-border hover:cyber-glow transition">
+                <Card className="cyber-border hover:cyber-glow transition-all duration-500 group/card hover:scale-105 hover:-translate-y-1 animate-fade-in" style={{ animationDelay: '1.1s', animationFillMode: 'both' }}>
                   <CardHeader className="p-4">
-                    <Target className="h-6 w-6 sm:h-8 sm:w-8 text-secondary mb-2" />
-                    <CardTitle className="text-sm sm:text-base">Systèmes & Réseaux</CardTitle>
+                    <Target className="h-6 w-6 sm:h-8 sm:w-8 text-secondary mb-2 animate-pulse" />
+                    <CardTitle className="text-sm sm:text-base group-hover/card:text-secondary transition-colors">Systèmes & Réseaux</CardTitle>
                     <CardDescription className="text-xs sm:text-sm">VMware, AD, DNS, GPO, firewall</CardDescription>
                   </CardHeader>
                 </Card>
 
-                <Card className="cyber-border hover:cyber-glow transition sm:col-span-2 lg:col-span-1">
+                <Card className="cyber-border hover:cyber-glow transition-all duration-500 group/card hover:scale-105 hover:-translate-y-1 sm:col-span-2 lg:col-span-1 animate-fade-in" style={{ animationDelay: '1.3s', animationFillMode: 'both' }}>
                   <CardHeader className="p-4">
-                    <Code className="h-6 w-6 sm:h-8 sm:w-8 text-accent mb-2" />
-                    <CardTitle className="text-sm sm:text-base">DevOps & Cloud</CardTitle>
+                    <Code className="h-6 w-6 sm:h-8 sm:w-8 text-accent mb-2 animate-pulse" />
+                    <CardTitle className="text-sm sm:text-base group-hover/card:text-accent transition-colors">DevOps & Cloud</CardTitle>
                     <CardDescription className="text-xs sm:text-sm">CI/CD, GitLab, Jenkins, AWS, Terraform</CardDescription>
                   </CardHeader>
                 </Card>

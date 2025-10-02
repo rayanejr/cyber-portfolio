@@ -266,30 +266,41 @@ const Admin = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background relative overflow-hidden">
+      {/* Background effects */}
+      <div className="absolute inset-0 cyber-grid opacity-5"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5"></div>
+      
       {/* Header */}
-      <div className="border-b bg-card">
+      <div className="border-b bg-card/80 backdrop-blur-xl relative z-10 shadow-lg">
         <div className="container mx-auto px-4 py-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 animate-fade-in">
             <div>
-              <h1 className="text-xl sm:text-2xl font-bold font-orbitron text-gradient flex items-center gap-2">
-                <Lock className="w-5 h-5 sm:w-6 sm:h-6" />
-                Administration
+              <h1 className="text-xl sm:text-2xl font-bold font-orbitron flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-primary/10 pulse-glow">
+                  <Lock className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
+                </div>
+                <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
+                  Administration
+                </span>
               </h1>
               {currentUser && (
-                <p className="text-sm text-muted-foreground mt-1">
-                  Connecté en tant que {currentUser.email}
+                <p className="text-sm text-muted-foreground mt-2 flex items-center gap-2 ml-14">
+                  <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                  Connecté en tant que <span className="font-medium text-foreground">{currentUser.email}</span>
                 </p>
               )}
             </div>
             <Button 
               variant="outline" 
+              className="cyber-border hover:cyber-glow group"
               onClick={async () => {
                 await supabase.auth.signOut();
                 setIsAuthenticated(false);
                 setCurrentUser(null);
               }}
             >
+              <Lock className="w-4 h-4 mr-2 group-hover:rotate-12 transition-transform" />
               Déconnexion
             </Button>
           </div>
@@ -297,11 +308,11 @@ const Admin = () => {
       </div>
 
       {/* Main Content */}
-      <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-8">
+      <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-8 relative z-10">
         <Tabs value={selectedTab} onValueChange={setSelectedTab}>
           {/* Mobile ScrollArea pour les tabs */}
-          <div className="w-full overflow-x-auto pb-2">
-            <TabsList className="inline-flex h-9 items-center justify-start rounded-lg bg-muted p-1 text-muted-foreground min-w-max">
+          <div className="w-full overflow-x-auto pb-2 animate-fade-in" style={{ animationDelay: '0.3s', animationFillMode: 'both' }}>
+            <TabsList className="inline-flex h-9 items-center justify-start rounded-lg bg-muted/50 backdrop-blur-sm p-1 text-muted-foreground min-w-max cyber-border">
               <TabsTrigger value="dashboard" className="flex items-center gap-1 text-xs px-2 py-1">
                 <BarChart className="w-3 h-3" />
                 <span className="hidden xs:inline">Tableau</span>
@@ -360,15 +371,21 @@ const Admin = () => {
           <TabsContent value="dashboard" className="mt-4">
             <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
               {/* Statistiques */}
-              {dashboardStats.map((stat) => (
-                <Card key={stat.title}>
+              {dashboardStats.map((stat, idx) => (
+                <Card 
+                  key={stat.title} 
+                  className="cyber-border hover:cyber-glow transition-all duration-500 bg-card/50 backdrop-blur-sm hover:scale-105 hover:-translate-y-1 group/card animate-fade-in"
+                  style={{ animationDelay: `${0.5 + (idx * 0.1)}s`, animationFillMode: 'both' }}
+                >
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
-                    <stat.icon className="h-4 w-4 text-muted-foreground" />
+                    <CardTitle className="text-sm font-medium group-hover/card:text-primary transition-colors">{stat.title}</CardTitle>
+                    <div className="p-2 rounded-lg bg-primary/10 pulse-glow">
+                      <stat.icon className="h-4 w-4 text-primary" />
+                    </div>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-xl sm:text-2xl font-bold">{stat.value}</div>
-                    <p className="text-xs text-muted-foreground">
+                    <div className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">{stat.value}</div>
+                    <p className="text-xs text-muted-foreground group-hover/card:text-foreground transition-colors">
                       {stat.description}
                     </p>
                   </CardContent>
@@ -377,18 +394,21 @@ const Admin = () => {
             </div>
 
             {/* Actions rapides */}
-            <Card className="mt-6">
+            <Card className="mt-6 cyber-border hover:cyber-glow transition-all duration-500 bg-card/50 backdrop-blur-sm animate-fade-in" style={{ animationDelay: '1.2s', animationFillMode: 'both' }}>
               <CardHeader>
-                <CardTitle className="text-base sm:text-lg">Actions rapides</CardTitle>
+                <CardTitle className="text-base sm:text-lg flex items-center gap-2">
+                  <div className="w-1 h-6 bg-gradient-to-b from-primary to-secondary rounded-full"></div>
+                  Actions rapides
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-                  <Button onClick={() => setSelectedTab("projects")} variant="outline" size="sm">
-                    <Briefcase className="w-4 h-4 mr-2" />
+                  <Button onClick={() => setSelectedTab("projects")} variant="outline" size="sm" className="cyber-border hover:cyber-glow group">
+                    <Briefcase className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
                     Gérer les projets
                   </Button>
-                  <Button onClick={() => setSelectedTab("messages")} variant="outline">
-                    <MessageSquare className="w-4 h-4 mr-2" />
+                  <Button onClick={() => setSelectedTab("messages")} variant="outline" className="cyber-border hover:cyber-glow group">
+                    <MessageSquare className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
                     Voir les messages
                   </Button>
                 </div>
