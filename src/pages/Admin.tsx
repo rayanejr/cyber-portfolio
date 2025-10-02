@@ -368,48 +368,95 @@ const Admin = () => {
             </TabsList>
           </div>
 
-          <TabsContent value="dashboard" className="mt-4">
+          <TabsContent value="dashboard" className="mt-4 space-y-6">
+            {/* Statistiques */}
             <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-              {/* Statistiques */}
               {dashboardStats.map((stat, idx) => (
                 <Card 
                   key={stat.title} 
-                  className="cyber-border hover:cyber-glow transition-all duration-500 bg-card/50 backdrop-blur-sm hover:scale-105 hover:-translate-y-1 group/card animate-fade-in"
+                  className="relative overflow-hidden cyber-border bg-card/30 backdrop-blur-xl hover:scale-[1.02] transition-all duration-500 group/card animate-fade-in border-primary/20"
                   style={{ animationDelay: `${0.5 + (idx * 0.1)}s`, animationFillMode: 'both' }}
                 >
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium group-hover/card:text-primary transition-colors">{stat.title}</CardTitle>
-                    <div className="p-2 rounded-lg bg-primary/10 pulse-glow">
-                      <stat.icon className="h-4 w-4 text-primary" />
+                  {/* Gradient overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5 opacity-0 group-hover/card:opacity-100 transition-opacity duration-500"></div>
+                  
+                  {/* Glow effect */}
+                  <div className="absolute -inset-[1px] bg-gradient-to-r from-primary/20 via-secondary/20 to-accent/20 rounded-lg opacity-0 group-hover/card:opacity-100 blur-sm transition-opacity duration-500 -z-10"></div>
+                  
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3 relative">
+                    <CardTitle className="text-sm font-medium text-foreground/80 group-hover/card:text-primary transition-colors duration-300">
+                      {stat.title}
+                    </CardTitle>
+                    <div className="p-3 rounded-xl bg-gradient-to-br from-primary/10 to-secondary/10 group-hover/card:from-primary/20 group-hover/card:to-secondary/20 transition-all duration-300 group-hover/card:scale-110 group-hover/card:rotate-3">
+                      <stat.icon className="h-5 w-5 text-primary group-hover/card:text-secondary transition-colors duration-300" />
                     </div>
                   </CardHeader>
-                  <CardContent>
-                    <div className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">{stat.value}</div>
-                    <p className="text-xs text-muted-foreground group-hover/card:text-foreground transition-colors">
+                  <CardContent className="relative">
+                    <div className="text-3xl font-bold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent group-hover/card:scale-105 transition-transform duration-300 font-orbitron">
+                      {stat.value}
+                    </div>
+                    <p className="text-xs text-muted-foreground group-hover/card:text-foreground/70 transition-colors duration-300 mt-1">
                       {stat.description}
                     </p>
                   </CardContent>
+                  
+                  {/* Bottom accent line */}
+                  <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-primary to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-500"></div>
                 </Card>
               ))}
             </div>
 
             {/* Actions rapides */}
-            <Card className="mt-6 cyber-border hover:cyber-glow transition-all duration-500 bg-card/50 backdrop-blur-sm animate-fade-in" style={{ animationDelay: '1.2s', animationFillMode: 'both' }}>
-              <CardHeader>
-                <CardTitle className="text-base sm:text-lg flex items-center gap-2">
-                  <div className="w-1 h-6 bg-gradient-to-b from-primary to-secondary rounded-full"></div>
-                  Actions rapides
+            <Card className="relative overflow-hidden cyber-border bg-card/30 backdrop-blur-xl animate-fade-in border-primary/20" style={{ animationDelay: '1.2s', animationFillMode: 'both' }}>
+              {/* Background effects */}
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5"></div>
+              <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-primary/50 to-transparent"></div>
+              
+              <CardHeader className="relative">
+                <CardTitle className="text-lg flex items-center gap-3 font-orbitron">
+                  <div className="w-1 h-8 bg-gradient-to-b from-primary via-secondary to-accent rounded-full"></div>
+                  <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                    Actions Rapides
+                  </span>
                 </CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-                  <Button onClick={() => setSelectedTab("projects")} variant="outline" size="sm" className="cyber-border hover:cyber-glow group">
-                    <Briefcase className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
-                    Gérer les projets
+              <CardContent className="relative">
+                <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+                  <Button 
+                    onClick={() => setSelectedTab("projects")} 
+                    variant="outline" 
+                    className="cyber-border hover:cyber-glow group relative overflow-hidden h-12"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-secondary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <Briefcase className="w-4 h-4 mr-2 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300" />
+                    <span className="relative">Gérer les projets</span>
                   </Button>
-                  <Button onClick={() => setSelectedTab("messages")} variant="outline" className="cyber-border hover:cyber-glow group">
-                    <MessageSquare className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
-                    Voir les messages
+                  <Button 
+                    onClick={() => setSelectedTab("messages")} 
+                    variant="outline" 
+                    className="cyber-border hover:cyber-glow group relative overflow-hidden h-12"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-secondary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <MessageSquare className="w-4 h-4 mr-2 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300" />
+                    <span className="relative">Voir les messages</span>
+                  </Button>
+                  <Button 
+                    onClick={() => setSelectedTab("security")} 
+                    variant="outline" 
+                    className="cyber-border hover:cyber-glow group relative overflow-hidden h-12"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-secondary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <Lock className="w-4 h-4 mr-2 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300" />
+                    <span className="relative">Sécurité</span>
+                  </Button>
+                  <Button 
+                    onClick={() => setSelectedTab("users")} 
+                    variant="outline" 
+                    className="cyber-border hover:cyber-glow group relative overflow-hidden h-12"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-secondary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <Database className="w-4 h-4 mr-2 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300" />
+                    <span className="relative">Utilisateurs</span>
                   </Button>
                 </div>
               </CardContent>
@@ -451,39 +498,79 @@ const Admin = () => {
 
 
           <TabsContent value="messages">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <MessageSquare className="w-5 h-5" />
-                  Messages de Contact ({contactMessages.filter((m: any) => !m.is_read).length} non lus)
+            <Card className="cyber-border bg-card/30 backdrop-blur-xl border-primary/20 relative overflow-hidden">
+              {/* Background effects */}
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5"></div>
+              <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-primary/50 to-transparent"></div>
+              
+              <CardHeader className="relative">
+                <CardTitle className="flex items-center gap-3 font-orbitron">
+                  <div className="p-2 rounded-lg bg-gradient-to-br from-primary/10 to-secondary/10">
+                    <MessageSquare className="w-5 h-5 text-primary" />
+                  </div>
+                  <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                    Messages de Contact
+                  </span>
+                  <Badge variant="secondary" className="ml-auto">
+                    {contactMessages.filter((m: any) => !m.is_read).length} non lus
+                  </Badge>
                 </CardTitle>
               </CardHeader>
               
-              <CardContent>
+              <CardContent className="relative">
                 <div className="space-y-4">
                   {contactMessages.length === 0 ? (
-                    <p className="text-center text-muted-foreground py-8">
-                      Aucun message pour le moment.
-                    </p>
+                    <div className="text-center py-12">
+                      <MessageSquare className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-50" />
+                      <p className="text-muted-foreground">
+                        Aucun message pour le moment.
+                      </p>
+                    </div>
                   ) : (
                     <div className="grid gap-4">
-                      {contactMessages.map((message: any) => (
-                        <Card key={message.id} className={`transition-all duration-300 hover:shadow-md ${!message.is_read ? 'ring-2 ring-primary/20' : ''}`}>
-                          <CardContent className="p-4">
+                      {contactMessages.map((message: any, idx: number) => (
+                        <Card 
+                          key={message.id} 
+                          className={`relative overflow-hidden transition-all duration-300 hover:scale-[1.01] animate-fade-in ${
+                            !message.is_read 
+                              ? 'cyber-border bg-card/50 backdrop-blur-sm border-primary/30' 
+                              : 'bg-card/30 backdrop-blur-sm border-muted/30'
+                          }`}
+                          style={{ animationDelay: `${idx * 0.1}s`, animationFillMode: 'both' }}
+                        >
+                          {/* Glow for unread messages */}
+                          {!message.is_read && (
+                            <div className="absolute -inset-[1px] bg-gradient-to-r from-primary/20 via-secondary/20 to-accent/20 rounded-lg opacity-50 blur-sm -z-10"></div>
+                          )}
+                          
+                          <CardContent className="p-5">
                             <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-                              <div className="flex-1">
-                                <div className="flex items-center gap-2 mb-2">
-                                  <span className="font-semibold">{message.name}</span>
+                              <div className="flex-1 space-y-3">
+                                <div className="flex items-center gap-3 flex-wrap">
+                                  <div className="flex items-center gap-2">
+                                    <div className={`w-2 h-2 rounded-full ${!message.is_read ? 'bg-primary animate-pulse' : 'bg-muted'}`}></div>
+                                    <span className="font-semibold text-foreground">{message.name}</span>
+                                  </div>
                                   <span className="text-sm text-muted-foreground">({message.email})</span>
                                   {!message.is_read && (
-                                    <Badge variant="secondary" className="text-xs">Nouveau</Badge>
+                                    <Badge variant="default" className="text-xs bg-primary/20 text-primary border-primary/30">
+                                      Nouveau
+                                    </Badge>
                                   )}
                                 </div>
+                                
                                 {message.subject && (
-                                  <p className="text-sm font-medium mb-2">{message.subject}</p>
+                                  <p className="text-sm font-medium text-foreground/90 border-l-2 border-primary/30 pl-3">
+                                    {message.subject}
+                                  </p>
                                 )}
-                                <p className="text-sm text-muted-foreground mb-3">{message.message}</p>
-                                <p className="text-xs text-muted-foreground">
+                                
+                                <p className="text-sm text-muted-foreground leading-relaxed">
+                                  {message.message}
+                                </p>
+                                
+                                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                                  <div className="w-1 h-1 rounded-full bg-primary"></div>
                                   {new Date(message.created_at).toLocaleDateString('fr-FR', {
                                     day: 'numeric',
                                     month: 'long',
@@ -491,31 +578,35 @@ const Admin = () => {
                                     hour: '2-digit',
                                     minute: '2-digit'
                                   })}
-                                </p>
+                                </div>
                               </div>
-                              <div className="flex gap-2">
+                              
+                              <div className="flex gap-2 sm:flex-col">
                                 {!message.is_read && (
                                   <Button 
                                     size="sm" 
                                     variant="outline"
                                     onClick={() => markMessageAsRead(message.id)}
+                                    className="cyber-border hover:cyber-glow group"
                                   >
-                                    <Eye className="w-4 h-4" />
+                                    <Eye className="w-4 h-4 group-hover:scale-110 transition-transform" />
                                   </Button>
                                 )}
                                 <Button 
                                   size="sm" 
                                   variant="outline"
                                   onClick={() => window.open(`mailto:${message.email}`)}
+                                  className="cyber-border hover:cyber-glow group"
                                 >
-                                  <Mail className="w-4 h-4" />
+                                  <Mail className="w-4 h-4 group-hover:scale-110 transition-transform" />
                                 </Button>
                                 <Button 
                                   size="sm" 
                                   variant="destructive"
                                   onClick={() => deleteMessage(message.id)}
+                                  className="group"
                                 >
-                                  <Trash2 className="w-4 h-4" />
+                                  <Trash2 className="w-4 h-4 group-hover:scale-110 transition-transform" />
                                 </Button>
                               </div>
                             </div>
