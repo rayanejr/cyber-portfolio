@@ -204,10 +204,19 @@ const Admin = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-pulse">
-          <div className="h-8 bg-muted rounded w-1/3 mx-auto mb-4"></div>
-          <div className="h-4 bg-muted rounded w-1/2 mx-auto"></div>
+      <div className="min-h-screen flex items-center justify-center bg-background relative overflow-hidden">
+        {/* Background effects */}
+        <div className="absolute inset-0 cyber-grid opacity-5"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5"></div>
+        
+        <div className="relative z-10 space-y-6 text-center">
+          <div className="p-4 rounded-2xl bg-card/30 backdrop-blur-xl cyber-border border-primary/20 inline-block">
+            <Lock className="w-12 h-12 text-primary animate-pulse pulse-glow" />
+          </div>
+          <div className="space-y-2">
+            <div className="h-8 bg-gradient-to-r from-primary/20 via-secondary/20 to-accent/20 rounded-lg w-64 mx-auto animate-pulse"></div>
+            <div className="h-4 bg-gradient-to-r from-primary/10 via-secondary/10 to-accent/10 rounded-lg w-48 mx-auto animate-pulse"></div>
+          </div>
         </div>
       </div>
     );
@@ -310,60 +319,119 @@ const Admin = () => {
       {/* Main Content */}
       <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-8 relative z-10">
         <Tabs value={selectedTab} onValueChange={setSelectedTab}>
-          {/* Mobile ScrollArea pour les tabs */}
+          {/* Tabs Navigation */}
           <div className="w-full overflow-x-auto pb-2 animate-fade-in" style={{ animationDelay: '0.3s', animationFillMode: 'both' }}>
-            <TabsList className="inline-flex h-9 items-center justify-start rounded-lg bg-muted/50 backdrop-blur-sm p-1 text-muted-foreground min-w-max cyber-border">
-              <TabsTrigger value="dashboard" className="flex items-center gap-1 text-xs px-2 py-1">
-                <BarChart className="w-3 h-3" />
-                <span className="hidden xs:inline">Tableau</span>
+            <TabsList className="inline-flex h-auto items-center justify-start rounded-xl bg-card/30 backdrop-blur-xl p-1.5 text-muted-foreground min-w-max cyber-border border-primary/20 shadow-lg relative overflow-hidden">
+              {/* Background glow */}
+              <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-secondary/5 to-accent/5"></div>
+              
+              <TabsTrigger 
+                value="dashboard" 
+                className="relative flex items-center gap-2 text-xs sm:text-sm px-3 py-2 rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary/20 data-[state=active]:to-secondary/20 data-[state=active]:text-primary transition-all duration-300 hover:bg-primary/10 group"
+              >
+                <BarChart className="w-4 h-4 group-data-[state=active]:scale-110 transition-transform" />
+                <span>Tableau</span>
               </TabsTrigger>
-              <TabsTrigger value="projects" className="flex items-center gap-1 text-xs px-2 py-1">
-                <Briefcase className="w-3 h-3" />
-                <span className="hidden xs:inline">Projets</span>
+              
+              <TabsTrigger 
+                value="projects" 
+                className="relative flex items-center gap-2 text-xs sm:text-sm px-3 py-2 rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary/20 data-[state=active]:to-secondary/20 data-[state=active]:text-primary transition-all duration-300 hover:bg-primary/10 group"
+              >
+                <Briefcase className="w-4 h-4 group-data-[state=active]:scale-110 transition-transform" />
+                <span>Projets</span>
               </TabsTrigger>
-              <TabsTrigger value="veille" className="flex items-center gap-1 text-xs px-2 py-1">
-                <Database className="w-3 h-3" />
-                <span className="hidden xs:inline">Veille</span>
+              
+              <TabsTrigger 
+                value="veille" 
+                className="relative flex items-center gap-2 text-xs sm:text-sm px-3 py-2 rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary/20 data-[state=active]:to-secondary/20 data-[state=active]:text-primary transition-all duration-300 hover:bg-primary/10 group"
+              >
+                <Database className="w-4 h-4 group-data-[state=active]:scale-110 transition-transform" />
+                <span className="hidden sm:inline">Veille</span>
               </TabsTrigger>
-              <TabsTrigger value="experiences" className="flex items-center gap-1 text-xs px-2 py-1">
-                <Briefcase className="w-3 h-3" />
+              
+              <TabsTrigger 
+                value="experiences" 
+                className="relative flex items-center gap-2 text-xs sm:text-sm px-3 py-2 rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary/20 data-[state=active]:to-secondary/20 data-[state=active]:text-primary transition-all duration-300 hover:bg-primary/10 group"
+              >
+                <Briefcase className="w-4 h-4 group-data-[state=active]:scale-110 transition-transform" />
                 <span className="hidden sm:inline">Exp.</span>
               </TabsTrigger>
-              <TabsTrigger value="formations" className="flex items-center gap-1 text-xs px-2 py-1">
-                <GraduationCap className="w-3 h-3" />
+              
+              <TabsTrigger 
+                value="formations" 
+                className="relative flex items-center gap-2 text-xs sm:text-sm px-3 py-2 rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary/20 data-[state=active]:to-secondary/20 data-[state=active]:text-primary transition-all duration-300 hover:bg-primary/10 group"
+              >
+                <GraduationCap className="w-4 h-4 group-data-[state=active]:scale-110 transition-transform" />
                 <span className="hidden sm:inline">Form.</span>
               </TabsTrigger>
-              <TabsTrigger value="skills" className="flex items-center gap-1 text-xs px-2 py-1">
-                <Award className="w-3 h-3" />
+              
+              <TabsTrigger 
+                value="skills" 
+                className="relative flex items-center gap-2 text-xs sm:text-sm px-3 py-2 rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary/20 data-[state=active]:to-secondary/20 data-[state=active]:text-primary transition-all duration-300 hover:bg-primary/10 group"
+              >
+                <Award className="w-4 h-4 group-data-[state=active]:scale-110 transition-transform" />
                 <span className="hidden sm:inline">Compét.</span>
               </TabsTrigger>
-              <TabsTrigger value="certifications" className="flex items-center gap-1 text-xs px-2 py-1">
-                <Award className="w-3 h-3" />
+              
+              <TabsTrigger 
+                value="certifications" 
+                className="relative flex items-center gap-2 text-xs sm:text-sm px-3 py-2 rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary/20 data-[state=active]:to-secondary/20 data-[state=active]:text-primary transition-all duration-300 hover:bg-primary/10 group"
+              >
+                <Award className="w-4 h-4 group-data-[state=active]:scale-110 transition-transform" />
                 <span className="hidden sm:inline">Certif.</span>
               </TabsTrigger>
-              <TabsTrigger value="tools" className="flex items-center gap-1 text-xs px-2 py-1">
-                <Wrench className="w-3 h-3" />
-                <span className="hidden xs:inline">Outils</span>
+              
+              <TabsTrigger 
+                value="tools" 
+                className="relative flex items-center gap-2 text-xs sm:text-sm px-3 py-2 rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary/20 data-[state=active]:to-secondary/20 data-[state=active]:text-primary transition-all duration-300 hover:bg-primary/10 group"
+              >
+                <Wrench className="w-4 h-4 group-data-[state=active]:scale-110 transition-transform" />
+                <span>Outils</span>
               </TabsTrigger>
-              <TabsTrigger value="files" className="flex items-center gap-1 text-xs px-2 py-1">
-                <Upload className="w-3 h-3" />
-                <span className="hidden xs:inline">Fichiers</span>
+              
+              <TabsTrigger 
+                value="files" 
+                className="relative flex items-center gap-2 text-xs sm:text-sm px-3 py-2 rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary/20 data-[state=active]:to-secondary/20 data-[state=active]:text-primary transition-all duration-300 hover:bg-primary/10 group"
+              >
+                <Upload className="w-4 h-4 group-data-[state=active]:scale-110 transition-transform" />
+                <span>Fichiers</span>
               </TabsTrigger>
-              <TabsTrigger value="messages" className="flex items-center gap-1 text-xs px-2 py-1">
-                <MessageSquare className="w-3 h-3" />
-                <span className="hidden xs:inline">Messages</span>
+              
+              <TabsTrigger 
+                value="messages" 
+                className="relative flex items-center gap-2 text-xs sm:text-sm px-3 py-2 rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary/20 data-[state=active]:to-secondary/20 data-[state=active]:text-primary transition-all duration-300 hover:bg-primary/10 group"
+              >
+                <MessageSquare className="w-4 h-4 group-data-[state=active]:scale-110 transition-transform" />
+                <span>Messages</span>
+                {contactMessages.filter((m: any) => !m.is_read).length > 0 && (
+                  <Badge className="ml-1 h-5 w-5 p-0 flex items-center justify-center text-[10px] bg-primary text-primary-foreground animate-pulse">
+                    {contactMessages.filter((m: any) => !m.is_read).length}
+                  </Badge>
+                )}
               </TabsTrigger>
-              <TabsTrigger value="users" className="flex items-center gap-1 text-xs px-2 py-1">
-                <Lock className="w-3 h-3" />
-                <span className="hidden xs:inline">Users</span>
+              
+              <TabsTrigger 
+                value="users" 
+                className="relative flex items-center gap-2 text-xs sm:text-sm px-3 py-2 rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary/20 data-[state=active]:to-secondary/20 data-[state=active]:text-primary transition-all duration-300 hover:bg-primary/10 group"
+              >
+                <Lock className="w-4 h-4 group-data-[state=active]:scale-110 transition-transform" />
+                <span>Users</span>
               </TabsTrigger>
-              <TabsTrigger value="security" className="flex items-center gap-1 text-xs px-2 py-1">
-                <Lock className="w-3 h-3" />
-                <span className="hidden xs:inline">Sécurité</span>
+              
+              <TabsTrigger 
+                value="security" 
+                className="relative flex items-center gap-2 text-xs sm:text-sm px-3 py-2 rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary/20 data-[state=active]:to-secondary/20 data-[state=active]:text-primary transition-all duration-300 hover:bg-primary/10 group"
+              >
+                <Lock className="w-4 h-4 group-data-[state=active]:scale-110 transition-transform" />
+                <span>Sécurité</span>
               </TabsTrigger>
-              <TabsTrigger value="security-tests" className="flex items-center gap-1 text-xs px-2 py-1">
-                <FileText className="w-3 h-3" />
-                <span className="hidden xs:inline">Tests</span>
+              
+              <TabsTrigger 
+                value="security-tests" 
+                className="relative flex items-center gap-2 text-xs sm:text-sm px-3 py-2 rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary/20 data-[state=active]:to-secondary/20 data-[state=active]:text-primary transition-all duration-300 hover:bg-primary/10 group"
+              >
+                <FileText className="w-4 h-4 group-data-[state=active]:scale-110 transition-transform" />
+                <span>Tests</span>
               </TabsTrigger>
             </TabsList>
           </div>
@@ -463,42 +531,41 @@ const Admin = () => {
             </Card>
           </TabsContent>
 
-          <TabsContent value="projects">
+          <TabsContent value="projects" className="animate-fade-in">
             <AdminProjects />
           </TabsContent>
 
-          <TabsContent value="veille">
+          <TabsContent value="veille" className="animate-fade-in">
             <AdminVeille />
           </TabsContent>
 
-
-          <TabsContent value="experiences">
+          <TabsContent value="experiences" className="animate-fade-in">
             <AdminExperiences />
           </TabsContent>
 
-          <TabsContent value="formations">
+          <TabsContent value="formations" className="animate-fade-in">
             <AdminFormations />
           </TabsContent>
 
-          <TabsContent value="skills">
+          <TabsContent value="skills" className="animate-fade-in">
             <AdminSkills />
           </TabsContent>
 
-          <TabsContent value="certifications">
+          <TabsContent value="certifications" className="animate-fade-in">
             <AdminCertifications />
           </TabsContent>
 
-          <TabsContent value="tools">
+          <TabsContent value="tools" className="animate-fade-in">
             <AdminTools />
           </TabsContent>
 
-          <TabsContent value="files">
+          <TabsContent value="files" className="animate-fade-in">
             <AdminFiles />
           </TabsContent>
 
 
-          <TabsContent value="messages">
-            <Card className="cyber-border bg-card/30 backdrop-blur-xl border-primary/20 relative overflow-hidden">
+          <TabsContent value="messages" className="animate-fade-in">
+            <Card className="cyber-border bg-card/30 backdrop-blur-xl border-primary/20 relative overflow-hidden shadow-lg">
               {/* Background effects */}
               <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5"></div>
               <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-primary/50 to-transparent"></div>
@@ -620,15 +687,15 @@ const Admin = () => {
             </Card>
           </TabsContent>
 
-          <TabsContent value="users">
+          <TabsContent value="users" className="animate-fade-in">
             <AdminUsersManagement currentUser={currentUser} />
           </TabsContent>
 
-          <TabsContent value="security">
+          <TabsContent value="security" className="animate-fade-in">
             <AdminSecurityAdvanced currentUser={currentUser} />
           </TabsContent>
 
-          <TabsContent value="security-tests">
+          <TabsContent value="security-tests" className="animate-fade-in">
             <SecurityTestPanel currentUser={currentUser} />
           </TabsContent>
         </Tabs>
