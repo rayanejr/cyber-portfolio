@@ -344,27 +344,30 @@ export default function Home() {
               </Card>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                <Card className="cyber-border hover:cyber-glow transition-all duration-500 group/card hover:scale-105 hover:-translate-y-1 animate-fade-in" style={{ animationDelay: '0.9s', animationFillMode: 'both' }}>
-                  <CardHeader className="p-4">
-                    <Shield className="h-6 w-6 sm:h-8 sm:w-8 text-primary mb-2 animate-pulse" />
-                    <CardTitle className="text-sm sm:text-base group-hover/card:text-primary transition-colors">Cybersécurité</CardTitle>
-                    <CardDescription className="text-xs sm:text-sm">Pentest, audit, durcissement</CardDescription>
+              <Card className="cyber-border card-interactive bg-card/50 backdrop-blur-sm animate-fade-in" style={{ animationDelay: '0.9s', animationFillMode: 'both' }}>
+                  <CardHeader className="p-4 relative">
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <Shield className="h-6 w-6 sm:h-8 sm:w-8 text-primary mb-2 relative z-10" />
+                    <CardTitle className="text-sm sm:text-base relative z-10">Cybersécurité</CardTitle>
+                    <CardDescription className="text-xs sm:text-sm relative z-10">Pentest, audit, durcissement</CardDescription>
                   </CardHeader>
                 </Card>
 
-                <Card className="cyber-border hover:cyber-glow transition-all duration-500 group/card hover:scale-105 hover:-translate-y-1 animate-fade-in" style={{ animationDelay: '1.1s', animationFillMode: 'both' }}>
-                  <CardHeader className="p-4">
-                    <Target className="h-6 w-6 sm:h-8 sm:w-8 text-secondary mb-2 animate-pulse" />
-                    <CardTitle className="text-sm sm:text-base group-hover/card:text-secondary transition-colors">Systèmes & Réseaux</CardTitle>
-                    <CardDescription className="text-xs sm:text-sm">VMware, AD, DNS, GPO, firewall</CardDescription>
+                <Card className="cyber-border card-interactive bg-card/50 backdrop-blur-sm animate-fade-in" style={{ animationDelay: '1.1s', animationFillMode: 'both' }}>
+                  <CardHeader className="p-4 relative">
+                    <div className="absolute inset-0 bg-gradient-to-br from-secondary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <Target className="h-6 w-6 sm:h-8 sm:w-8 text-secondary mb-2 relative z-10" />
+                    <CardTitle className="text-sm sm:text-base relative z-10">Systèmes & Réseaux</CardTitle>
+                    <CardDescription className="text-xs sm:text-sm relative z-10">VMware, AD, DNS, GPO, firewall</CardDescription>
                   </CardHeader>
                 </Card>
 
-                <Card className="cyber-border hover:cyber-glow transition-all duration-500 group/card hover:scale-105 hover:-translate-y-1 sm:col-span-2 lg:col-span-1 animate-fade-in" style={{ animationDelay: '1.3s', animationFillMode: 'both' }}>
-                  <CardHeader className="p-4">
-                    <Code className="h-6 w-6 sm:h-8 sm:w-8 text-accent mb-2 animate-pulse" />
-                    <CardTitle className="text-sm sm:text-base group-hover/card:text-accent transition-colors">DevOps & Cloud</CardTitle>
-                    <CardDescription className="text-xs sm:text-sm">CI/CD, GitLab, Jenkins, AWS, Terraform</CardDescription>
+                <Card className="cyber-border card-interactive bg-card/50 backdrop-blur-sm sm:col-span-2 lg:col-span-1 animate-fade-in" style={{ animationDelay: '1.3s', animationFillMode: 'both' }}>
+                  <CardHeader className="p-4 relative">
+                    <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <Code className="h-6 w-6 sm:h-8 sm:w-8 text-accent mb-2 relative z-10" />
+                    <CardTitle className="text-sm sm:text-base relative z-10">DevOps & Cloud</CardTitle>
+                    <CardDescription className="text-xs sm:text-sm relative z-10">CI/CD, GitLab, Jenkins, AWS, Terraform</CardDescription>
                   </CardHeader>
                 </Card>
               </div>

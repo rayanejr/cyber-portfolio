@@ -99,7 +99,7 @@ const Contact = () => {
 
           <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-8 sm:gap-12">
             {/* Contact Form */}
-            <Card className="cyber-border hover:cyber-glow transition-all duration-700 animate-fade-in bg-card/50 backdrop-blur-sm" style={{ animationDelay: '0.6s', animationFillMode: 'both' }}>
+            <Card className="cyber-border card-interactive bg-card/50 backdrop-blur-sm animate-fade-in" style={{ animationDelay: '0.6s', animationFillMode: 'both' }}>
               <CardHeader className="relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-r from-secondary/0 via-secondary/5 to-secondary/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
                 <CardTitle className="relative flex items-center gap-2 text-lg sm:text-xl font-orbitron">
@@ -190,7 +190,7 @@ const Contact = () => {
 
             {/* Contact Information */}
             <div className="space-y-6 sm:space-y-8">
-              <Card className="cyber-border hover:cyber-glow transition-all duration-700 animate-fade-in bg-card/50 backdrop-blur-sm" style={{ animationDelay: '0.9s', animationFillMode: 'both' }}>
+              <Card className="cyber-border card-interactive bg-card/50 backdrop-blur-sm animate-fade-in" style={{ animationDelay: '0.9s', animationFillMode: 'both' }}>
                 <CardHeader>
                   <CardTitle className="text-lg sm:text-xl font-orbitron">Informations de contact</CardTitle>
                 </CardHeader>
@@ -227,7 +227,7 @@ const Contact = () => {
                 </CardContent>
               </Card>
 
-              <Card className="cyber-border hover:cyber-glow transition-all duration-700 animate-fade-in bg-card/50 backdrop-blur-sm" style={{ animationDelay: '1.2s', animationFillMode: 'both' }}>
+              <Card className="cyber-border card-interactive bg-card/50 backdrop-blur-sm animate-fade-in" style={{ animationDelay: '1.2s', animationFillMode: 'both' }}>
                 <CardHeader>
                   <CardTitle className="font-orbitron">Disponibilité</CardTitle>
                 </CardHeader>
@@ -255,7 +255,7 @@ const Contact = () => {
                 </CardContent>
               </Card>
 
-              <Card className="cyber-border hover:cyber-glow transition-all duration-700 animate-fade-in bg-card/50 backdrop-blur-sm" style={{ animationDelay: '1.5s', animationFillMode: 'both' }}>
+              <Card className="cyber-border card-interactive bg-card/50 backdrop-blur-sm animate-fade-in" style={{ animationDelay: '1.5s', animationFillMode: 'both' }}>
                 <CardHeader>
                   <CardTitle className="font-orbitron">Services disponibles</CardTitle>
                 </CardHeader>

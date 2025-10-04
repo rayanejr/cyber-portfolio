@@ -253,7 +253,7 @@ const VeilleTechno = () => {
               return (
                 <Card 
                   key={item.id} 
-                  className="cyber-border hover:cyber-glow transition-all duration-500 group h-full flex flex-col bg-card/50 backdrop-blur-sm hover:scale-[1.02] hover:-translate-y-1 animate-fade-in"
+                  className="cyber-border card-interactive bg-card/50 backdrop-blur-sm h-full flex flex-col group animate-fade-in"
                   style={{ animationDelay: `${1.2 + (index * 0.05)}s`, animationFillMode: 'both' }}
                 >
                   <CardHeader className="p-4 sm:p-6 relative overflow-hidden">

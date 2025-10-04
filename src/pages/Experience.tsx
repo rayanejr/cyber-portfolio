@@ -111,7 +111,7 @@ const Experience = () => {
                   <div className="absolute left-4 sm:left-6 w-5 h-5 bg-secondary rounded-full border-4 border-background pulse-glow shadow-lg shadow-secondary/50 group-hover:scale-125 transition-transform duration-300"></div>
                   
                   <div className="ml-12 sm:ml-20">
-                    <Card className="cyber-border hover:cyber-glow transition-all duration-500 group/card bg-card/50 backdrop-blur-sm hover:scale-[1.02] hover:-translate-y-1">
+                    <Card className="cyber-border card-interactive bg-card/50 backdrop-blur-sm group/card">
                       <CardHeader className="relative overflow-hidden">
                         {/* Animated background on hover */}
                         <div className="absolute inset-0 bg-gradient-to-r from-secondary/0 via-secondary/5 to-secondary/0 translate-x-[-100%] group-hover/card:translate-x-[100%] transition-transform duration-1000"></div>

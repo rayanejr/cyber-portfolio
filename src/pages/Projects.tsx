@@ -229,7 +229,7 @@ const Projects = () => {
             {filteredProjects.map((project, index) => (
               <Card 
                 key={project.id} 
-                className="cyber-border hover:cyber-glow transition-all duration-500 group bg-card/50 backdrop-blur-sm h-full flex flex-col hover:scale-[1.02] hover:-translate-y-1 animate-fade-in"
+                className="cyber-border card-interactive bg-card/50 backdrop-blur-sm h-full flex flex-col animate-fade-in"
                 style={{ 
                   animationDelay: `${0.9 + (index * 0.1)}s`, 
                   animationFillMode: 'both' 
