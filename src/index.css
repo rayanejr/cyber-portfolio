@@ -116,76 +116,30 @@
 }
 
 @layer components {
-  /* Modern Cyber Glow Effects */
+  /* Cyber effects and animations */
   .cyber-glow {
-    position: relative;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .cyber-glow::before {
-    content: '';
-    position: absolute;
-    inset: -2px;
-    border-radius: inherit;
-    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)));
-    opacity: 0;
-    filter: blur(8px);
-    transition: opacity 0.4s;
-    z-index: -1;
-  }
-
-  .cyber-glow:hover::before {
-    opacity: 0.6;
-    animation: pulse-border 2s ease-in-out infinite;
+    box-shadow: var(--glow-primary);
+    transition: var(--transition-cyber);
   }
 
   .cyber-glow:hover {
-    transform: translateY(-4px);
-    box-shadow: 
-      0 0 20px hsl(var(--primary) / 0.3),
-      0 0 40px hsl(var(--primary) / 0.2),
-      0 8px 32px -8px hsl(var(--primary) / 0.4);
+    box-shadow: var(--glow-primary), 0 0 40px hsl(195 100% 50% / 0.3);
+    transform: translateY(-2px);
   }
 
-  @keyframes pulse-border {
-    0%, 100% {
-      opacity: 0.6;
-      filter: blur(8px);
-    }
-    50% {
-      opacity: 0.8;
-      filter: blur(12px);
-    }
-  }
-
-  /* Matrix & Accent Glows */
   .matrix-glow {
-    box-shadow: 
-      0 0 15px hsl(var(--secondary) / 0.3),
-      0 0 30px hsl(var(--secondary) / 0.15);
-    transition: all 0.3s;
-  }
-
-  .matrix-glow:hover {
-    box-shadow: 
-      0 0 20px hsl(var(--secondary) / 0.5),
-      0 0 40px hsl(var(--secondary) / 0.3);
+    box-shadow: var(--glow-secondary);
   }
 
   .accent-glow {
-    box-shadow: 
-      0 0 15px hsl(var(--accent) / 0.3),
-      0 0 30px hsl(var(--accent) / 0.15);
+    box-shadow: var(--glow-accent);
   }
 
-  /* Modern Cyber Border with Scan Effect */
   .cyber-border {
-    position: relative;
-    border: 1px solid hsl(var(--border));
+    border: 1px solid hsl(195 100% 50% / 0.3);
     background: var(--gradient-card);
-    backdrop-filter: blur(8px);
+    position: relative;
     overflow: hidden;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .cyber-border::before {
@@ -194,126 +148,97 @@
     top: 0;
     left: -100%;
     width: 100%;
-    height: 2px;
-    background: linear-gradient(90deg, 
-      transparent, 
-      hsl(var(--primary)), 
-      transparent
-    );
-    transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    height: 100%;
+    background: linear-gradient(90deg, transparent, hsl(195 100% 50% / 0.1), transparent);
+    transition: left 0.7s;
   }
 
   .cyber-border:hover::before {
     left: 100%;
   }
 
-  .cyber-border:hover {
-    border-color: hsl(var(--primary) / 0.5);
-    box-shadow: 
-      0 0 20px hsl(var(--primary) / 0.1),
-      inset 0 0 20px hsl(var(--primary) / 0.05);
-  }
-
-  /* Animated Gradient Text */
   .cyber-text {
-    background: linear-gradient(
-      90deg,
-      hsl(var(--primary)),
-      hsl(var(--accent)),
-      hsl(var(--secondary)),
-      hsl(var(--primary))
-    );
-    background-size: 300% 100%;
+    background: var(--gradient-cyber);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    animation: gradient-shift 6s ease infinite;
+    background-size: 200% auto;
+    animation: gradient-flow 3s linear infinite;
   }
 
   .matrix-text {
-    background: linear-gradient(
-      90deg,
-      hsl(var(--secondary)),
-      hsl(var(--primary)),
-      hsl(var(--accent)),
-      hsl(var(--secondary))
-    );
-    background-size: 300% 100%;
+    background: var(--gradient-matrix);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    animation: gradient-shift 6s ease infinite;
+    background-size: 200% auto;
+    animation: gradient-flow 3s linear infinite;
   }
 
-  @keyframes gradient-shift {
-    0%, 100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
+  @keyframes gradient-flow {
+    0% { background-position: 0% center; }
+    100% { background-position: 200% center; }
   }
 
-  /* Interactive Modern Cards */
+  /* Interactive card effects - Style moderne inspiré */
   .card-interactive {
     position: relative;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
-    transform-origin: center;
-  }
-
-  .card-interactive::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    background: linear-gradient(
-      135deg,
-      hsl(var(--primary) / 0.1),
-      hsl(var(--accent) / 0.1)
-    );
-    opacity: 0;
-    transition: opacity 0.3s;
   }
 
   .card-interactive:hover {
-    transform: translateY(-8px) scale(1.02);
-    box-shadow: 
-      0 20px 40px -15px hsl(var(--primary) / 0.3),
-      0 0 0 1px hsl(var(--primary) / 0.2);
+    transform: translateY(-4px);
+    box-shadow: 0 10px 40px -10px hsl(var(--primary) / 0.4);
   }
 
-  .card-interactive:hover::after {
-    opacity: 1;
+  /* Gradient border effect on hover */
+  .card-interactive::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)));
+    opacity: 0;
+    transition: opacity 0.3s;
+    z-index: -1;
   }
 
-  /* Smooth Scroll Animations */
+  .card-interactive:hover::before {
+    opacity: 0.5;
+  }
+
+  /* Enhanced scroll animations */
   .fade-in {
     opacity: 0;
-    animation: fadeInSmooth 0.6s ease-out forwards;
+    transform: translateY(30px);
+    animation: fadeInUp 0.8s ease-out forwards;
   }
 
   .slide-in-up {
     opacity: 0;
-    transform: translateY(30px);
-    animation: slideUpSmooth 0.6s ease-out forwards;
+    transform: translateY(50px);
+    animation: slideInUp 0.8s ease-out forwards;
   }
 
   .slide-in-left {
     opacity: 0;
-    transform: translateX(-30px);
-    animation: slideLeftSmooth 0.6s ease-out forwards;
+    transform: translateX(-50px);
+    animation: slideInLeft 0.8s ease-out forwards;
   }
 
   .slide-in-right {
     opacity: 0;
-    transform: translateX(30px);
-    animation: slideRightSmooth 0.6s ease-out forwards;
+    transform: translateX(50px);
+    animation: slideInRight 0.8s ease-out forwards;
   }
 
   .scale-in {
     opacity: 0;
-    transform: scale(0.95);
-    animation: scaleInSmooth 0.5s ease-out forwards;
+    transform: scale(0.9);
+    animation: scaleIn 0.6s ease-out forwards;
   }
 
-  /* Animation Delays */
   .fade-in-delay-1 { animation-delay: 0.1s; }
   .fade-in-delay-2 { animation-delay: 0.2s; }
   .fade-in-delay-3 { animation-delay: 0.3s; }
@@ -321,65 +246,47 @@
   .fade-in-delay-5 { animation-delay: 0.5s; }
   .fade-in-delay-6 { animation-delay: 0.6s; }
 
-  /* Keyframe Animations */
-  @keyframes fadeInSmooth {
+  @keyframes fadeInUp {
     to {
       opacity: 1;
       transform: translateY(0);
     }
   }
 
-  @keyframes slideUpSmooth {
+  @keyframes slideInUp {
     to {
       opacity: 1;
       transform: translateY(0);
     }
   }
 
-  @keyframes slideLeftSmooth {
+  @keyframes slideInLeft {
     to {
       opacity: 1;
       transform: translateX(0);
     }
   }
 
-  @keyframes slideRightSmooth {
+  @keyframes slideInRight {
     to {
       opacity: 1;
       transform: translateX(0);
     }
   }
 
-  @keyframes scaleInSmooth {
+  @keyframes scaleIn {
     to {
       opacity: 1;
       transform: scale(1);
     }
   }
 
-  /* Pulse & Float Effects */
-  .pulse-glow {
-    animation: pulseGlowEffect 2s ease-in-out infinite;
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: var(--glow-primary); }
+    50% { box-shadow: var(--glow-primary), 0 0 30px hsl(195 100% 50% / 0.4); }
   }
 
-  @keyframes pulseGlowEffect {
-    0%, 100% {
-      box-shadow: 
-        0 0 10px hsl(var(--primary) / 0.3),
-        0 0 20px hsl(var(--primary) / 0.2);
-    }
-    50% {
-      box-shadow: 
-        0 0 20px hsl(var(--primary) / 0.5),
-        0 0 40px hsl(var(--primary) / 0.3);
-    }
-  }
-
-  .float {
-    animation: floatEffect 3s ease-in-out infinite;
-  }
-
-  @keyframes floatEffect {
+  @keyframes float {
     0%, 100% {
       transform: translateY(0px);
     }
@@ -388,96 +295,254 @@
     }
   }
 
+  @keyframes rotateSlow {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+
+  .float {
+    animation: float 3s ease-in-out infinite;
+  }
+
   .rotate-slow {
     animation: rotateSlow 10s linear infinite;
   }
 
-  @keyframes rotateSlow {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+  /* Animations pour les compétences améliorées */
+  .skill-item {
+    animation: fadeInUp 0.8s ease-out forwards;
+    opacity: 0;
+    transform: translateY(30px);
   }
 
-  /* Cyber Grid Background */
-  .cyber-grid {
+  .skill-category {
+    animation: fadeInUp 0.6s ease-out forwards;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  .skill-progress {
+    animation: progressFill 2s ease-out forwards;
+    animation-delay: var(--progress-delay, 0s);
+  }
+
+  .particle {
+    animation: particleFloat 8s ease-in-out infinite;
+  }
+
+  .animate-scan {
+    animation: scanLine 4s ease-in-out infinite;
+  }
+
+  /* Nouvelle animation de flottement */
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  /* Animation de scan améliorée */
+  @keyframes scanLine {
+    0% {
+      transform: translateX(-100%);
+      opacity: 0;
+    }
+    25% {
+      opacity: 1;
+    }
+    75% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+  }
+
+  /* Effet de grille cyber */
+  .grid-pattern {
     background-image: 
-      linear-gradient(hsl(var(--primary) / 0.08) 1px, transparent 1px),
-      linear-gradient(90deg, hsl(var(--primary) / 0.08) 1px, transparent 1px);
-    background-size: 30px 30px;
-    animation: gridFlow 20s linear infinite;
+      linear-gradient(rgba(var(--primary) / 0.1) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(var(--primary) / 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+    animation: gridMove 20s linear infinite;
   }
 
-  @keyframes gridFlow {
-    0% { background-position: 0 0; }
-    100% { background-position: 30px 30px; }
+  @keyframes gridMove {
+    0% {
+      transform: translate(0, 0);
+    }
+    100% {
+      transform: translate(20px, 20px);
+    }
   }
 
-  /* Button Variants */
-  .btn-cyber {
-    position: relative;
-    background: hsl(var(--primary));
-    color: hsl(var(--primary-foreground));
-    font-weight: 500;
-    border-radius: var(--radius);
-    overflow: hidden;
-    transition: all 0.3s;
+  @keyframes fadeInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
-  .btn-cyber::before {
+  @keyframes progressFill {
+    from {
+      transform: scaleX(0);
+      opacity: 0.5;
+    }
+    to {
+      transform: scaleX(1);
+      opacity: 1;
+    }
+  }
+
+  @keyframes particleFloat {
+    0%, 100% {
+      opacity: 0.2;
+      transform: translateY(0px) translateX(0px) scale(1);
+    }
+    25% {
+      opacity: 0.8;
+      transform: translateY(-15px) translateX(10px) scale(1.2);
+    }
+    50% {
+      opacity: 1;
+      transform: translateY(-30px) translateX(-10px) scale(0.8);
+    }
+    75% {
+      opacity: 0.6;
+      transform: translateY(-15px) translateX(15px) scale(1.1);
+    }
+  }
+
+  /* Animation d'apparition en cascade */
+  @keyframes cascadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(30px) rotateX(15deg);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) rotateX(0deg);
+    }
+  }
+
+  .skill-item:nth-child(1) { animation-delay: 0.1s; }
+  .skill-item:nth-child(2) { animation-delay: 0.2s; }
+  .skill-item:nth-child(3) { animation-delay: 0.3s; }
+  .skill-item:nth-child(4) { animation-delay: 0.4s; }
+  .skill-item:nth-child(5) { animation-delay: 0.5s; }
+
+  /* Effet de brillance sur hover */
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
+  .skill-item::before {
     content: '';
     position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      135deg,
-      transparent,
-      hsl(var(--primary-foreground) / 0.1),
-      transparent
-    );
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
     transform: translateX(-100%);
     transition: transform 0.6s;
+    border-radius: inherit;
   }
 
-  .btn-cyber:hover::before {
-    transform: translateX(100%);
+  .skill-item:hover::before {
+    animation: shimmer 1s ease-in-out;
   }
 
-  .btn-cyber:hover {
-    background: hsl(var(--primary) / 0.9);
-    box-shadow: 
-      0 0 20px hsl(var(--primary) / 0.5),
-      0 8px 24px -8px hsl(var(--primary) / 0.4);
-    transform: translateY(-2px);
+  /* Animation de scan vertical */
+  @keyframes scanVertical {
+    0% {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+    25% {
+      opacity: 1;
+    }
+    75% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(100vh);
+      opacity: 0;
+    }
+  }
+
+  .animate-scan-vertical {
+    animation: scanVertical 4s ease-in-out infinite;
+  }
+
+  /* Effet Matrix rain */
+  .matrix-rain {
+    background: repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 98px,
+      rgba(0, 255, 0, 0.03) 100px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 98px,
+      rgba(0, 255, 0, 0.03) 100px
+    );
+    animation: matrixMove 20s linear infinite;
+  }
+
+  @keyframes matrixMove {
+    0% {
+      background-position: 0 0, 0 0;
+    }
+    100% {
+      background-position: 100px 0, 0 100px;
+    }
+  }
+
+  /* Cyber grid background */
+  .cyber-grid {
+    background-image: 
+      linear-gradient(rgba(0, 212, 255, 0.1) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 212, 255, 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+
+  /* Enhanced button variants */
+  .btn-cyber {
+    @apply bg-primary text-primary-foreground hover:bg-primary/90 cyber-glow rounded-lg font-medium;
+    transition: var(--transition-cyber);
   }
 
   .btn-matrix {
-    background: hsl(var(--secondary));
-    color: hsl(var(--secondary-foreground));
-    font-weight: 500;
-    border-radius: var(--radius);
-    transition: all 0.3s;
-  }
-
-  .btn-matrix:hover {
-    background: hsl(var(--secondary) / 0.9);
-    box-shadow: 
-      0 0 20px hsl(var(--secondary) / 0.5),
-      0 8px 24px -8px hsl(var(--secondary) / 0.4);
-    transform: translateY(-2px);
+    @apply bg-secondary text-secondary-foreground hover:bg-secondary/90 matrix-glow rounded-lg font-medium;
+    transition: var(--transition-cyber);
   }
 
   .btn-ghost-cyber {
-    border: 1px solid hsl(var(--primary) / 0.3);
-    color: hsl(var(--primary));
-    background: transparent;
-    font-weight: 500;
-    border-radius: var(--radius);
-    transition: all 0.3s;
-  }
-
-  .btn-ghost-cyber:hover {
-    border-color: hsl(var(--primary));
-    background: hsl(var(--primary) / 0.1);
-    box-shadow: 
-      0 0 20px hsl(var(--primary) / 0.2),
-      inset 0 0 20px hsl(var(--primary) / 0.05);
+    @apply border border-primary/30 text-primary hover:bg-primary/10 hover:border-primary rounded-lg font-medium;
+    transition: var(--transition-cyber);
   }
 }
