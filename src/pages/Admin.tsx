@@ -223,16 +223,7 @@ const Admin = () => {
   }
 
   if (!isAuthenticated) {
-    return (
-      <div className="min-h-screen bg-background">
-        <div className="container mx-auto px-4 py-8">
-          <div className="max-w-md mx-auto space-y-6">
-            <h1 className="text-2xl font-bold text-center mb-8">Administration</h1>
-            <AdminAuth onAuthenticated={handleAuthenticated} />
-          </div>
-        </div>
-      </div>
-    );
+    return <AdminAuth onAuthenticated={handleAuthenticated} />;
   }
 
   const dashboardStats = [

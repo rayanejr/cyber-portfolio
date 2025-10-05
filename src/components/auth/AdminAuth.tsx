@@ -86,28 +86,28 @@ const AdminAuth: React.FC<AdminAuthProps> = ({ onAuthenticated }) => {
         <Card className="h-full w-full cyber-border backdrop-blur-xl bg-card/90 shadow-2xl rounded-none">
           <div className="grid md:grid-cols-2 h-full">
             {/* Left side - Info */}
-            <div className="bg-gradient-to-br from-primary/10 via-secondary/5 to-accent/10 p-6 sm:p-8 md:p-12 lg:p-16 flex flex-col justify-center border-r border-primary/20">
-              <div className="space-y-6 lg:space-y-8 max-w-xl mx-auto w-full">
-                <div className="space-y-4">
-                  <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-orbitron font-bold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
+            <div className="bg-gradient-to-br from-primary/10 via-secondary/5 to-accent/10 p-4 sm:p-6 md:p-8 lg:p-12 flex flex-col justify-center border-r border-primary/20">
+              <div className="space-y-4 sm:space-y-6 lg:space-y-8 max-w-xl mx-auto w-full">
+                <div className="space-y-2 sm:space-y-4">
+                  <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-orbitron font-bold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
                     Panneau d'Administration
                   </h1>
-                  <p className="text-base sm:text-lg md:text-xl text-muted-foreground">
+                  <p className="text-sm sm:text-base md:text-lg lg:text-xl text-muted-foreground">
                     Accès réservé uniquement aux administrateurs
                   </p>
                 </div>
 
-                <div className="space-y-3 sm:space-y-4 text-sm sm:text-base text-muted-foreground">
-                  <div className="flex items-start gap-3">
-                    <div className="w-2 h-2 bg-primary rounded-full mt-2 animate-pulse"></div>
+                <div className="space-y-2 sm:space-y-3 md:space-y-4 text-xs sm:text-sm md:text-base text-muted-foreground">
+                  <div className="flex items-start gap-2 sm:gap-3">
+                    <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-primary rounded-full mt-1.5 sm:mt-2 animate-pulse"></div>
                     <p>Authentification Supabase avec tokens JWT</p>
                   </div>
-                  <div className="flex items-start gap-3">
-                    <div className="w-2 h-2 bg-secondary rounded-full mt-2 animate-pulse"></div>
+                  <div className="flex items-start gap-2 sm:gap-3">
+                    <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-secondary rounded-full mt-1.5 sm:mt-2 animate-pulse"></div>
                     <p>Chiffrement AES-256</p>
                   </div>
-                  <div className="flex items-start gap-3">
-                    <div className="w-2 h-2 bg-accent rounded-full mt-2 animate-pulse"></div>
+                  <div className="flex items-start gap-2 sm:gap-3">
+                    <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-accent rounded-full mt-1.5 sm:mt-2 animate-pulse"></div>
                     <p>Protection CSRF</p>
                   </div>
                 </div>
@@ -115,20 +115,20 @@ const AdminAuth: React.FC<AdminAuthProps> = ({ onAuthenticated }) => {
             </div>
 
             {/* Right side - Form */}
-            <div className="p-6 sm:p-8 md:p-12 lg:p-16 flex items-center justify-center">
-              <div className="w-full max-w-md space-y-8">
-                <div className="text-center space-y-4">
-                  <div className="mx-auto w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br from-primary via-secondary to-accent flex items-center justify-center shadow-lg shadow-primary/50">
-                    <Lock className="w-8 h-8 sm:w-10 sm:h-10 text-primary-foreground" />
+            <div className="p-4 sm:p-6 md:p-8 lg:p-12 flex items-center justify-center">
+              <div className="w-full max-w-md space-y-6 sm:space-y-8">
+                <div className="text-center space-y-3 sm:space-y-4">
+                  <div className="mx-auto w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-full bg-gradient-to-br from-primary via-secondary to-accent flex items-center justify-center shadow-lg shadow-primary/50">
+                    <Lock className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 text-primary-foreground" />
                   </div>
-                  <h2 className="text-xl sm:text-2xl font-orbitron font-bold">Connexion</h2>
+                  <h2 className="text-lg sm:text-xl md:text-2xl font-orbitron font-bold">Connexion</h2>
                 </div>
 
-                <form onSubmit={handleAuth} className="space-y-6">
-                  <div className="space-y-4 sm:space-y-5">
+                <form onSubmit={handleAuth} className="space-y-4 sm:space-y-6">
+                  <div className="space-y-3 sm:space-y-4 md:space-y-5">
                     <div className="space-y-2">
-                      <Label htmlFor="email" className="text-sm font-medium flex items-center gap-2">
-                        <User className="w-4 h-4 text-primary" />
+                      <Label htmlFor="email" className="text-xs sm:text-sm font-medium flex items-center gap-2">
+                        <User className="w-3 h-3 sm:w-4 sm:h-4 text-primary" />
                         Email
                       </Label>
                       <Input
@@ -139,13 +139,13 @@ const AdminAuth: React.FC<AdminAuthProps> = ({ onAuthenticated }) => {
                         onChange={(e) => setEmail(e.target.value)}
                         required
                         disabled={loading}
-                        className="cyber-border focus:cyber-glow h-11 sm:h-12"
+                        className="cyber-border focus:cyber-glow h-10 sm:h-11 md:h-12 text-sm sm:text-base"
                       />
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="password" className="text-sm font-medium flex items-center gap-2">
-                        <Lock className="w-4 h-4 text-secondary" />
+                      <Label htmlFor="password" className="text-xs sm:text-sm font-medium flex items-center gap-2">
+                        <Lock className="w-3 h-3 sm:w-4 sm:h-4 text-secondary" />
                         Mot de passe
                       </Label>
                       <Input
@@ -157,7 +157,7 @@ const AdminAuth: React.FC<AdminAuthProps> = ({ onAuthenticated }) => {
                         required
                         disabled={loading}
                         minLength={6}
-                        className="cyber-border focus:cyber-glow h-11 sm:h-12"
+                        className="cyber-border focus:cyber-glow h-10 sm:h-11 md:h-12 text-sm sm:text-base"
                       />
                     </div>
                   </div>
@@ -165,17 +165,17 @@ const AdminAuth: React.FC<AdminAuthProps> = ({ onAuthenticated }) => {
                   <Button
                     type="submit"
                     disabled={loading}
-                    className="w-full h-11 sm:h-12 btn-cyber group shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 text-base"
+                    className="w-full h-10 sm:h-11 md:h-12 btn-cyber group shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 text-sm sm:text-base"
                   >
                     <span className="flex items-center justify-center gap-2">
                       {loading ? (
                         <>
-                          <div className="animate-spin rounded-full h-5 w-5 border-2 border-background border-t-transparent" />
+                          <div className="animate-spin rounded-full h-4 w-4 sm:h-5 sm:w-5 border-2 border-background border-t-transparent" />
                           <span>Connexion...</span>
                         </>
                       ) : (
                         <>
-                          <Shield className="w-5 h-5 transition-transform group-hover:scale-110" />
+                          <Shield className="w-4 h-4 sm:w-5 sm:h-5 transition-transform group-hover:scale-110" />
                           Se connecter
                         </>
                       )}
