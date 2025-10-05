@@ -25,14 +25,22 @@ const AIAssistantSection: React.FC = () => {
   ]);
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+  };
+
   useEffect(() => {
-    if (scrollAreaRef.current) {
-      scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight;
-    }
+    scrollToBottom();
   }, [messages]);
+
+  useEffect(() => {
+    if (isLoading) {
+      scrollToBottom();
+    }
+  }, [isLoading]);
 
   const sendMessage = async () => {
     if (!inputText.trim() || isLoading) return;
@@ -155,22 +163,22 @@ const AIAssistantSection: React.FC = () => {
               </div>
 
               {/* Chat Area */}
-              <ScrollArea className="h-96 border rounded-lg p-4 bg-muted/20" ref={scrollAreaRef}>
-                <div className="space-y-4">
+              <ScrollArea className="h-96 rounded-lg bg-gradient-to-b from-muted/20 to-background/50 cyber-border">
+                <div className="space-y-4 p-4">
                   {messages.map((message) => (
                     <div
                       key={message.id}
-                      className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}
+                      className={`flex ${message.isUser ? 'justify-end' : 'justify-start'} animate-fade-in`}
                     >
                       <div
                         className={`flex items-start space-x-3 max-w-[85%] ${
                           message.isUser ? 'flex-row-reverse space-x-reverse' : ''
                         }`}
                       >
-                        <div className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center ${
+                        <div className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110 ${
                           message.isUser 
-                            ? 'bg-primary text-primary-foreground' 
-                            : 'bg-secondary text-secondary-foreground'
+                            ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/30' 
+                            : 'bg-gradient-to-br from-secondary to-secondary/70 text-secondary-foreground shadow-lg shadow-secondary/30'
                         }`}>
                           {message.isUser ? (
                             <User className="h-5 w-5" />
@@ -179,14 +187,14 @@ const AIAssistantSection: React.FC = () => {
                           )}
                         </div>
                         <div
-                          className={`rounded-lg p-4 ${
+                          className={`rounded-xl p-4 transition-all hover:scale-[1.02] ${
                             message.isUser
-                              ? 'bg-primary text-primary-foreground'
-                              : 'bg-background border'
+                              ? 'bg-gradient-to-br from-primary to-primary/80 text-primary-foreground shadow-lg shadow-primary/20 cyber-glow'
+                              : 'bg-background/80 backdrop-blur border border-primary/20 shadow-md hover:shadow-primary/10'
                           }`}
                         >
                           <p className="text-sm whitespace-pre-wrap leading-relaxed">{message.text}</p>
-                          <p className="text-xs opacity-70 mt-2">
+                          <p className="text-xs opacity-70 mt-2 font-mono">
                             {message.timestamp.toLocaleTimeString('fr-FR', {
                               hour: '2-digit',
                               minute: '2-digit'
@@ -199,20 +207,21 @@ const AIAssistantSection: React.FC = () => {
                   
                   {/* Loading indicator */}
                   {isLoading && (
-                    <div className="flex justify-start">
+                    <div className="flex justify-start animate-fade-in">
                       <div className="flex items-start space-x-3">
-                        <div className="flex-shrink-0 w-10 h-10 rounded-full bg-secondary text-secondary-foreground flex items-center justify-center">
+                        <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-secondary to-secondary/70 text-secondary-foreground flex items-center justify-center shadow-lg shadow-secondary/30">
                           <Bot className="h-5 w-5" />
                         </div>
-                        <div className="bg-background border rounded-lg p-4">
+                        <div className="bg-background/80 backdrop-blur border border-primary/20 rounded-xl p-4 shadow-md">
                           <div className="flex items-center space-x-2">
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                            <span className="text-sm text-muted-foreground">L'expert réfléchit...</span>
+                            <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                            <span className="text-sm text-muted-foreground font-mono">L'expert réfléchit...</span>
                           </div>
                         </div>
                       </div>
                     </div>
                   )}
+                  <div ref={messagesEndRef} />
                 </div>
               </ScrollArea>
               
