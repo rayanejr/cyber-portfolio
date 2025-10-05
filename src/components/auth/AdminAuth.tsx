@@ -79,40 +79,35 @@ const AdminAuth: React.FC<AdminAuthProps> = ({ onAuthenticated }) => {
   };
 
   return (
-    <div className="fixed inset-0 w-full h-full flex items-center justify-center bg-gradient-to-br from-background via-primary/5 to-secondary/10">
+    <div className="fixed inset-0 w-full h-full bg-gradient-to-br from-background via-primary/5 to-secondary/10">
       <div className="absolute inset-0 cyber-grid opacity-10"></div>
       
-      <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 relative z-10">
-        <Card className="w-full cyber-border backdrop-blur-xl bg-card/90 shadow-2xl animate-scale-in">
-          <div className="grid md:grid-cols-2 gap-0">
+      <div className="h-full w-full">
+        <Card className="h-full w-full cyber-border backdrop-blur-xl bg-card/90 shadow-2xl rounded-none">
+          <div className="grid md:grid-cols-2 h-full">
             {/* Left side - Info */}
-            <div className="bg-gradient-to-br from-primary/10 via-secondary/5 to-accent/10 p-8 md:p-12 flex flex-col justify-center border-r border-primary/20">
-              <div className="space-y-6">
+            <div className="bg-gradient-to-br from-primary/10 via-secondary/5 to-accent/10 p-6 sm:p-8 md:p-12 lg:p-16 flex flex-col justify-center border-r border-primary/20">
+              <div className="space-y-6 lg:space-y-8 max-w-xl mx-auto w-full">
                 <div className="space-y-4">
-                  <h1 className="text-3xl md:text-4xl font-orbitron font-bold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
+                  <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-orbitron font-bold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
                     Panneau d'Administration
                   </h1>
-                  <p className="text-lg text-muted-foreground">
+                  <p className="text-base sm:text-lg md:text-xl text-muted-foreground">
                     Accès réservé uniquement aux administrateurs
                   </p>
                 </div>
 
-                <div className="flex items-center gap-3 p-4 rounded-lg bg-background/50 border border-primary/20">
-                  <Shield className="w-5 h-5 text-primary" />
-                  <span className="text-sm font-medium">Connexion sécurisée requise</span>
-                </div>
-
-                <div className="space-y-3 text-sm text-muted-foreground">
-                  <div className="flex items-start gap-2">
-                    <div className="w-2 h-2 bg-primary rounded-full mt-1.5 animate-pulse"></div>
+                <div className="space-y-3 sm:space-y-4 text-sm sm:text-base text-muted-foreground">
+                  <div className="flex items-start gap-3">
+                    <div className="w-2 h-2 bg-primary rounded-full mt-2 animate-pulse"></div>
                     <p>Authentification Supabase avec tokens JWT</p>
                   </div>
-                  <div className="flex items-start gap-2">
-                    <div className="w-2 h-2 bg-secondary rounded-full mt-1.5 animate-pulse"></div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-2 h-2 bg-secondary rounded-full mt-2 animate-pulse"></div>
                     <p>Chiffrement AES-256</p>
                   </div>
-                  <div className="flex items-start gap-2">
-                    <div className="w-2 h-2 bg-accent rounded-full mt-1.5 animate-pulse"></div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-2 h-2 bg-accent rounded-full mt-2 animate-pulse"></div>
                     <p>Protection CSRF</p>
                   </div>
                 </div>
@@ -120,17 +115,17 @@ const AdminAuth: React.FC<AdminAuthProps> = ({ onAuthenticated }) => {
             </div>
 
             {/* Right side - Form */}
-            <div className="p-8 md:p-12">
-              <div className="max-w-sm mx-auto space-y-8">
+            <div className="p-6 sm:p-8 md:p-12 lg:p-16 flex items-center justify-center">
+              <div className="w-full max-w-md space-y-8">
                 <div className="text-center space-y-4">
-                  <div className="mx-auto w-16 h-16 rounded-full bg-gradient-to-br from-primary via-secondary to-accent flex items-center justify-center shadow-lg shadow-primary/50">
-                    <Lock className="w-8 h-8 text-primary-foreground" />
+                  <div className="mx-auto w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br from-primary via-secondary to-accent flex items-center justify-center shadow-lg shadow-primary/50">
+                    <Lock className="w-8 h-8 sm:w-10 sm:h-10 text-primary-foreground" />
                   </div>
-                  <h2 className="text-2xl font-orbitron font-bold">Connexion</h2>
+                  <h2 className="text-xl sm:text-2xl font-orbitron font-bold">Connexion</h2>
                 </div>
 
                 <form onSubmit={handleAuth} className="space-y-6">
-                  <div className="space-y-4">
+                  <div className="space-y-4 sm:space-y-5">
                     <div className="space-y-2">
                       <Label htmlFor="email" className="text-sm font-medium flex items-center gap-2">
                         <User className="w-4 h-4 text-primary" />
@@ -144,7 +139,7 @@ const AdminAuth: React.FC<AdminAuthProps> = ({ onAuthenticated }) => {
                         onChange={(e) => setEmail(e.target.value)}
                         required
                         disabled={loading}
-                        className="cyber-border focus:cyber-glow h-12"
+                        className="cyber-border focus:cyber-glow h-11 sm:h-12"
                       />
                     </div>
 
@@ -162,7 +157,7 @@ const AdminAuth: React.FC<AdminAuthProps> = ({ onAuthenticated }) => {
                         required
                         disabled={loading}
                         minLength={6}
-                        className="cyber-border focus:cyber-glow h-12"
+                        className="cyber-border focus:cyber-glow h-11 sm:h-12"
                       />
                     </div>
                   </div>
@@ -170,7 +165,7 @@ const AdminAuth: React.FC<AdminAuthProps> = ({ onAuthenticated }) => {
                   <Button
                     type="submit"
                     disabled={loading}
-                    className="w-full h-12 btn-cyber group shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30"
+                    className="w-full h-11 sm:h-12 btn-cyber group shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 text-base"
                   >
                     <span className="flex items-center justify-center gap-2">
                       {loading ? (
