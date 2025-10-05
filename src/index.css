@@ -647,9 +647,9 @@
     background-size: 20px 20px;
   }
 
-  /* Enhanced button variants */
+  /* Enhanced button variants - 3 couleurs distinctes */
   .btn-cyber {
-    @apply relative overflow-hidden bg-gradient-to-r from-primary via-primary to-secondary text-primary-foreground rounded-lg font-semibold shadow-lg transition-all duration-300;
+    @apply relative overflow-hidden bg-gradient-to-r from-primary via-primary to-cyan-400 text-primary-foreground rounded-lg font-semibold shadow-lg transition-all duration-300;
     box-shadow: 0 0 20px hsl(189 100% 50% / 0.4), 0 4px 12px rgba(0, 0, 0, 0.3);
   }
   
@@ -662,7 +662,7 @@
   
   .btn-cyber:hover {
     @apply scale-105;
-    box-shadow: 0 0 30px hsl(189 100% 50% / 0.6), 0 0 60px hsl(280 100% 70% / 0.3), 0 6px 20px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0 30px hsl(189 100% 50% / 0.6), 0 0 60px hsl(189 100% 50% / 0.3), 0 6px 20px rgba(0, 0, 0, 0.4);
   }
   
   .btn-cyber:hover::before {
@@ -683,7 +683,7 @@
   
   .btn-matrix:hover {
     @apply scale-105;
-    box-shadow: 0 0 30px hsl(280 100% 70% / 0.6), 0 0 60px hsl(189 100% 50% / 0.3), 0 6px 20px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0 30px hsl(280 100% 70% / 0.6), 0 0 60px hsl(280 100% 70% / 0.3), 0 6px 20px rgba(0, 0, 0, 0.4);
   }
   
   .btn-matrix:hover::before {
@@ -691,25 +691,24 @@
   }
 
   .btn-ghost-cyber {
-    @apply relative overflow-hidden border-2 border-primary/40 text-primary hover:text-primary-foreground rounded-lg font-semibold transition-all duration-300;
-    background: linear-gradient(135deg, hsl(217 33% 13%), hsl(217 33% 15%));
+    @apply relative overflow-hidden border-2 border-emerald-500/40 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-lg font-semibold shadow-lg transition-all duration-300;
+    box-shadow: 0 0 20px hsl(160 84% 39% / 0.4), 0 4px 12px rgba(0, 0, 0, 0.3);
   }
   
   .btn-ghost-cyber::before {
     content: '';
-    @apply absolute inset-0 bg-gradient-to-r from-primary via-secondary to-primary;
-    opacity: 0;
-    transition: opacity 0.3s;
-    z-index: -1;
+    @apply absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent;
+    transform: translateX(-100%);
+    transition: transform 0.6s;
   }
   
   .btn-ghost-cyber:hover {
-    @apply scale-105 border-primary;
-    box-shadow: 0 0 20px hsl(189 100% 50% / 0.5), 0 4px 12px rgba(0, 0, 0, 0.3);
+    @apply scale-105 border-emerald-400;
+    box-shadow: 0 0 30px hsl(160 84% 39% / 0.6), 0 0 60px hsl(160 84% 39% / 0.3), 0 6px 20px rgba(0, 0, 0, 0.4);
   }
   
   .btn-ghost-cyber:hover::before {
-    opacity: 1;
+    transform: translateX(100%);
   }
 
   /* Badge styles */

@@ -69,7 +69,7 @@ export default function CVDownloadButton() {
   return (
     <Button 
       size="lg" 
-      className="btn-cyber group w-full sm:w-auto"
+      className="btn-matrix group w-full sm:w-auto"
       onClick={handleDownload}
       disabled={isLoading}
     >
