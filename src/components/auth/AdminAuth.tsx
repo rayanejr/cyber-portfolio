@@ -79,144 +79,117 @@ const AdminAuth: React.FC<AdminAuthProps> = ({ onAuthenticated }) => {
   };
 
   return (
-    <div className="fixed inset-0 w-full h-full flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-background via-primary/5 to-secondary/10">
-      {/* Cyber grid background */}
-      <div className="absolute inset-0 cyber-grid opacity-10 animate-fade-in"></div>
+    <div className="fixed inset-0 w-full h-full flex items-center justify-center bg-gradient-to-br from-background via-primary/5 to-secondary/10">
+      <div className="absolute inset-0 cyber-grid opacity-10"></div>
       
-      {/* Gradient orbs */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-[300px] h-[300px] md:w-96 md:h-96 bg-primary/20 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-[300px] h-[300px] md:w-96 md:h-96 bg-secondary/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] md:w-96 md:h-96 bg-accent/15 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }}></div>
-      </div>
+      <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 relative z-10">
+        <Card className="w-full cyber-border backdrop-blur-xl bg-card/90 shadow-2xl animate-scale-in">
+          <div className="grid md:grid-cols-2 gap-0">
+            {/* Left side - Info */}
+            <div className="bg-gradient-to-br from-primary/10 via-secondary/5 to-accent/10 p-8 md:p-12 flex flex-col justify-center border-r border-primary/20">
+              <div className="space-y-6">
+                <div className="space-y-4">
+                  <h1 className="text-3xl md:text-4xl font-orbitron font-bold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
+                    Panneau d'Administration
+                  </h1>
+                  <p className="text-lg text-muted-foreground">
+                    Accès réservé uniquement aux administrateurs
+                  </p>
+                </div>
 
-      {/* Floating particles */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[...Array(20)].map((_, i) => (
-          <div
-            key={i}
-            className={`absolute rounded-full animate-float ${
-              i % 3 === 0 ? 'w-2 h-2 bg-primary/30' : 
-              i % 3 === 1 ? 'w-1.5 h-1.5 bg-secondary/30' : 
-              'w-1 h-1 bg-accent/30'
-            }`}
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 5}s`,
-              animationDuration: `${4 + Math.random() * 6}s`,
-            }}
-          />
-        ))}
-      </div>
-      
-      <div className="w-full max-w-md mx-auto px-4 sm:px-6 relative z-10">
-        <Card className="w-full cyber-border hover:cyber-glow backdrop-blur-xl bg-card/90 shadow-2xl animate-scale-in transition-all duration-500">
-          {/* Animated scan line */}
-          <div className="absolute inset-0 overflow-hidden rounded-xl pointer-events-none">
-            <div className="absolute inset-x-0 h-px bg-gradient-to-r from-transparent via-primary to-transparent animate-scan-vertical opacity-50"></div>
+                <div className="flex items-center gap-3 p-4 rounded-lg bg-background/50 border border-primary/20">
+                  <Shield className="w-5 h-5 text-primary" />
+                  <span className="text-sm font-medium">Connexion sécurisée requise</span>
+                </div>
+
+                <div className="space-y-3 text-sm text-muted-foreground">
+                  <div className="flex items-start gap-2">
+                    <div className="w-2 h-2 bg-primary rounded-full mt-1.5 animate-pulse"></div>
+                    <p>Authentification Supabase avec tokens JWT</p>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <div className="w-2 h-2 bg-secondary rounded-full mt-1.5 animate-pulse"></div>
+                    <p>Chiffrement AES-256</p>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <div className="w-2 h-2 bg-accent rounded-full mt-1.5 animate-pulse"></div>
+                    <p>Protection CSRF</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right side - Form */}
+            <div className="p-8 md:p-12">
+              <div className="max-w-sm mx-auto space-y-8">
+                <div className="text-center space-y-4">
+                  <div className="mx-auto w-16 h-16 rounded-full bg-gradient-to-br from-primary via-secondary to-accent flex items-center justify-center shadow-lg shadow-primary/50">
+                    <Lock className="w-8 h-8 text-primary-foreground" />
+                  </div>
+                  <h2 className="text-2xl font-orbitron font-bold">Connexion</h2>
+                </div>
+
+                <form onSubmit={handleAuth} className="space-y-6">
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="email" className="text-sm font-medium flex items-center gap-2">
+                        <User className="w-4 h-4 text-primary" />
+                        Email
+                      </Label>
+                      <Input
+                        id="email"
+                        type="email"
+                        placeholder="admin@example.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                        disabled={loading}
+                        className="cyber-border focus:cyber-glow h-12"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="password" className="text-sm font-medium flex items-center gap-2">
+                        <Lock className="w-4 h-4 text-secondary" />
+                        Mot de passe
+                      </Label>
+                      <Input
+                        id="password"
+                        type="password"
+                        placeholder="••••••••"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                        disabled={loading}
+                        minLength={6}
+                        className="cyber-border focus:cyber-glow h-12"
+                      />
+                    </div>
+                  </div>
+
+                  <Button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full h-12 btn-cyber group shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30"
+                  >
+                    <span className="flex items-center justify-center gap-2">
+                      {loading ? (
+                        <>
+                          <div className="animate-spin rounded-full h-5 w-5 border-2 border-background border-t-transparent" />
+                          <span>Connexion...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Shield className="w-5 h-5 transition-transform group-hover:scale-110" />
+                          Se connecter
+                        </>
+                      )}
+                    </span>
+                  </Button>
+                </form>
+              </div>
+            </div>
           </div>
-          
-          <CardHeader className="space-y-4 sm:space-y-6 text-center pb-6 sm:pb-8 pt-6 sm:pt-8 px-4 sm:px-6 relative">
-            {/* Enhanced icon with glow */}
-            <div className="mx-auto relative">
-              <div className="absolute inset-0 w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br from-primary via-secondary to-accent blur-xl opacity-50 animate-pulse"></div>
-              <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br from-primary via-secondary to-accent flex items-center justify-center pulse-glow shadow-lg shadow-primary/50 animate-float">
-                <Lock className="w-8 h-8 sm:w-10 sm:h-10 text-primary-foreground" />
-              </div>
-            </div>
-            
-            <div className="space-y-2 sm:space-y-3 animate-fade-in" style={{ animationDelay: '0.3s', animationFillMode: 'both' }}>
-              <CardTitle className="text-2xl sm:text-3xl md:text-4xl font-orbitron font-bold">
-                <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
-                  Administration
-                </span>
-              </CardTitle>
-              <p className="text-sm sm:text-base text-muted-foreground flex items-center justify-center gap-2">
-                <Shield className="w-4 h-4" />
-                Connexion sécurisée requise
-              </p>
-            </div>
-          </CardHeader>
-          
-          <CardContent className="relative px-4 sm:px-6 pb-6 sm:pb-8">
-            <form onSubmit={handleAuth} className="space-y-5 sm:space-y-6 animate-fade-in" style={{ animationDelay: '0.5s', animationFillMode: 'both' }}>
-              <div className="space-y-4 sm:space-y-5">
-                <div className="space-y-2 group">
-                  <Label htmlFor="email" className="text-sm font-medium flex items-center gap-2 group-hover:text-primary transition-colors">
-                    <User className="w-4 h-4 text-primary animate-pulse" />
-                    Email
-                  </Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="admin@example.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                    disabled={loading}
-                    className="cyber-border focus:cyber-glow transition-all duration-300 hover:border-primary/50 h-11 sm:h-12"
-                  />
-                </div>
-
-                <div className="space-y-2 group">
-                  <Label htmlFor="password" className="text-sm font-medium flex items-center gap-2 group-hover:text-secondary transition-colors">
-                    <Lock className="w-4 h-4 text-secondary animate-pulse" />
-                    Mot de passe
-                  </Label>
-                  <Input
-                    id="password"
-                    type="password"
-                    placeholder="••••••••"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    disabled={loading}
-                    minLength={6}
-                    className="cyber-border focus:cyber-glow transition-all duration-300 hover:border-secondary/50 h-11 sm:h-12"
-                  />
-                </div>
-              </div>
-
-              <Button
-                type="submit"
-                disabled={loading}
-                className="w-full h-11 sm:h-12 btn-cyber group relative overflow-hidden shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all duration-300 text-base sm:text-lg"
-              >
-                <span className="relative z-10 flex items-center justify-center gap-2">
-                  {loading ? (
-                    <>
-                      <div className="animate-spin rounded-full h-5 w-5 border-2 border-background border-t-transparent" />
-                      <span className="animate-pulse">Connexion...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Shield className="w-5 h-5 transition-transform group-hover:scale-110 group-hover:rotate-12" />
-                      Se connecter
-                    </>
-                  )}
-                </span>
-              </Button>
-            </form>
-
-            {/* Enhanced Security info */}
-            <div className="mt-6 sm:mt-8 p-4 sm:p-5 rounded-xl bg-gradient-to-br from-muted/80 to-muted/40 border border-border/50 cyber-border hover:cyber-glow transition-all duration-500 animate-fade-in" style={{ animationDelay: '0.7s', animationFillMode: 'both' }}>
-              <div className="flex items-start gap-3">
-                <div className="p-2 rounded-lg bg-primary/10 pulse-glow">
-                  <AlertCircle className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
-                </div>
-                <div className="text-xs sm:text-sm leading-relaxed">
-                  <p className="font-semibold text-foreground mb-1 sm:mb-2 flex items-center gap-2">
-                    <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                    Accès sécurisé
-                  </p>
-                  <p className="text-muted-foreground">
-                    Authentification Supabase avec tokens JWT sécurisés, chiffrement AES-256 et protection CSRF
-                  </p>
-                </div>
-              </div>
-            </div>
-          </CardContent>
         </Card>
       </div>
     </div>
