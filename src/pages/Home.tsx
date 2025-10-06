@@ -225,7 +225,7 @@ export default function Home() {
   function isAllowedAsset(url?: string | null) {
     if (!url) return false;
     const u = url.split("?")[0].toLowerCase();
-    return u.endsWith(".pdf") || u.endsWith(".jpg") || u.endsWith(".jpeg");
+    return u.endsWith(".pdf") || u.endsWith(".jpg") || u.endsWith(".jpeg") || u.endsWith(".png") || u.endsWith(".webp") || u.endsWith(".gif");
   }
 
 
