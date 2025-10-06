@@ -657,16 +657,27 @@ export default function Home() {
                     </div>
 
                     <div className="flex gap-2">
-                      <Button
-                        size="sm"
-                        onClick={() => viewCertification(cert)}
-                        className="btn-cyber flex-1"
-                        disabled={!canView}
-                        title={canView ? "Voir la certification" : "Document non disponible"}
-                      >
-                        <ExternalLink className="h-4 w-4 mr-1" />
-                        Voir certification
-                      </Button>
+                      {canView ? (
+                        <Button
+                          size="sm"
+                          onClick={() => viewCertification(cert)}
+                          className="btn-cyber flex-1"
+                          title="Voir la certification"
+                        >
+                          <ExternalLink className="h-4 w-4 mr-1" />
+                          Voir certification
+                        </Button>
+                      ) : (
+                        <Button
+                          size="sm"
+                          className="flex-1 opacity-50 cursor-not-allowed"
+                          disabled
+                          title="Aucun document disponible"
+                        >
+                          <ExternalLink className="h-4 w-4 mr-1" />
+                          Document non disponible
+                        </Button>
+                      )}
 
                       {cert.credential_url && (
                         <Button
