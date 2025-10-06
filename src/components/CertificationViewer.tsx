@@ -11,7 +11,7 @@ interface CertificationViewerProps {
   onClose: () => void;
   certification: {
     name: string;
-    issuer: string;
+    issuer?: string;
     issue_date?: string;
     expiry_date?: string | null;
     pdf_url?: string | null;
@@ -109,7 +109,9 @@ export default function CertificationViewer({ isOpen, onClose, certification }: 
             <div>
               <DialogTitle className="text-xl font-semibold">{certification.name}</DialogTitle>
               <div className="flex items-center gap-2 mt-2">
-                <Badge variant="outline">{certification.issuer}</Badge>
+                {certification.issuer && (
+                  <Badge variant="outline">{certification.issuer}</Badge>
+                )}
                 {certification.issue_date && (
                   <Badge variant="secondary">
                     {new Date(certification.issue_date).getFullYear()}

@@ -5,6 +5,7 @@ import {
 } from "lucide-react";
 import CVDownloadButton from "@/components/CVDownloadButton";
 import AIAssistantSection from "@/components/AIAssistantSection";
+import CertificationViewer from "@/components/CertificationViewer";
 import { Button } from "@/components/ui/button";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -55,6 +56,8 @@ export default function Home() {
   const [skills, setSkills] = useState<SkillGroup[]>([]);
   const [certifications, setCertifications] = useState<CertRow[]>([]);
   const [recentProjects, setRecentProjects] = useState<ProjectRow[]>([]);
+  const [selectedCert, setSelectedCert] = useState<CertRow | null>(null);
+  const [isCertViewerOpen, setIsCertViewerOpen] = useState(false);
   const { toast } = useToast();
 
   // Forcer le scroll en haut au montage du composant
@@ -230,19 +233,8 @@ export default function Home() {
 
 
   function viewCertification(cert: CertRow) {
-    if (cert.pdf_url) {
-      window.open(cert.pdf_url, '_blank');
-    } else if (cert.image_url) {
-      window.open(cert.image_url, '_blank');
-    } else if (cert.credential_url) {
-      window.open(cert.credential_url, '_blank');
-    } else {
-      toast({
-        title: "Aucun fichier",
-        description: "Aucun document ou lien n'est disponible pour cette certification",
-        variant: "destructive"
-      });
-    }
+    setSelectedCert(cert);
+    setIsCertViewerOpen(true);
   }
 
   return (
@@ -760,6 +752,16 @@ export default function Home() {
           </Link>
         </div>
       </section>
+
+      {/* Certification Viewer Dialog */}
+      <CertificationViewer
+        isOpen={isCertViewerOpen}
+        onClose={() => {
+          setIsCertViewerOpen(false);
+          setSelectedCert(null);
+        }}
+        certification={selectedCert}
+      />
 
     </div>
   );
