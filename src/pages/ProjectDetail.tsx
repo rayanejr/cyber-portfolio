@@ -204,13 +204,9 @@ const ProjectDetail = () => {
             </CardHeader>
             <CardContent>
               <div className="prose prose-neutral dark:prose-invert max-w-none">
-                {project.content.split('\n').map((paragraph, index) => (
-                  paragraph.trim() ? (
-                    <p key={index} className="mb-4 text-sm sm:text-base">
-                      {paragraph}
-                    </p>
-                  ) : null
-                ))}
+                <div className="whitespace-pre-wrap text-sm sm:text-base">
+                  {project.content}
+                </div>
               </div>
             </CardContent>
           </Card>

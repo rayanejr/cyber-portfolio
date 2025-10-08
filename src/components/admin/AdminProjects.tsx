@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Edit, Trash2, Upload, ExternalLink, Github, Eye, RotateCcw, RefreshCw } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
+import { GenerateProjectImageButton } from "./GenerateProjectImageButton";
 
 interface Project {
   id: string;
@@ -289,13 +290,18 @@ const AdminProjects = () => {
                 </div>
 
                 <div>
-                  <Label htmlFor="content">Contenu détaillé</Label>
+                  <Label htmlFor="content">Contenu détaillé (les sauts de ligne seront préservés)</Label>
                   <Textarea
                     id="content"
                     value={formData.content}
                     onChange={(e) => setFormData(prev => ({ ...prev, content: e.target.value }))}
-                    rows={6}
+                    rows={10}
+                    placeholder="Vous pouvez écrire plusieurs paragraphes avec des sauts de ligne.&#10;&#10;Ils seront affichés exactement comme vous les tapez."
+                    className="font-mono text-sm"
                   />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Appuyez sur Entrée pour créer un nouveau paragraphe
+                  </p>
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-4">
@@ -324,19 +330,31 @@ const AdminProjects = () => {
 
                 <div>
                   <Label htmlFor="image">Image du projet</Label>
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-2 mb-2">
                     <Input
                       id="image"
                       type="file"
                       accept="image/*"
                       onChange={handleImageUpload}
                       disabled={uploading}
+                      className="flex-1"
                     />
-                    {uploading && <span className="text-sm text-muted-foreground">Upload en cours...</span>}
+                    {editingProject && (
+                      <GenerateProjectImageButton
+                        projectId={editingProject.id}
+                        title={formData.title}
+                        description={formData.description}
+                        technologies={formData.technologies.split(',').map(t => t.trim()).filter(t => t)}
+                        onImageGenerated={(imageUrl) => {
+                          setFormData(prev => ({ ...prev, image_url: imageUrl }));
+                        }}
+                      />
+                    )}
                   </div>
+                  {uploading && <span className="text-sm text-muted-foreground">Upload en cours...</span>}
                   {formData.image_url && (
                     <div className="mt-2">
-                      <img src={formData.image_url} alt="Preview" className="w-32 h-20 object-cover rounded" />
+                      <img src={formData.image_url} alt="Preview" className="w-full max-w-md h-auto object-cover rounded border" />
                     </div>
                   )}
                 </div>

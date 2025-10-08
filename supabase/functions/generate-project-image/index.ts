@@ -12,7 +12,7 @@ serve(async (req) => {
   }
 
   try {
-    const { title, technologies } = await req.json();
+    const { title, description, technologies, projectId } = await req.json();
 
     if (!title) {
       return new Response(
@@ -37,13 +37,27 @@ serve(async (req) => {
 
     console.log(`Generating image for: ${title}`);
     
-    // Generate image with OpenAI
+    // Generate image with OpenAI with enhanced prompt
     const techList = technologies?.join(", ") || "";
-    const imagePrompt = `Professional cybersecurity portfolio project image. 
-Project: "${title}"
-Technologies: ${techList}
-Style: Modern dark cyber aesthetic, neon blue/purple accents, digital elements, technological feel, professional, sleek. 
-Format: 16:9 aspect ratio, high quality.`;
+    const descriptionPart = description ? `\nDescription: ${description}` : "";
+    
+    const imagePrompt = `Create a professional, highly detailed cybersecurity portfolio project image for "${title}".
+${descriptionPart}
+Technologies shown: ${techList}
+
+Visual style requirements:
+- Dark background with deep navy/black tones
+- Prominent neon accents in cyan (#00f2ff) and purple (#9b59b6)
+- Include visual elements directly related to: ${title}
+- Show relevant technology icons or symbols for: ${techList}
+- Professional, modern, sleek design with depth
+- Cyberpunk/tech aesthetic with glowing elements
+- 16:9 landscape aspect ratio
+- High resolution, ultra-detailed
+- Include subtle circuit board patterns or digital grid
+- Dramatic lighting with glow effects
+
+The image must visually represent the specific project "${title}" with clear, recognizable elements that relate to the project's purpose.`;
 
     console.log('Calling OpenAI API...');
     const imageResponse = await fetch("https://api.openai.com/v1/images/generations", {
@@ -101,6 +115,20 @@ Format: 16:9 aspect ratio, high quality.`;
       .getPublicUrl(fileName);
 
     console.log(`✓ Image generated and uploaded: ${publicUrl}`);
+
+    // Update project with image URL if projectId is provided
+    if (projectId) {
+      const { error: updateError } = await supabase
+        .from('projects')
+        .update({ image_url: publicUrl })
+        .eq('id', projectId);
+      
+      if (updateError) {
+        console.error('Error updating project with image URL:', updateError);
+      } else {
+        console.log(`✓ Project ${projectId} updated with image URL`);
+      }
+    }
 
     return new Response(
       JSON.stringify({ 
