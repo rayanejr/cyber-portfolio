@@ -1,0 +1,169 @@
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.7.1";
+
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+};
+
+serve(async (req) => {
+  if (req.method === "OPTIONS") {
+    return new Response(null, { headers: corsHeaders });
+  }
+
+  try {
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const lovableApiKey = Deno.env.get("LOVABLE_API_KEY")!;
+    
+    const supabase = createClient(supabaseUrl, supabaseKey);
+
+    console.log("Fetching all projects without images...");
+    
+    // Récupérer tous les projets sans image
+    const { data: projects, error: fetchError } = await supabase
+      .from('projects')
+      .select('id, title, description, technologies')
+      .is('image_url', null);
+
+    if (fetchError) {
+      throw fetchError;
+    }
+
+    if (!projects || projects.length === 0) {
+      return new Response(
+        JSON.stringify({ message: "Tous les projets ont déjà des images" }),
+        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    console.log(`Génération d'images pour ${projects.length} projets...`);
+
+    const results = [];
+    let successCount = 0;
+    let errorCount = 0;
+
+    for (const project of projects) {
+      try {
+        console.log(`Génération image pour: ${project.title}`);
+        
+        const techList = project.technologies?.join(", ") || "";
+        const imagePrompt = `Créer une image professionnelle pour un portfolio de cybersécurité.
+Projet: "${project.title}"
+Description: ${project.description || ""}
+Technologies: ${techList}
+
+Style: Moderne, cybersécurité, design élégant avec des accents néon bleu/violet, éléments digitaux et technologiques.
+Thème: Dark cyber aesthetic, professionnel, high-tech.
+Format: 16:9, haute qualité.`;
+
+        const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${lovableApiKey}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            model: "google/gemini-2.5-flash-image-preview",
+            messages: [
+              {
+                role: "user",
+                content: imagePrompt
+              }
+            ],
+            modalities: ["image", "text"]
+          })
+        });
+
+        if (!aiResponse.ok) {
+          throw new Error(`AI Gateway error: ${aiResponse.statusText}`);
+        }
+
+        const aiData = await aiResponse.json();
+        const imageBase64 = aiData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+
+        if (!imageBase64) {
+          throw new Error("No image generated");
+        }
+
+        // Extraire les données base64
+        const base64Data = imageBase64.split(',')[1];
+        const imageBuffer = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
+
+        // Upload vers Supabase Storage
+        const fileName = `${project.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${Date.now()}.png`;
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from('projects')
+          .upload(fileName, imageBuffer, {
+            contentType: 'image/png',
+            upsert: false
+          });
+
+        if (uploadError) {
+          throw uploadError;
+        }
+
+        // Obtenir l'URL publique
+        const { data: { publicUrl } } = supabase.storage
+          .from('projects')
+          .getPublicUrl(fileName);
+
+        // Mettre à jour le projet avec l'URL de l'image
+        const { error: updateError } = await supabase
+          .from('projects')
+          .update({ image_url: publicUrl })
+          .eq('id', project.id);
+
+        if (updateError) {
+          throw updateError;
+        }
+
+        console.log(`✓ Image générée pour: ${project.title}`);
+        successCount++;
+        results.push({
+          title: project.title,
+          success: true,
+          imageUrl: publicUrl
+        });
+
+        // Petite pause pour éviter le rate limiting
+        await new Promise(resolve => setTimeout(resolve, 2000));
+
+      } catch (error) {
+        console.error(`✗ Erreur pour ${project.title}:`, error);
+        errorCount++;
+        results.push({
+          title: project.title,
+          success: false,
+          error: error.message
+        });
+      }
+    }
+
+    console.log(`Terminé: ${successCount} succès, ${errorCount} erreurs`);
+
+    return new Response(
+      JSON.stringify({ 
+        success: true,
+        totalProjects: projects.length,
+        successCount,
+        errorCount,
+        results
+      }),
+      {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 200,
+      }
+    );
+
+  } catch (error) {
+    console.error("Error:", error);
+    return new Response(
+      JSON.stringify({ error: error.message }),
+      {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 500,
+      }
+    );
+  }
+});

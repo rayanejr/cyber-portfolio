@@ -35,3 +35,6 @@ verify_jwt = true
 
 [functions.bulk-insert-projects]
 verify_jwt = true
+
+[functions.generate-all-project-images]
+verify_jwt = true

@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Edit, Trash2, Upload, ExternalLink, Github, Eye, RotateCcw, RefreshCw } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
+import { GenerateAllImagesButton } from "./GenerateAllImagesButton";
 
 interface Project {
   id: string;
@@ -268,13 +269,15 @@ const AdminProjects = () => {
             <Eye className="w-5 h-5" />
             Gestion des Projets ({projects.length})
           </CardTitle>
-          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-              <DialogTrigger asChild>
-                <Button onClick={resetForm}>
-                  <Plus className="w-4 h-4 mr-2" />
-                  Nouveau Projet
-                </Button>
-              </DialogTrigger>
+          <div className="flex gap-2">
+            <GenerateAllImagesButton />
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button onClick={resetForm}>
+                    <Plus className="w-4 h-4 mr-2" />
+                    Nouveau Projet
+                  </Button>
+                </DialogTrigger>
               <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle>
@@ -399,6 +402,7 @@ const AdminProjects = () => {
               </form>
             </DialogContent>
           </Dialog>
+          </div>
         </div>
       </CardHeader>
       
