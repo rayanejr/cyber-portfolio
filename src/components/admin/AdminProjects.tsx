@@ -114,9 +114,39 @@ const AdminProjects = () => {
     e.preventDefault();
     
     try {
+      const technologies = formData.technologies ? formData.technologies.split(',').map(t => t.trim()).filter(t => t) : [];
+      
+      let imageUrl = formData.image_url;
+      
+      // Generate image if no image URL is provided
+      if (!imageUrl) {
+        toast({
+          title: "Génération de l'image...",
+          description: "Veuillez patienter pendant la génération de l'image.",
+        });
+
+        const { data: imageData, error: imageError } = await supabase.functions.invoke('generate-project-image', {
+          body: { 
+            title: formData.title,
+            technologies: technologies
+          }
+        });
+
+        if (imageError) {
+          console.error('Image generation error:', imageError);
+          toast({
+            title: "Avertissement",
+            description: "Impossible de générer l'image. Le projet sera créé sans image.",
+          });
+        } else if (imageData?.imageUrl) {
+          imageUrl = imageData.imageUrl;
+        }
+      }
+
       const projectData = {
         ...formData,
-        technologies: formData.technologies ? formData.technologies.split(',').map(t => t.trim()).filter(t => t) : []
+        image_url: imageUrl,
+        technologies: technologies
       };
 
       console.log('Saving project data:', projectData);
