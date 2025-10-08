@@ -32,6 +32,7 @@ const AdminProjects = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [bulkImporting, setBulkImporting] = useState(false);
   const { toast } = useToast();
 
   const [formData, setFormData] = useState({
@@ -227,6 +228,42 @@ const AdminProjects = () => {
     setIsDialogOpen(false);
   };
 
+  const handleBulkImport = async () => {
+    if (!confirm('⚠️ Ceci va supprimer TOUS les projets actuels et les remplacer par vos nouveaux projets. Continuer ?')) return;
+    
+    setBulkImporting(true);
+    try {
+      // 1. Delete all existing projects
+      const { error: deleteError } = await supabase
+        .from('projects')
+        .delete()
+        .neq('id', '00000000-0000-0000-0000-000000000000'); // Delete all
+
+      if (deleteError) throw deleteError;
+
+      // 2. Call edge function to generate images and insert new projects
+      const { data, error } = await supabase.functions.invoke('bulk-insert-projects');
+
+      if (error) throw error;
+
+      toast({
+        title: "Import réussi",
+        description: `${data.successCount} projets importés avec succès, ${data.errorCount} erreurs.`,
+      });
+
+      fetchProjects();
+    } catch (error: any) {
+      console.error('Error during bulk import:', error);
+      toast({
+        title: "Erreur",
+        description: error.message || "Impossible d'importer les projets.",
+        variant: "destructive",
+      });
+    } finally {
+      setBulkImporting(false);
+    }
+  };
+
   if (loading) return <div>Chargement...</div>;
 
   return (
@@ -237,14 +274,23 @@ const AdminProjects = () => {
             <Eye className="w-5 h-5" />
             Gestion des Projets ({projects.length})
           </CardTitle>
-          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <DialogTrigger asChild>
-              <Button onClick={resetForm}>
-                <Plus className="w-4 h-4 mr-2" />
-                Nouveau Projet
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <div className="flex gap-2">
+            <Button 
+              onClick={handleBulkImport} 
+              variant="outline"
+              disabled={bulkImporting}
+            >
+              <RefreshCw className={`w-4 h-4 mr-2 ${bulkImporting ? 'animate-spin' : ''}`} />
+              {bulkImporting ? 'Import en cours...' : 'Remplacer par nouveaux projets'}
+            </Button>
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+              <DialogTrigger asChild>
+                <Button onClick={resetForm}>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Nouveau Projet
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle>
                   {editingProject ? 'Modifier le projet' : 'Nouveau projet'}
@@ -367,7 +413,8 @@ const AdminProjects = () => {
                 </div>
               </form>
             </DialogContent>
-          </Dialog>
+            </Dialog>
+          </div>
         </div>
       </CardHeader>
       
