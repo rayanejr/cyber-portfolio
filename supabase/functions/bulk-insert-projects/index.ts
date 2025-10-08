@@ -294,6 +294,86 @@ const projects = [
     technologies: ["React", "Next.js", "Tailwind", "Supabase", "TypeScript"],
     category: "web",
     featured: true
+  },
+  {
+    title: "GPO Interdiction Accès Internet - LNE",
+    description: "Blocage total d'Internet pour postes spécifiques",
+    content: "Configuration GPO pour bloquer complètement l'accès Internet sur certains postes internes pour sécurité maximale.",
+    technologies: ["Active Directory", "GPO", "Security", "Windows Server"],
+    category: "security",
+    featured: false
+  },
+  {
+    title: "Désinstallation Ivanti Secure Access - LNE",
+    description: "Déploiement automatisé de désinstallation VPN",
+    content: "Suppression automatique de l'ancien client VPN Ivanti sur l'ensemble du parc via MSIExec et PDQ Deploy.",
+    technologies: ["PDQ Deploy", "MSI", "PowerShell", "Deployment"],
+    category: "automation",
+    featured: false
+  },
+  {
+    title: "Gestion AD Comptes & Ressources - LNE",
+    description: "Administration Active Directory LNE & GMED",
+    content: "Création, modification et désactivation de comptes réseau, gestion des groupes AD avec automatisation PowerShell.",
+    technologies: ["Active Directory", "PowerShell", "Windows Server"],
+    category: "infrastructure",
+    featured: false
+  },
+  {
+    title: "Gestion Restaurations NTFS - LNE",
+    description: "Restauration fichiers et gestion permissions",
+    content: "Process standardisé de restauration avec Shadow Copy, Veeam Backup et ajustement des ACL NTFS.",
+    technologies: ["Veeam", "Shadow Copy", "NTFS", "Active Directory"],
+    category: "infrastructure",
+    featured: false
+  },
+  {
+    title: "Support Exchange/GLPI/Rainbow - LNE",
+    description: "Support technique avancé multi-systèmes",
+    content: "Gestion messagerie Exchange, téléphonie Rainbow, ticketing GLPI et supervision Varonis.",
+    technologies: ["Exchange", "GLPI", "Rainbow", "Varonis"],
+    category: "support",
+    featured: false
+  },
+  {
+    title: "TP GPO - Stratégies de Groupe",
+    description: "Gestion et application des GPO",
+    content: "Création d'OU, application de GPO, vérification propagation avec gpupdate et gpresult.",
+    technologies: ["ADDS", "GPMC", "PowerShell", "Windows"],
+    category: "infrastructure",
+    featured: false
+  },
+  {
+    title: "TP SRWE/ENSA Packet Tracer",
+    description: "Configuration réseau avancée Cisco",
+    content: "Configuration complète réseau avec VLAN, OSPF, NAT, ACL, EtherChannel, SSH, DHCP sur Packet Tracer.",
+    technologies: ["Cisco IOS", "Packet Tracer", "VLAN", "OSPF"],
+    category: "network",
+    featured: false
+  },
+  {
+    title: "GLPI API REST Basic Auth",
+    description: "Automatisation requêtes GLPI via Python",
+    content: "Application Python connectée à l'API GLPI avec authentification Basic Auth pour automatisation.",
+    technologies: ["Python", "REST API", "GLPI", "JSON"],
+    category: "automation",
+    featured: false
+  },
+  {
+    title: "ITIL Gestion de Services",
+    description: "Étude du cycle de vie des services IT",
+    content: "Compréhension des processus ITIL et bonnes pratiques de gestion de services informatiques.",
+    technologies: ["ITIL", "Service Management", "Processes"],
+    category: "methodology",
+    featured: false
+  },
+  {
+    title: "Soutenance Alternance LNE/AFTI",
+    description: "Présentation missions et projets réalisés",
+    content: "Soutenance 20 min (7 min anglais) sur GPO, migration BAL Exchange, automatisation GLPI au LNE.",
+    technologies: ["Presentation", "GPO", "Exchange", "GLPI"],
+    category: "professional",
+    featured: false
   }
 ];
 
