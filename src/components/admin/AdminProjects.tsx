@@ -116,41 +116,9 @@ const AdminProjects = () => {
     try {
       const technologies = formData.technologies ? formData.technologies.split(',').map(t => t.trim()).filter(t => t) : [];
       
-      let imageUrl = formData.image_url;
-      
-      // Generate image if no image URL is provided
-      if (!imageUrl) {
-        toast({
-          title: "Génération de l'image...",
-          description: "Veuillez patienter pendant la génération de l'image.",
-        });
-
-        const { data: imageData, error: imageError } = await supabase.functions.invoke('generate-project-image', {
-          body: { 
-            title: formData.title,
-            technologies: technologies
-          }
-        });
-
-        if (imageError) {
-          console.error('Image generation error:', imageError);
-          toast({
-            title: "Erreur de génération d'image",
-            description: imageError.message || "Impossible de générer l'image. Le projet sera créé sans image.",
-            variant: "destructive",
-          });
-        } else if (imageData?.imageUrl) {
-          imageUrl = imageData.imageUrl;
-          toast({
-            title: "Image générée",
-            description: "L'image a été générée avec succès.",
-          });
-        }
-      }
-
       const projectData = {
         ...formData,
-        image_url: imageUrl,
+        image_url: formData.image_url || null, // Ne pas générer automatiquement, laisser vide
         technologies: technologies
       };
 
