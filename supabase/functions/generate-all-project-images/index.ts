@@ -14,7 +14,15 @@ serve(async (req) => {
   try {
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    const openaiApiKey = Deno.env.get("OPENAI_API_KEY")!;
+    const openaiApiKey = Deno.env.get("OPENAI_API_KEY");
+    
+    if (!openaiApiKey) {
+      console.error('OPENAI_API_KEY not configured');
+      return new Response(
+        JSON.stringify({ error: "OpenAI API key not configured. Please add it in Supabase secrets." }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
     
     const supabase = createClient(supabaseUrl, supabaseKey);
 

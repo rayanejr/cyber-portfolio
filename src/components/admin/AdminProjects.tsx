@@ -135,11 +135,16 @@ const AdminProjects = () => {
         if (imageError) {
           console.error('Image generation error:', imageError);
           toast({
-            title: "Avertissement",
-            description: "Impossible de générer l'image. Le projet sera créé sans image.",
+            title: "Erreur de génération d'image",
+            description: imageError.message || "Impossible de générer l'image. Le projet sera créé sans image.",
+            variant: "destructive",
           });
         } else if (imageData?.imageUrl) {
           imageUrl = imageData.imageUrl;
+          toast({
+            title: "Image générée",
+            description: "L'image a été générée avec succès.",
+          });
         }
       }
 
