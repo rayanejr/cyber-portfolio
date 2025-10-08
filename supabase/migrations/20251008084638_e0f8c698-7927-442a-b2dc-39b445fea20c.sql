@@ -1,0 +1,55 @@
+-- Insérer tous les projets personnels, professionnels et scolaires
+-- Les images seront générées automatiquement lors de la création depuis l'admin
+
+-- Projets personnels/académiques ECE (avant alternance)
+INSERT INTO projects (title, description, content, technologies, featured, is_active) VALUES
+('Gestionnaire de Tâches Personnelles - Sécurité Web', 'Application web de gestion de tâches avec focus sur la sécurité', 'Projet explorant les vulnérabilités web (XSS, CSRF, injection SQL) et les bonnes pratiques de sécurité dans une application de gestion de tâches.', ARRAY['JavaScript', 'HTML', 'CSS', 'Sécurité Web'], false, true),
+('Exploration des Attaques d''Injection avec DVWA', 'Étude pratique des attaques par injection SQL et XSS', 'Analyse des vulnérabilités d''injection sur DVWA (Damn Vulnerable Web Application) pour comprendre les mécanismes d''attaque et les défenses.', ARRAY['DVWA', 'SQL Injection', 'XSS', 'Sécurité'], true, true),
+('Santé-App', 'Application de suivi de santé personnelle', 'Application mobile de gestion des données de santé avec tableaux de bord et suivi personnalisé.', ARRAY['Mobile', 'React', 'Base de données'], false, true),
+('Audit de Sécurité Informatique', 'Audit complet de sécurité d''un système d''information', 'Réalisation d''un audit de sécurité complet incluant analyse de risques, tests de pénétration et recommandations.', ARRAY['Audit', 'ISO 27001', 'Sécurité', 'Pentest'], true, true),
+('ClimaSphere', 'Application de visualisation de données climatiques', 'Plateforme de visualisation et analyse de données météorologiques et climatiques en temps réel.', ARRAY['React', 'API', 'Data Visualization', 'TypeScript'], false, true),
+('Gamebox-android', 'Jeu Tic-Tac-Toe pour Android', 'Application Android de jeu Tic-Tac-Toe avec interface intuitive et mode multi-joueurs.', ARRAY['Android', 'Java', 'Mobile'], false, true),
+('Sotum - Projet Symfony', 'Application web Sotum développée avec Symfony', 'Projet web complet utilisant le framework Symfony avec architecture MVC et base de données MySQL.', ARRAY['Symfony', 'PHP', 'MySQL', 'MVC'], false, true),
+('Gestionnaire de Dictionnaire et Traduction', 'Services web pour gestion de dictionnaire multilingue', 'API REST pour la gestion d''un dictionnaire et services de traduction automatique.', ARRAY['REST API', 'Services Web', 'Python', 'NLP'], false, true),
+('Stage Next Step IT', 'Stage en infrastructure IT et support', 'Expérience professionnelle en support technique, gestion d''infrastructure et assistance utilisateurs.', ARRAY['Support IT', 'Infrastructure', 'Windows Server'], false, true),
+('Projets Réseaux - Bachelor 2ème année', 'Ensemble de projets réseau avancés', 'Projets de configuration réseau incluant VLAN, routage, sécurité et architecture réseau.', ARRAY['Cisco', 'Réseaux', 'VLAN', 'Routage'], false, true),
+('Memory Game', 'Jeu de mémoire interactif', 'Jeu web de mémoire avec différents niveaux de difficulté et système de scores.', ARRAY['JavaScript', 'HTML', 'CSS', 'Game Dev'], false, true),
+('ECEbook', 'Réseau social pour étudiants ECE', 'Plateforme de réseau social permettant aux étudiants de partager et communiquer.', ARRAY['PHP', 'MySQL', 'JavaScript', 'Social Network'], false, true),
+('API Football', 'API de données football en temps réel', 'API REST fournissant des données en temps réel sur les matchs et statistiques de football.', ARRAY['REST API', 'Node.js', 'Database', 'Sports Data'], false, true),
+('Cinema-Application', 'Application de gestion de cinéma', 'Système de réservation et gestion de séances de cinéma avec interface utilisateur moderne.', ARRAY['Java', 'Database', 'UI/UX'], false, true),
+('ECE_WEB', 'Projet web ECE complet', 'Projet web complet incluant frontend moderne et backend robuste.', ARRAY['HTML', 'CSS', 'JavaScript', 'PHP'], false, true),
+('Stage BTL', 'Stage en entreprise BTL', 'Expérience professionnelle en développement et support technique.', ARRAY['Support', 'Développement', 'Infrastructure'], false, true),
+('Farmer Heroes', 'Jeu de gestion de ferme', 'Jeu de stratégie et gestion de ressources agricoles.', ARRAY['Game Dev', 'JavaScript', 'Canvas'], false, true),
+('Museom-Cars', 'Site vitrine musée automobile', 'Site web présentant une collection de voitures avec galerie interactive.', ARRAY['HTML', 'CSS', 'JavaScript', 'Responsive'], false, true),
+('Site SAV Informatique', 'Plateforme de service après-vente IT', 'Système de gestion des demandes SAV avec suivi des tickets et base de connaissances.', ARRAY['PHP', 'MySQL', 'Ticketing', 'Support'], false, true),
+('Projets Réseaux - Bachelor 1ère année', 'Fondamentaux des réseaux informatiques', 'Projets d''apprentissage des bases réseau : câblage, protocoles TCP/IP, configuration switches.', ARRAY['Réseaux', 'TCP/IP', 'Cisco', 'Fondamentaux'], false, true),
+('QCM Application', 'Plateforme de questionnaires en ligne', 'Application web de création et passage de QCM avec correction automatique.', ARRAY['JavaScript', 'Database', 'Quiz', 'Education'], false, true),
+
+-- Projets professionnels LNE (2023-2025)
+('Automatisation Inventaire GLPI - LNE', 'Script Python d''inventaire automatique via API GLPI', 'Automatisation de la récupération d''informations matérielles sur switches Cisco (SN, modèles, IOS) et intégration dans GLPI.', ARRAY['Python', 'Paramiko', 'REST API', 'GLPI', 'Cisco'], true, true),
+('GPO Proxy OFF - LNE', 'Stratégie de groupe pour désactivation proxy', 'Création et déploiement d''une GPO pour désactiver la configuration automatique du proxy sur postes spécifiques.', ARRAY['Active Directory', 'GPO', 'Windows Server'], false, true),
+('Blocage Paramètres LAN via GPO - LNE', 'Sécurisation des paramètres réseau utilisateurs', 'Empêcher les utilisateurs de modifier les paramètres proxy et réseau via stratégies de groupe.', ARRAY['GPO', 'Registry', 'Security', 'Windows'], false, true),
+('GPO Interdiction Internet - LNE', 'Blocage total d''Internet pour postes spécifiques', 'Configuration GPO pour bloquer complètement l''accès Internet sur certains postes internes.', ARRAY['Active Directory', 'GPO', 'Security'], false, true),
+('Migration Dossiers Publics Exchange - LNE', 'Migration vers boîtes aux lettres partagées', 'Remplacement des dossiers publics Exchange par des BAL partagées modernes avec PowerShell.', ARRAY['Exchange 2019', 'PowerShell', 'Outlook 365'], true, true),
+('Optimisation PDQ Deploy/Inventory - LNE', 'Correction et optimisation des outils de déploiement', 'Résolution des blocages proxy et amélioration de la stabilité des scans PDQ.', ARRAY['PDQ Deploy', 'PowerShell', 'Deployment'], false, true),
+('Désinstallation Ivanti - LNE', 'Déploiement automatisé de désinstallation VPN', 'Suppression automatique de l''ancien client VPN Ivanti via MSIExec et PDQ Deploy.', ARRAY['PDQ Deploy', 'MSI', 'PowerShell'], false, true),
+('Intégration VMware ESXi - LNE', 'Extension infrastructure de virtualisation', 'Installation et intégration de nouveaux hôtes VMware ESXi avec vCenter et stockage iSCSI.', ARRAY['VMware ESXi', 'vCenter', 'iSCSI', 'Virtualisation'], true, true),
+('Gestion AD - LNE', 'Administration Active Directory LNE & GMED', 'Création, modification et désactivation de comptes réseau, gestion des groupes AD.', ARRAY['Active Directory', 'PowerShell', 'Windows Server'], false, true),
+('Gestion Restaurations NTFS - LNE', 'Restauration fichiers et gestion permissions', 'Process standardisé de restauration avec Shadow Copy, Veeam Backup et ACL NTFS.', ARRAY['Veeam', 'Shadow Copy', 'NTFS', 'Active Directory'], false, true),
+('Support Exchange/GLPI - LNE', 'Support technique avancé multi-systèmes', 'Gestion messagerie Exchange, téléphonie Rainbow, ticketing GLPI.', ARRAY['Exchange', 'GLPI', 'Rainbow', 'Support'], false, true),
+
+-- Projets scolaires M1/M2 (2023-2025)
+('Projet Active Directory Complet', 'Infrastructure AD complète avec tolérance de panne', 'Mise en place d''un domaine AD avec DC1/DC2, DHCP, DNS, GPO et RSAT sur VirtualBox/Azure.', ARRAY['Active Directory', 'Windows Server 2022', 'Azure', 'DHCP', 'DNS'], true, true),
+('TP GPO - Stratégies de Groupe', 'Gestion et application des GPO', 'Création d''OU, application de GPO, vérification propagation avec gpupdate et gpresult.', ARRAY['ADDS', 'GPMC', 'PowerShell', 'Windows'], false, true),
+('TP SRWE/ENSA Packet Tracer', 'Configuration réseau avancée Cisco', 'Configuration complète réseau avec VLAN, OSPF, NAT, ACL, EtherChannel, SSH, DHCP.', ARRAY['Cisco IOS', 'Packet Tracer', 'VLAN', 'OSPF'], false, true),
+('Configuration MPLS L3VPN - GNS3', 'Interconnexion multi-sites via MPLS', 'Configuration d''un réseau MPLS L3 VPN avec BGP, OSPF, VRF et automatisation Ansible.', ARRAY['MPLS', 'BGP', 'OSPF', 'GNS3', 'Ansible'], true, true),
+('Réseau Multi-Sites PUMP AND CO', 'Architecture réseau internationale HA', 'Conception réseau international (Cachan, Shanghai, Madrid, Marseille) avec QoS, VoIP, SD-WAN/MPLS.', ARRAY['Cisco', 'Fortinet', 'SD-WAN', 'MPLS', 'VoIP'], true, true),
+('Configuration PfSense DMZ', 'Firewall PfSense avec architecture DMZ', 'Déploiement de deux firewalls PfSense (LAN/DMZ-INT, DMZ-EXT/WAN) avec NAT, VPN et filtrage.', ARRAY['PfSense', 'Firewall', 'VPN', 'DMZ', 'Security'], true, true),
+('Chiffrement /home Linux LUKS', 'Automatisation du chiffrement disque Linux', 'Configuration d''un répertoire /home chiffré avec LUKS et déverrouillage automatique via clé USB.', ARRAY['Linux', 'LUKS', 'Encryption', 'Ubuntu'], false, true),
+('Configuration iptables & QoS AWS', 'Pare-feu et gestion du trafic sur AWS', 'Configuration de règles iptables et QoS sur instances EC2 AWS avec tests de performances.', ARRAY['iptables', 'QoS', 'AWS', 'EC2', 'Linux'], false, true),
+('Audit SSI ISO 19011', 'Audit de sécurité selon norme ISO 19011', 'Application de la méthodologie d''audit SSI sur chaîne de paiement (ERP → SWIFT) avec CVSS.', ARRAY['ISO 19011', 'Audit', 'CVSS', 'Security'], true, true),
+('Jeu Énigmes en C', 'Jeu textuel avec ncurses et sauvegarde scores', 'Développement d''un jeu d''énigmes en C avec interface ncurses et persistance SQLite.', ARRAY['C', 'ncurses', 'SQLite', 'Game Dev'], false, true),
+('Portfolio Professionnel React', 'Site portfolio avec Supabase', 'Site portfolio moderne avec React, Next.js, Tailwind, Supabase et téléchargement CV.', ARRAY['React', 'Next.js', 'Tailwind', 'Supabase', 'TypeScript'], true, true),
+('GLPI API REST', 'Automatisation requêtes GLPI via Python', 'Application Python connectée à l''API GLPI avec authentification Basic Auth.', ARRAY['Python', 'REST API', 'GLPI', 'JSON'], false, true),
+('ITIL Gestion de Services', 'Étude du cycle de vie des services IT', 'Compréhension des processus ITIL et bonnes pratiques de gestion de services.', ARRAY['ITIL', 'Service Management', 'Processes'], false, true),
+('Soutenance Alternance', 'Présentation missions LNE/AFTI', 'Soutenance 20 min (7 min anglais) sur GPO, migration Exchange, automatisation GLPI.', ARRAY['Presentation', 'GPO', 'Exchange', 'GLPI'], false, true);
