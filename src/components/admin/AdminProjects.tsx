@@ -118,11 +118,13 @@ const AdminProjects = () => {
       
       const projectData = {
         ...formData,
-        image_url: formData.image_url || null, // Ne pas générer automatiquement, laisser vide
+        image_url: formData.image_url || null,
         technologies: technologies
       };
 
       console.log('Saving project data:', projectData);
+
+      let savedProjectId = editingProject?.id;
 
       if (editingProject) {
         const { error } = await supabase
@@ -140,19 +142,47 @@ const AdminProjects = () => {
           description: "Le projet a été modifié avec succès.",
         });
       } else {
-        const { error } = await supabase
+        const { data, error } = await supabase
           .from('projects')
-          .insert([projectData]);
+          .insert([projectData])
+          .select()
+          .single();
 
         if (error) {
           console.error('Insert error:', error);
           throw error;
         }
         
+        savedProjectId = data?.id;
+        
         toast({
           title: "Projet créé",
           description: "Le projet a été créé avec succès.",
         });
+      }
+
+      // Générer automatiquement l'image si elle n'existe pas
+      if (!formData.image_url && savedProjectId) {
+        try {
+          const { data: imageData, error: imageError } = await supabase.functions.invoke('generate-project-image', {
+            body: { 
+              projectId: savedProjectId,
+              title: formData.title, 
+              description: formData.description,
+              technologies 
+            }
+          });
+
+          if (imageError) throw imageError;
+
+          toast({
+            title: "Image générée",
+            description: "L'image du projet a été générée automatiquement.",
+          });
+        } catch (imageError) {
+          console.error('Error generating image:', imageError);
+          // Ne pas bloquer si la génération d'image échoue
+        }
       }
 
       resetForm();
@@ -455,6 +485,15 @@ const AdminProjects = () => {
                   </div>
                   
                   <div className="flex gap-2 mt-4">
+                    <GenerateProjectImageButton
+                      projectId={project.id}
+                      title={project.title}
+                      description={project.description}
+                      technologies={project.technologies}
+                      onImageGenerated={(imageUrl) => {
+                        fetchProjects();
+                      }}
+                    />
                     <Button 
                       size="sm" 
                       variant="outline"
