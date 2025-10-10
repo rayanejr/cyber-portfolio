@@ -41,3 +41,6 @@ verify_jwt = true
 
 [functions.generate-project-image-hf]
 verify_jwt = true
+
+[functions.generate-project-image-gemini]
+verify_jwt = true
