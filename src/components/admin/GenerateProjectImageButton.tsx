@@ -25,7 +25,7 @@ export const GenerateProjectImageButton = ({
   const handleGenerateImage = async () => {
     setGenerating(true);
     try {
-      const { data, error } = await supabase.functions.invoke('generate-project-image', {
+      const { data, error } = await supabase.functions.invoke('generate-project-image-hf', {
         body: { 
           projectId,
           title, 

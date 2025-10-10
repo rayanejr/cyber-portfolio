@@ -164,7 +164,7 @@ const AdminProjects = () => {
       // Générer automatiquement l'image si elle n'existe pas
       if (!formData.image_url && savedProjectId) {
         try {
-          const { data: imageData, error: imageError } = await supabase.functions.invoke('generate-project-image', {
+          const { data: imageData, error: imageError } = await supabase.functions.invoke('generate-project-image-hf', {
             body: { 
               projectId: savedProjectId,
               title: formData.title, 
