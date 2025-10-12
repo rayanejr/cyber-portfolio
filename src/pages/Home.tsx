@@ -504,8 +504,8 @@ export default function Home() {
 
             <div className="relative max-w-3xl mx-auto">
               <p className="text-xl text-muted-foreground leading-relaxed">
-                Expertise en cybersécurité, DevSecOps et infrastructures sécurisées. De l'audit de sécurité au
-                déploiement automatisé.
+                Connaissances solides en cybersécurité, DevSecOps et infrastructures sécurisées. Je m’intéresse à tout
+                le cycle de sécurité, de l’audit à l’automatisation du déploiement.
               </p>
               <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-32 h-1 bg-gradient-to-r from-transparent via-primary to-transparent"></div>
             </div>
@@ -726,6 +726,10 @@ export default function Home() {
             <h2 className="text-3xl md:text-4xl font-orbitron font-bold">
               <span className="cyber-text">Certifications</span>
             </h2>
+            <p className="text-lg text-muted-foreground">
+              Sécurité du Cloud (DataScientest, 03/2024) • Bash & Linux (01/2024) • Introduction à Python (01/2024) •
+              Prévention Sup’ (INRS, 02/2024)
+            </p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
@@ -789,7 +793,8 @@ export default function Home() {
               <span className="cyber-text">Contact</span>
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Prêt à discuter de vos besoins en cybersécurité ou DevSecOps ?
+              En formation dans le domaine de la cybersécurité et du DevSecOps, je reste à l’écoute pour échanger sur
+              vos projets ou opportunités.
             </p>
           </div>
 
