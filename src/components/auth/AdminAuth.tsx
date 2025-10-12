@@ -79,7 +79,7 @@ const AdminAuth: React.FC<AdminAuthProps> = ({ onAuthenticated }) => {
   };
 
   return (
-    <div className="fixed inset-0 w-full h-full bg-gradient-to-br from-background via-primary/5 to-secondary/10 pt-20">
+    <div className="fixed inset-0 w-full h-full bg-gradient-to-br from-background via-primary/5 to-secondary/10">
       <div className="absolute inset-0 cyber-grid opacity-10"></div>
       
       <div className="h-full w-full">
