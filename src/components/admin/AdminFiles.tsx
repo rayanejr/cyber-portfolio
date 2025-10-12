@@ -222,6 +222,7 @@ const AdminFiles = () => {
   const getCategoryLabel = (category: string) => {
     const labels: { [key: string]: string } = {
       cv: "CV",
+      profile_photo: "Photo de profil",
       logos: "Logos",
       certificates: "Certificats",
       documents: "Documents",
@@ -234,6 +235,7 @@ const AdminFiles = () => {
   const getCategoryBadgeVariant = (category: string) => {
     const variants: { [key: string]: "default" | "secondary" | "destructive" | "outline" } = {
       cv: "default",
+      profile_photo: "default",
       logos: "secondary",
       certificates: "outline",
       documents: "outline",
@@ -290,6 +292,7 @@ const AdminFiles = () => {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="cv">CV</SelectItem>
+                        <SelectItem value="profile_photo">Photo de profil</SelectItem>
                         <SelectItem value="logos">Logos</SelectItem>
                         <SelectItem value="certificates">Certificats</SelectItem>
                         <SelectItem value="documents">Documents</SelectItem>
@@ -338,6 +341,7 @@ const AdminFiles = () => {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="cv">CV</SelectItem>
+                        <SelectItem value="profile_photo">Photo de profil</SelectItem>
                         <SelectItem value="logos">Logos</SelectItem>
                         <SelectItem value="certificates">Certificats</SelectItem>
                         <SelectItem value="documents">Documents</SelectItem>
@@ -352,9 +356,15 @@ const AdminFiles = () => {
                     <Input
                       id="file"
                       type="file"
+                      accept={formData.file_category === 'profile_photo' ? 'image/png' : undefined}
                       onChange={handleFileUpload}
                       disabled={uploading}
                     />
+                    {formData.file_category === 'profile_photo' && (
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Uniquement les fichiers PNG
+                      </p>
+                    )}
                     {uploading && <span className="text-sm text-muted-foreground">Upload en cours...</span>}
                   </div>
 
