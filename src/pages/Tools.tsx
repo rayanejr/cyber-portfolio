@@ -134,16 +134,23 @@ const Tools = () => {
     return scenarios[template as keyof typeof scenarios]?.[difficulty as keyof typeof scenarios.banking] || "Scénario non trouvé";
   };
 
-  const checkDataLeak = (email: string) => {
-    // Simulation simple - en réalité, cela appellerait une API
-    const commonLeaks = ['linkedin', 'adobe', 'dropbox', 'yahoo'];
-    const foundIn = commonLeaks.filter(() => Math.random() > 0.7);
-    
-    return {
-      isCompromised: foundIn.length > 0,
-      breaches: foundIn,
-      count: foundIn.length
-    };
+  const checkDataLeak = async (email: string) => {
+    try {
+      const { data, error } = await supabase.functions.invoke('security-breach-checker', {
+        body: { email }
+      });
+
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      console.error('Breach check error:', error);
+      return { 
+        error: 'Erreur de vérification',
+        isCompromised: false,
+        breachCount: 0,
+        breaches: []
+      };
+    }
   };
 
   const analyzeHeaders = async (url: string) => {
@@ -174,25 +181,26 @@ const Tools = () => {
     }
   };
 
-  const simulateBurpSuite = (formData: any) => {
-    // Simulation de Burp Suite
-    const vulnerabilities = [
-      'SQL Injection',
-      'Cross-Site Scripting (XSS)',
-      'Cross-Site Request Forgery (CSRF)',
-      'Insecure Direct Object References',
-      'Security Misconfiguration'
-    ];
-    
-    const found = vulnerabilities.filter(() => Math.random() > 0.6);
-    
-    return {
-      scanType: formData.scanType || 'Active Scan',
-      target: formData.target || 'https://example.com',
-      vulnerabilities: found,
-      riskLevel: found.length > 2 ? 'High' : found.length > 0 ? 'Medium' : 'Low',
-      scanDuration: Math.floor(Math.random() * 30) + 10 + ' minutes'
-    };
+  const scanVulnerabilities = async (formData: any) => {
+    try {
+      const { data, error } = await supabase.functions.invoke('security-vulnerability-scanner', {
+        body: {
+          target: formData.target || 'https://example.com',
+          scanType: formData.scanType || 'Security Headers & Configuration'
+        }
+      });
+
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      console.error('Vulnerability scan error:', error);
+      return {
+        error: 'Erreur de scan',
+        scanType: 'Error',
+        vulnerabilities: [],
+        riskLevel: 'Unknown'
+      };
+    }
   };
 
   const simulateMetasploit = (formData: any) => {
@@ -221,23 +229,26 @@ const Tools = () => {
     };
   };
 
-  const simulateNmap = (formData: any) => {
-    // Simulation de Nmap
-    const commonPorts = [22, 80, 443, 21, 25, 53, 110, 143, 993, 995];
-    const openPorts = commonPorts.filter(() => Math.random() > 0.7);
-    
-    return {
-      target: formData.target || '192.168.1.1/24',
-      scanType: formData.scanType || 'TCP SYN Scan',
-      hostsUp: Math.floor(Math.random() * 10) + 1,
-      openPorts: openPorts,
-      services: openPorts.map(port => ({
-        port,
-        service: port === 80 ? 'http' : port === 443 ? 'https' : port === 22 ? 'ssh' : 'unknown',
-        version: 'detected'
-      })),
-      osGuess: ['Linux 3.2 - 4.9', 'Windows 10', 'macOS'][Math.floor(Math.random() * 3)]
-    };
+  const scanPorts = async (formData: any) => {
+    try {
+      const { data, error } = await supabase.functions.invoke('security-port-scanner', {
+        body: {
+          target: formData.target || 'example.com',
+          scanType: formData.scanType || 'Common Ports Scan'
+        }
+      });
+
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      console.error('Port scan error:', error);
+      return {
+        error: 'Erreur de scan de ports',
+        target: formData.target,
+        openPorts: [],
+        statistics: { totalScanned: 0, openPorts: 0, closedPorts: 0 }
+      };
+    }
   };
 
   const simulateWireshark = (formData: any) => {
@@ -276,7 +287,7 @@ const Tools = () => {
         result = simulatePhishing(formData.template, formData.difficulty);
         break;
       case 'leak':
-        result = checkDataLeak(formData.email);
+        result = await checkDataLeak(formData.email);
         break;
       case 'security':
         result = await analyzeHeaders(formData.url);
@@ -286,7 +297,7 @@ const Tools = () => {
         break;
       case 'Web Security':
       case 'web security':
-        result = simulateBurpSuite(formData);
+        result = await scanVulnerabilities(formData);
         break;
       case 'Penetration Testing':
       case 'penetration testing':
@@ -294,7 +305,7 @@ const Tools = () => {
         break;
       case 'Network Security':
       case 'network security':
-        result = simulateNmap(formData);
+        result = await scanPorts(formData);
         break;
       case 'Network Analysis':
       case 'network analysis':
@@ -395,18 +406,47 @@ const Tools = () => {
               <Input name="email" type="email" placeholder="votre@email.com" required />
             </div>
             <Button type="submit" className="w-full">Vérifier les fuites</Button>
-            {toolResults[tool.id] && (
-              <div className="p-4 bg-muted rounded-lg">
+            {toolResults[tool.id] && !toolResults[tool.id].error && (
+              <div className="p-4 bg-muted rounded-lg space-y-3">
                 {toolResults[tool.id].isCompromised ? (
-                  <div className="text-red-400">
-                    <div className="font-semibold">⚠️ Données compromises</div>
-                    <div className="text-sm mt-1">
-                      Trouvé dans {toolResults[tool.id].count} fuite(s): {toolResults[tool.id].breaches.join(', ')}
+                  <>
+                    <div className="text-red-400 font-semibold">
+                      ⚠️ {toolResults[tool.id].breachCount} fuite(s) de données détectée(s)
                     </div>
-                  </div>
+                    <div className="space-y-2">
+                      {toolResults[tool.id].breaches.map((breach: any, idx: number) => (
+                        <div key={idx} className="p-2 bg-background rounded border border-red-500/20">
+                          <div className="flex justify-between items-start">
+                            <div>
+                              <div className="font-medium">{breach.name}</div>
+                              <div className="text-xs text-muted-foreground">{breach.date}</div>
+                            </div>
+                            <Badge variant="destructive">{breach.severity}</Badge>
+                          </div>
+                          <div className="text-xs mt-1 text-muted-foreground">
+                            {breach.records.toLocaleString()} enregistrements affectés
+                          </div>
+                          <div className="text-xs mt-1">
+                            Données: {breach.dataTypes.join(', ')}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="text-sm">
+                      <div className="font-semibold mb-2">Recommandations:</div>
+                      <ul className="space-y-1 text-xs text-muted-foreground">
+                        {toolResults[tool.id].recommendations.map((rec: string, idx: number) => (
+                          <li key={idx}>• {rec}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </>
                 ) : (
                   <div className="text-green-400">
                     <div className="font-semibold">✅ Aucune fuite détectée</div>
+                    <div className="text-sm mt-2 text-muted-foreground">
+                      Votre email n'apparaît pas dans les fuites de données connues.
+                    </div>
                   </div>
                 )}
               </div>
@@ -587,72 +627,67 @@ const Tools = () => {
       case 'Web Security':
       case 'web security':
         return (
-          <Tabs defaultValue="scan" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="scan">Scanner</TabsTrigger>
-              <TabsTrigger value="proxy">Proxy</TabsTrigger>
-            </TabsList>
-            <TabsContent value="scan" className="space-y-4">
-              <form onSubmit={(e) => {
-                e.preventDefault();
-                const formData = new FormData(e.target as HTMLFormElement);
-                runTool(tool, Object.fromEntries(formData));
-              }} className="space-y-4">
-                <div>
-                  <Label htmlFor="target">URL cible</Label>
-                  <Input name="target" type="url" placeholder="https://example.com" required />
+          <form onSubmit={(e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target as HTMLFormElement);
+            runTool(tool, Object.fromEntries(formData));
+          }} className="space-y-4">
+            <div>
+              <Label htmlFor="target">URL cible</Label>
+              <Input name="target" type="url" placeholder="https://example.com" required />
+            </div>
+            <div>
+              <Label htmlFor="scanType">Type de scan</Label>
+              <Select name="scanType" defaultValue="Security Headers & Configuration">
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Security Headers & Configuration">En-têtes et configuration</SelectItem>
+                  <SelectItem value="Full Security Audit">Audit de sécurité complet</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <Button type="submit" className="w-full">Lancer le scan de vulnérabilités</Button>
+            {toolResults[tool.id] && !toolResults[tool.id].error && (
+              <div className="p-4 bg-muted rounded-lg space-y-3">
+                <div className="flex justify-between items-center">
+                  <div className="font-semibold">Scan terminé</div>
+                  <Badge className={
+                    toolResults[tool.id].riskLevel === 'Low' ? 'bg-green-500' :
+                    toolResults[tool.id].riskLevel === 'Medium' ? 'bg-yellow-500' :
+                    toolResults[tool.id].riskLevel === 'High' ? 'bg-orange-500' :
+                    'bg-red-500'
+                  }>
+                    Risque: {toolResults[tool.id].riskLevel}
+                  </Badge>
                 </div>
-                <div>
-                  <Label htmlFor="scanType">Type de scan</Label>
-                  <Select name="scanType" defaultValue="Active Scan">
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Active Scan">Scan actif</SelectItem>
-                      <SelectItem value="Passive Scan">Scan passif</SelectItem>
-                      <SelectItem value="Crawl">Exploration</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <Button type="submit" className="w-full">Lancer le scan</Button>
-                {toolResults[tool.id] && (
-                  <div className="p-4 bg-muted rounded-lg space-y-3">
-                    <div className="grid grid-cols-2 gap-4 text-sm">
-                      <div><strong>Cible:</strong> {toolResults[tool.id].target}</div>
-                      <div><strong>Type:</strong> {toolResults[tool.id].scanType}</div>
-                      <div><strong>Durée:</strong> {toolResults[tool.id].scanDuration}</div>
-                      <div className={`font-semibold ${
-                        toolResults[tool.id].riskLevel === 'High' ? 'text-red-400' :
-                        toolResults[tool.id].riskLevel === 'Medium' ? 'text-yellow-400' :
-                        'text-green-400'
-                      }`}>Risque: {toolResults[tool.id].riskLevel}</div>
+                <div className="text-sm">
+                  <div className="grid grid-cols-2 gap-2 mb-3">
+                    <div className="p-2 bg-background rounded">
+                      <div className="text-xs text-muted-foreground">Vulnérabilités</div>
+                      <div className="font-bold">{toolResults[tool.id].totalFound}</div>
                     </div>
-                    {toolResults[tool.id].vulnerabilities.length > 0 && (
-                      <div>
-                        <div className="font-semibold text-red-400 mb-2">Vulnérabilités détectées:</div>
-                        <ul className="text-sm space-y-1">
-                          {toolResults[tool.id].vulnerabilities.map((vuln: string, idx: number) => (
-                            <li key={idx} className="flex items-center gap-2">
-                              <span className="text-red-400">•</span>
-                              {vuln}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
+                    <div className="p-2 bg-background rounded">
+                      <div className="text-xs text-muted-foreground">Tests effectués</div>
+                      <div className="font-bold">{toolResults[tool.id].checksPerformed}</div>
+                    </div>
                   </div>
-                )}
-              </form>
-            </TabsContent>
-            <TabsContent value="proxy" className="space-y-4">
-              <div className="text-center text-muted-foreground">
-                <Terminal className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                <p>Interface proxy intercepteur</p>
-                <p className="text-sm">Configuration requise pour intercepter le trafic HTTP/HTTPS</p>
+                  {toolResults[tool.id].vulnerabilities.map((vuln: any, idx: number) => (
+                    <div key={idx} className="p-2 mb-2 bg-background rounded border border-red-500/20">
+                      <div className="flex justify-between items-start">
+                        <div className="font-medium text-sm">{vuln.type}</div>
+                        <Badge variant={vuln.severity === 'HIGH' ? 'destructive' : vuln.severity === 'MEDIUM' ? 'default' : 'secondary'} className="text-xs">
+                          {vuln.severity}
+                        </Badge>
+                      </div>
+                      <div className="text-xs text-muted-foreground mt-1">{vuln.description}</div>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </TabsContent>
-          </Tabs>
+            )}
+          </form>
         );
 
       case 'Penetration Testing':
@@ -716,40 +751,64 @@ const Tools = () => {
             runTool(tool, Object.fromEntries(formData));
           }} className="space-y-4">
             <div>
-              <Label htmlFor="target">Cible réseau</Label>
-              <Input name="target" placeholder="192.168.1.0/24" required />
+              <Label htmlFor="target">Cible (domaine ou IP)</Label>
+              <Input name="target" placeholder="example.com" required />
             </div>
             <div>
               <Label htmlFor="scanType">Type de scan</Label>
-              <Select name="scanType" defaultValue="TCP SYN Scan">
+              <Select name="scanType" defaultValue="Common Ports Scan">
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="TCP SYN Scan">TCP SYN Scan</SelectItem>
-                  <SelectItem value="UDP Scan">UDP Scan</SelectItem>
-                  <SelectItem value="Ping Scan">Ping Scan</SelectItem>
-                  <SelectItem value="OS Detection">Détection OS</SelectItem>
+                  <SelectItem value="Common Ports Scan">Ports courants</SelectItem>
+                  <SelectItem value="Full Port Scan">Scan complet</SelectItem>
                 </SelectContent>
               </Select>
             </div>
-            <Button type="submit" className="w-full">Lancer le scan réseau</Button>
-            {toolResults[tool.id] && (
+            <Button type="submit" className="w-full">Lancer le scan de ports</Button>
+            {toolResults[tool.id] && !toolResults[tool.id].error && (
               <div className="p-4 bg-muted rounded-lg space-y-3">
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div><strong>Cible:</strong> {toolResults[tool.id].target}</div>
-                  <div><strong>Type:</strong> {toolResults[tool.id].scanType}</div>
-                  <div><strong>Hôtes actifs:</strong> {toolResults[tool.id].hostsUp}</div>
-                  <div><strong>OS probable:</strong> {toolResults[tool.id].osGuess}</div>
+                <div className="grid grid-cols-3 gap-2 text-sm">
+                  <div className="text-center p-2 bg-background rounded">
+                    <div className="font-bold">{toolResults[tool.id].statistics.totalScanned}</div>
+                    <div className="text-xs text-muted-foreground">Scannés</div>
+                  </div>
+                  <div className="text-center p-2 bg-background rounded">
+                    <div className="font-bold text-green-400">{toolResults[tool.id].statistics.openPorts}</div>
+                    <div className="text-xs text-muted-foreground">Ouverts</div>
+                  </div>
+                  <div className="text-center p-2 bg-background rounded">
+                    <div className="font-bold">{toolResults[tool.id].statistics.closedPorts}</div>
+                    <div className="text-xs text-muted-foreground">Fermés</div>
+                  </div>
                 </div>
                 {toolResults[tool.id].openPorts.length > 0 && (
                   <div>
-                    <div className="font-semibold mb-2">Ports ouverts:</div>
-                    <div className="grid grid-cols-2 gap-2 text-sm">
-                      {toolResults[tool.id].services.map((service: any, idx: number) => (
-                        <div key={idx} className="flex justify-between">
-                          <span>{service.port}/{service.service}</span>
-                          <span className="text-green-400">{service.version}</span>
+                    <div className="font-semibold text-sm mb-2">Ports ouverts:</div>
+                    <div className="space-y-1">
+                      {toolResults[tool.id].openPorts.map((port: any, idx: number) => (
+                        <div key={idx} className="p-2 bg-background rounded text-xs flex justify-between items-center">
+                          <div>
+                            <span className="font-medium">Port {port.port}</span> - {port.service}
+                          </div>
+                          <Badge variant="outline" className="text-xs">{port.category}</Badge>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {toolResults[tool.id].securityIssues && toolResults[tool.id].securityIssues.length > 0 && (
+                  <div>
+                    <div className="font-semibold text-sm mb-2 text-red-400">⚠️ Problèmes de sécurité:</div>
+                    <div className="space-y-1">
+                      {toolResults[tool.id].securityIssues.map((issue: any, idx: number) => (
+                        <div key={idx} className="p-2 bg-background rounded border border-red-500/20 text-xs">
+                          <div className="flex justify-between items-start mb-1">
+                            <span className="font-medium">{issue.issue}</span>
+                            <Badge variant="destructive" className="text-xs">{issue.severity}</Badge>
+                          </div>
+                          <div className="text-muted-foreground">{issue.description}</div>
                         </div>
                       ))}
                     </div>

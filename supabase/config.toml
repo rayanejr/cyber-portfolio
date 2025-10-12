@@ -12,6 +12,15 @@ verify_jwt = false
 [functions.security-real-tests]
 verify_jwt = true
 
+[functions.security-vulnerability-scanner]
+verify_jwt = false
+
+[functions.security-port-scanner]
+verify_jwt = false
+
+[functions.security-breach-checker]
+verify_jwt = false
+
 [functions.security-test-data]
 verify_jwt = true
 
