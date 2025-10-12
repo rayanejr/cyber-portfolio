@@ -1,8 +1,5 @@
 import { useState, useEffect } from "react";
-import {
-  ArrowRight, Shield, Target, Code, Award, ExternalLink, ChevronRight,
-  Mail, Phone, MapPin
-} from "lucide-react";
+import { ArrowRight, Shield, Target, Code, Award, ExternalLink, ChevronRight, Mail, Phone, MapPin } from "lucide-react";
 import CVDownloadButton from "@/components/CVDownloadButton";
 import AIAssistantSection from "@/components/AIAssistantSection";
 import { Button } from "@/components/ui/button";
@@ -13,12 +10,12 @@ import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import heroImage from "@/assets/cyber-hero.jpg";
-import profilePhoto from "@/assets/profile-photo.jpg";
+// import profilePhoto from "@/assets/profile-photo.jpg";
 import projectSecurity from "@/assets/project-security.jpg";
 import projectSoc from "@/assets/project-soc.jpg";
 import projectThreat from "@/assets/project-threat.jpg";
 
-type SkillGroup = { category: string; items: string[] }
+type SkillGroup = { category: string; items: string[] };
 type ProjectRow = {
   id: number | string;
   title: string;
@@ -27,7 +24,7 @@ type ProjectRow = {
   technologies?: string[] | string | null;
   created_at?: string | null;
   slug?: string | null;
-}
+};
 type CertRow = {
   id: string | number;
   name: string;
@@ -37,7 +34,7 @@ type CertRow = {
   pdf_url?: string | null;
   image_url?: string | null;
   credential_url?: string | null;
-}
+};
 
 // Helper functions
 const safeParseArray = (str: string): string[] => {
@@ -59,7 +56,7 @@ export default function Home() {
 
   // Forcer le scroll en haut au montage du composant
   useEffect(() => {
-    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
   }, []);
 
   // === Titres qui tournent (typewriter) ===
@@ -75,6 +72,7 @@ export default function Home() {
   ];
 
   const [resumeUrl, setResumeUrl] = useState<string | null>(null);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [roleIndex, setRoleIndex] = useState(0);
   const [displayText, setDisplayText] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
@@ -125,8 +123,7 @@ export default function Home() {
 
         // Priorité: PDF + actif > PDF > actif > le reste
         const score = (r: any) =>
-          (/(^|\/)pdf$/i.test(r.file_type) || /\.pdf(\?|$)/i.test(r.file_url) ? 2 : 0) +
-          (r.is_active ? 1 : 0);
+          (/(^|\/)pdf$/i.test(r.file_type) || /\.pdf(\?|$)/i.test(r.file_url) ? 2 : 0) + (r.is_active ? 1 : 0);
 
         rows.sort((a: any, b: any) => score(b) - score(a));
 
@@ -140,7 +137,53 @@ export default function Home() {
     };
 
     fetchResume();
-    return () => { mounted = false; };
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  // ===== Récupération de la photo de profil depuis Supabase =====
+  useEffect(() => {
+    let alive = true;
+
+    (async () => {
+      try {
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+        if (!user) return;
+
+        const { data, error } = await supabase.from("profiles").select("avatar_url").eq("id", user.id).single();
+
+        if (error || !data?.avatar_url) {
+          if (alive) setAvatarUrl(null);
+          return;
+        }
+
+        const value = String(data.avatar_url);
+
+        if (/^https?:\/\//i.test(value)) {
+          if (alive) setAvatarUrl(value);
+          return;
+        }
+
+        const { data: signed, error: signErr } = await supabase.storage.from("avatars").createSignedUrl(value, 60 * 60); // 1h
+
+        if (signErr || !signed?.signedUrl) {
+          if (alive) setAvatarUrl(null);
+          return;
+        }
+
+        if (alive) setAvatarUrl(signed.signedUrl);
+      } catch (e) {
+        console.warn("[avatar] fetch error:", e);
+        if (alive) setAvatarUrl(null);
+      }
+    })();
+
+    return () => {
+      alive = false;
+    };
   }, []);
 
   // fallback images si l’enregistrement n’a pas d’image
@@ -159,7 +202,7 @@ export default function Home() {
 
         const grouped: SkillGroup[] =
           (skillsData || []).reduce((acc: SkillGroup[], s: any) => {
-            const g = acc.find(x => x.category === s.category);
+            const g = acc.find((x) => x.category === s.category);
             if (g) g.items.push(s.name);
             else acc.push({ category: s.category, items: [s.name] });
             return acc;
@@ -177,7 +220,7 @@ export default function Home() {
 
         if (certErr) throw certErr;
         setCertifications(certsData || []);
-        
+
         // === Projets récents (3 max) ===
         const { data: projData, error: projErr } = await supabase
           .from("projects")
@@ -193,7 +236,9 @@ export default function Home() {
           ...p,
           technologies: Array.isArray(p.technologies)
             ? p.technologies
-            : (typeof p.technologies === "string" ? safeParseArray(p.technologies) : []),
+            : typeof p.technologies === "string"
+              ? safeParseArray(p.technologies)
+              : [],
           image_url: p.image_url || projectFallbacks[i % projectFallbacks.length],
         }));
 
@@ -202,7 +247,6 @@ export default function Home() {
         if ((projData ?? []).length === 0) {
           console.warn("[projects] 0 lignes renvoyées. Causes probables : RLS ou filtres trop stricts.");
         }
-
       } catch (e) {
         console.error(e);
         toast({
@@ -219,28 +263,37 @@ export default function Home() {
       const j = JSON.parse(raw);
       if (Array.isArray(j)) return j.map(String);
     } catch {}
-    return raw.split(",").map(s => s.trim()).filter(Boolean);
+    return raw
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean);
   }
 
   function isAllowedAsset(url?: string | null) {
     if (!url) return false;
     const u = url.split("?")[0].toLowerCase();
-    return u.endsWith(".pdf") || u.endsWith(".jpg") || u.endsWith(".jpeg") || u.endsWith(".png") || u.endsWith(".webp") || u.endsWith(".gif");
+    return (
+      u.endsWith(".pdf") ||
+      u.endsWith(".jpg") ||
+      u.endsWith(".jpeg") ||
+      u.endsWith(".png") ||
+      u.endsWith(".webp") ||
+      u.endsWith(".gif")
+    );
   }
-
 
   function viewCertification(cert: CertRow) {
     if (cert.pdf_url) {
-      window.open(cert.pdf_url, '_blank');
+      window.open(cert.pdf_url, "_blank");
     } else if (cert.image_url) {
-      window.open(cert.image_url, '_blank');
+      window.open(cert.image_url, "_blank");
     } else if (cert.credential_url) {
-      window.open(cert.credential_url, '_blank');
+      window.open(cert.credential_url, "_blank");
     } else {
       toast({
         title: "Aucun fichier",
         description: "Aucun document ou lien n'est disponible pour cette certification",
-        variant: "destructive"
+        variant: "destructive",
       });
     }
   }
@@ -250,7 +303,7 @@ export default function Home() {
       {/* Background effects */}
       <div className="absolute inset-0 cyber-grid opacity-10"></div>
       <div className="absolute inset-0 bg-gradient-to-br from-secondary/5 via-transparent to-accent/5"></div>
-      
+
       {/* ===== HERO ===== */}
       <section className="relative py-20 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-secondary/10"></div>
@@ -264,27 +317,44 @@ export default function Home() {
             <span className="sr-only">Rôle : </span>
             <span className="cyber-text">—</span>
             <div aria-live="polite" className="flex flex-wrap justify-center items-center gap-x-2">
-              <span className="bg-gradient-to-r from-violet-500 via-fuchsia-500 to-pink-500 bg-clip-text text-transparent animate-fade-in" style={{ animationDelay: '0.3s', animationFillMode: 'both' }}>
+              <span
+                className="bg-gradient-to-r from-violet-500 via-fuchsia-500 to-pink-500 bg-clip-text text-transparent animate-fade-in"
+                style={{ animationDelay: "0.3s", animationFillMode: "both" }}
+              >
                 {displayText || "\u00A0"}
               </span>
               <span className="inline-block w-[2px] h-[1em] align-[-0.15em] bg-fuchsia-400 ml-1 animate-pulse" />
             </div>
           </h1>
-          <p className="text-lg sm:text-xl md:text-2xl text-muted-foreground mb-6 sm:mb-8 max-w-3xl mx-auto px-4 animate-fade-in" style={{ animationDelay: '0.6s', animationFillMode: 'both' }}>
-            Étudiant en 2ᵉ année de Master IRS (Université Paris-Saclay, 2024–2026). Recherche une alternance
-            (3 semaines entreprise / 1 semaine école) pour développer mes compétences en cybersécurité et DevSecOps.
+          <p
+            className="text-lg sm:text-xl md:text-2xl text-muted-foreground mb-6 sm:mb-8 max-w-3xl mx-auto px-4 animate-fade-in"
+            style={{ animationDelay: "0.6s", animationFillMode: "both" }}
+          >
+            Étudiant en 2ᵉ année de Master IRS (Université Paris-Saclay, 2024–2026). Recherche une alternance (3
+            semaines entreprise / 1 semaine école) pour développer mes compétences en cybersécurité et DevSecOps.
           </p>
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4 animate-fade-in" style={{ animationDelay: '0.9s', animationFillMode: 'both' }}>
-            <Link to="/projects" className="animate-scale-in" style={{ animationDelay: '1.2s', animationFillMode: 'both' }}>
+          <div
+            className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4 animate-fade-in"
+            style={{ animationDelay: "0.9s", animationFillMode: "both" }}
+          >
+            <Link
+              to="/projects"
+              className="animate-scale-in"
+              style={{ animationDelay: "1.2s", animationFillMode: "both" }}
+            >
               <Button size="lg" className="btn-cyber group w-full sm:w-auto">
                 Découvrir mes projets
                 <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
               </Button>
             </Link>
-            <div className="animate-scale-in" style={{ animationDelay: '1.4s', animationFillMode: 'both' }}>
+            <div className="animate-scale-in" style={{ animationDelay: "1.4s", animationFillMode: "both" }}>
               <CVDownloadButton />
             </div>
-            <Link to="/contact" className="animate-scale-in" style={{ animationDelay: '1.6s', animationFillMode: 'both' }}>
+            <Link
+              to="/contact"
+              className="animate-scale-in"
+              style={{ animationDelay: "1.6s", animationFillMode: "both" }}
+            >
               <Button variant="outline" size="lg" className="btn-ghost-cyber w-full sm:w-auto">
                 Me contacter
               </Button>
@@ -305,24 +375,30 @@ export default function Home() {
                   À propos
                 </span>
               </h2>
-              <div className="w-3 h-3 bg-primary rounded-full animate-ping" style={{ animationDelay: '0.5s' }}></div>
+              <div className="w-3 h-3 bg-primary rounded-full animate-ping" style={{ animationDelay: "0.5s" }}></div>
             </div>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_2fr] xl:grid-cols-[320px_1fr] gap-8 lg:gap-10 items-start">
             {/* Colonne gauche : portrait */}
-            <div className="space-y-6 flex justify-center lg:justify-start animate-slide-in-right" style={{ animationDelay: '0.3s', animationFillMode: 'both' }}>
+            <div
+              className="space-y-6 flex justify-center lg:justify-start animate-slide-in-right"
+              style={{ animationDelay: "0.3s", animationFillMode: "both" }}
+            >
               <div className="relative w-full max-w-sm lg:max-w-none">
-                <AspectRatio ratio={3/4} className="rounded-xl overflow-hidden">
+                <AspectRatio ratio={3 / 4} className="rounded-xl overflow-hidden">
                   <img
-                    src={profilePhoto}
+                    src={avatarUrl ?? "/placeholder-avatar.png"}
                     alt="Rayane – cybersécurité"
                     className="w-full h-full object-cover object-[50%_20%] cyber-border hover:cyber-glow transition animate-scale-in"
-                    style={{ animationDelay: '0.6s', animationFillMode: 'both' }}
+                    style={{ animationDelay: "0.6s", animationFillMode: "both" }}
                   />
                 </AspectRatio>
 
-                <div className="absolute -bottom-3 -right-3 bg-primary text-primary-foreground rounded-full p-2 animate-scale-in pulse-glow" style={{ animationDelay: '0.9s', animationFillMode: 'both' }}>
+                <div
+                  className="absolute -bottom-3 -right-3 bg-primary text-primary-foreground rounded-full p-2 animate-scale-in pulse-glow"
+                  style={{ animationDelay: "0.9s", animationFillMode: "both" }}
+                >
                   <Shield className="h-6 w-6" />
                 </div>
               </div>
@@ -330,12 +406,15 @@ export default function Home() {
 
             {/* Colonne droite : pitch + 3 piliers */}
             <div className="space-y-8">
-              <Card className="cyber-border hover:cyber-glow transition-all duration-500 bg-card/50 backdrop-blur-sm animate-fade-in" style={{ animationDelay: '0.6s', animationFillMode: 'both' }}>
+              <Card
+                className="cyber-border hover:cyber-glow transition-all duration-500 bg-card/50 backdrop-blur-sm animate-fade-in"
+                style={{ animationDelay: "0.6s", animationFillMode: "both" }}
+              >
                 <CardContent className="p-6">
                   <p className="text-lg text-muted-foreground leading-relaxed">
-                    Étudiant en Master IRS spécialité Cybersécurité, orienté DevSecOps et sécurité des infrastructures. 
-                    Compétences en CI/CD (GitLab, Jenkins), Cloud et IaC (AWS, Terraform) et 
-                    automatisation (Python, Bash, PowerShell) pour améliorer la sécurité et la fiabilité.
+                    Étudiant en Master IRS spécialité Cybersécurité, orienté DevSecOps et sécurité des infrastructures.
+                    Compétences en CI/CD (GitLab, Jenkins), Cloud et IaC (AWS, Terraform) et automatisation (Python,
+                    Bash, PowerShell) pour améliorer la sécurité et la fiabilité.
                   </p>
                   <div className="mt-4 flex flex-wrap gap-3">
                     <Badge className="bg-green-600 text-white border-0">Master IRS Cyber 2024–2026</Badge>
@@ -343,36 +422,53 @@ export default function Home() {
                     <Badge className="bg-green-600 text-white border-0">DevSecOps • CI/CD • Jenkins</Badge>
                     <Badge className="bg-green-600 text-white border-0">Cybersécurité • Pentest • Audit</Badge>
                     <Badge className="bg-green-600 text-white border-0">Cloud • AWS • Terraform</Badge>
-                    <Badge className="bg-green-600 text-white border-0">Automatisation • Python • Bash • PowerShell</Badge>
+                    <Badge className="bg-green-600 text-white border-0">
+                      Automatisation • Python • Bash • PowerShell
+                    </Badge>
                   </div>
                 </CardContent>
               </Card>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              <Card className="cyber-border card-interactive bg-card/50 backdrop-blur-sm animate-fade-in" style={{ animationDelay: '0.9s', animationFillMode: 'both' }}>
+                <Card
+                  className="cyber-border card-interactive bg-card/50 backdrop-blur-sm animate-fade-in"
+                  style={{ animationDelay: "0.9s", animationFillMode: "both" }}
+                >
                   <CardHeader className="p-4 relative">
                     <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     <Shield className="h-6 w-6 sm:h-8 sm:w-8 text-primary mb-2 relative z-10" />
                     <CardTitle className="text-sm sm:text-base relative z-10">Cybersécurité</CardTitle>
-                    <CardDescription className="text-xs sm:text-sm relative z-10">Pentest, audit, durcissement</CardDescription>
+                    <CardDescription className="text-xs sm:text-sm relative z-10">
+                      Pentest, audit, durcissement
+                    </CardDescription>
                   </CardHeader>
                 </Card>
 
-                <Card className="cyber-border card-interactive bg-card/50 backdrop-blur-sm animate-fade-in" style={{ animationDelay: '1.1s', animationFillMode: 'both' }}>
+                <Card
+                  className="cyber-border card-interactive bg-card/50 backdrop-blur-sm animate-fade-in"
+                  style={{ animationDelay: "1.1s", animationFillMode: "both" }}
+                >
                   <CardHeader className="p-4 relative">
                     <div className="absolute inset-0 bg-gradient-to-br from-secondary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     <Target className="h-6 w-6 sm:h-8 sm:w-8 text-secondary mb-2 relative z-10" />
                     <CardTitle className="text-sm sm:text-base relative z-10">Systèmes & Réseaux</CardTitle>
-                    <CardDescription className="text-xs sm:text-sm relative z-10">VMware, AD, DNS, GPO, firewall</CardDescription>
+                    <CardDescription className="text-xs sm:text-sm relative z-10">
+                      VMware, AD, DNS, GPO, firewall
+                    </CardDescription>
                   </CardHeader>
                 </Card>
 
-                <Card className="cyber-border card-interactive bg-card/50 backdrop-blur-sm sm:col-span-2 lg:col-span-1 animate-fade-in" style={{ animationDelay: '1.3s', animationFillMode: 'both' }}>
+                <Card
+                  className="cyber-border card-interactive bg-card/50 backdrop-blur-sm sm:col-span-2 lg:col-span-1 animate-fade-in"
+                  style={{ animationDelay: "1.3s", animationFillMode: "both" }}
+                >
                   <CardHeader className="p-4 relative">
                     <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     <Code className="h-6 w-6 sm:h-8 sm:w-8 text-accent mb-2 relative z-10" />
                     <CardTitle className="text-sm sm:text-base relative z-10">DevOps & Cloud</CardTitle>
-                    <CardDescription className="text-xs sm:text-sm relative z-10">CI/CD, GitLab, Jenkins, AWS, Terraform</CardDescription>
+                    <CardDescription className="text-xs sm:text-sm relative z-10">
+                      CI/CD, GitLab, Jenkins, AWS, Terraform
+                    </CardDescription>
                   </CardHeader>
                 </Card>
               </div>
@@ -386,28 +482,28 @@ export default function Home() {
         {/* Background effects */}
         <div className="absolute inset-0 cyber-grid opacity-10"></div>
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5"></div>
-        
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           {/* Enhanced header */}
           <div className="text-center mb-20 animate-fade-in">
             <div className="flex items-center justify-center gap-4 mb-6">
               <div className="w-3 h-3 bg-primary rounded-full animate-ping"></div>
-              <div className="w-2 h-2 bg-secondary rounded-full animate-pulse" style={{ animationDelay: '0.5s' }}></div>
+              <div className="w-2 h-2 bg-secondary rounded-full animate-pulse" style={{ animationDelay: "0.5s" }}></div>
               <Shield className="w-8 h-8 text-primary animate-float" />
-              <div className="w-2 h-2 bg-accent rounded-full animate-pulse" style={{ animationDelay: '1s' }}></div>
-              <div className="w-3 h-3 bg-primary rounded-full animate-ping" style={{ animationDelay: '1.5s' }}></div>
+              <div className="w-2 h-2 bg-accent rounded-full animate-pulse" style={{ animationDelay: "1s" }}></div>
+              <div className="w-3 h-3 bg-primary rounded-full animate-ping" style={{ animationDelay: "1.5s" }}></div>
             </div>
-            
+
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-orbitron font-bold mb-6">
               <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
                 Arsenal Technique
               </span>
             </h2>
-            
+
             <div className="relative max-w-3xl mx-auto">
               <p className="text-xl text-muted-foreground leading-relaxed">
-                Expertise en cybersécurité, DevSecOps et infrastructures sécurisées. 
-                De l'audit de sécurité au déploiement automatisé.
+                Expertise en cybersécurité, DevSecOps et infrastructures sécurisées. De l'audit de sécurité au
+                déploiement automatisé.
               </p>
               <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-32 h-1 bg-gradient-to-r from-transparent via-primary to-transparent"></div>
             </div>
@@ -419,9 +515,9 @@ export default function Home() {
               <div
                 key={skillGroup.category}
                 className="group relative"
-                style={{ 
-                  animationDelay: `${0.4 + (index * 0.2)}s`, 
-                  animationFillMode: 'both' 
+                style={{
+                  animationDelay: `${0.4 + index * 0.2}s`,
+                  animationFillMode: "both",
                 }}
               >
                 {/* Main skill card */}
@@ -429,35 +525,35 @@ export default function Home() {
                   {/* Animated background layers */}
                   <div className="absolute inset-0 bg-gradient-to-br from-background via-muted/20 to-background"></div>
                   <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-                  
+
                   {/* Scanning lines */}
                   <div className="absolute inset-0 overflow-hidden pointer-events-none">
                     <div className="absolute w-full h-0.5 bg-gradient-to-r from-transparent via-primary to-transparent animate-scan opacity-0 group-hover:opacity-100"></div>
                   </div>
-                  
+
                   {/* Corner indicators */}
                   <div className="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-primary/30 group-hover:border-primary transition-colors duration-300"></div>
                   <div className="absolute top-2 right-2 w-4 h-4 border-t-2 border-r-2 border-secondary/30 group-hover:border-secondary transition-colors duration-300"></div>
                   <div className="absolute bottom-2 left-2 w-4 h-4 border-b-2 border-l-2 border-accent/30 group-hover:border-accent transition-colors duration-300"></div>
                   <div className="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 border-primary/30 group-hover:border-primary transition-colors duration-300"></div>
-                  
+
                   <CardHeader className="relative z-10 text-center pb-4 flex-shrink-0">
                     {/* Category icon */}
                     <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg">
                       <Shield className="w-8 h-8 text-primary group-hover:animate-pulse" />
                     </div>
-                    
+
                     <CardTitle className="text-xl font-orbitron font-bold text-foreground group-hover:text-primary transition-colors duration-300 mb-2 h-[60px] flex items-center justify-center">
                       {skillGroup.category}
                     </CardTitle>
-                    
+
                     {/* Progress indicator */}
                     <div className="flex justify-center gap-1 mb-2">
                       {Array.from({ length: 5 }).map((_, i) => (
                         <div
                           key={i}
                           className={`w-2 h-1 rounded-full transition-all duration-300 ${
-                            i < Math.min(skillGroup.items.length, 5) ? 'bg-primary' : 'bg-muted'
+                            i < Math.min(skillGroup.items.length, 5) ? "bg-primary" : "bg-muted"
                           }`}
                           style={{ animationDelay: `${i * 0.1}s` }}
                         />
@@ -472,8 +568,8 @@ export default function Home() {
                         <div
                           key={`${skillGroup.category}-${skill}-${skillIndex}`}
                           className="group/skill relative"
-                          style={{ 
-                            animationDelay: `${(index * 0.2) + (skillIndex * 0.1)}s` 
+                          style={{
+                            animationDelay: `${index * 0.2 + skillIndex * 0.1}s`,
                           }}
                         >
                           <div className="relative p-2 rounded-lg bg-gradient-to-r from-muted/20 to-muted/10 border border-muted/20 hover:border-primary/40 transition-all duration-300 group-hover/skill:transform group-hover/skill:scale-105 animate-fade-in">
@@ -487,18 +583,18 @@ export default function Home() {
                                 <Code className="w-3 h-3 text-primary" />
                               </div>
                             </div>
-                            
+
                             {/* Skill level bar */}
                             <div className="mt-1 h-0.5 bg-muted/40 rounded-full overflow-hidden">
                               <div className="h-full bg-gradient-to-r from-primary to-secondary w-0 group-hover/skill:w-full transition-all duration-1000 rounded-full"></div>
                             </div>
-                            
+
                             {/* Hover effect */}
                             <div className="absolute inset-0 bg-gradient-to-r from-primary/3 via-transparent to-secondary/3 opacity-0 group-hover/skill:opacity-100 transition-opacity duration-300 rounded-lg"></div>
                           </div>
                         </div>
                       ))}
-                      
+
                       {/* Indicateur s'il y a plus de compétences */}
                       {skillGroup.items.length > 8 && (
                         <div className="text-xs text-muted-foreground text-center pt-2 opacity-70">
@@ -506,7 +602,7 @@ export default function Home() {
                         </div>
                       )}
                     </div>
-                    
+
                     {/* Enhanced stats footer */}
                     <div className="pt-3 mt-auto border-t border-muted/20 group-hover:border-primary/20 transition-colors duration-300 flex-shrink-0">
                       <div className="flex items-center justify-center gap-3 text-xs text-muted-foreground group-hover:text-primary transition-colors duration-300">
@@ -526,7 +622,7 @@ export default function Home() {
               </div>
             ))}
           </div>
-          
+
           {/* Call to action */}
           <div className="text-center mt-16 animate-fade-in">
             <p className="text-lg text-muted-foreground mb-6">
@@ -567,10 +663,11 @@ export default function Home() {
             ) : (
               recentProjects.map((p, idx) => {
                 const imgSrc = String(p.image_url || projectFallbacks[idx % projectFallbacks.length]);
-                const techs =
-                  Array.isArray(p.technologies)
-                    ? p.technologies
-                    : (typeof p.technologies === "string" ? safeParseArray(p.technologies) : []);
+                const techs = Array.isArray(p.technologies)
+                  ? p.technologies
+                  : typeof p.technologies === "string"
+                    ? safeParseArray(p.technologies)
+                    : [];
                 const year = p.created_at ? new Date(p.created_at).getFullYear() : null;
 
                 return (
@@ -583,19 +680,13 @@ export default function Home() {
                         className="w-full h-full object-cover"
                         loading="lazy"
                       />
-                      {year && (
-                        <Badge className="absolute top-4 right-4 bg-primary/90">
-                          {year}
-                        </Badge>
-                      )}
+                      {year && <Badge className="absolute top-4 right-4 bg-primary/90">{year}</Badge>}
                     </div>
 
                     {/* Titre + description */}
                     <CardHeader>
                       <CardTitle className="text-lg">{p.title}</CardTitle>
-                      <CardDescription className="line-clamp-3">
-                        {p.description}
-                       </CardDescription>
+                      <CardDescription className="line-clamp-3">{p.description}</CardDescription>
                     </CardHeader>
 
                     {/* Meta + actions */}
@@ -634,7 +725,8 @@ export default function Home() {
               <span className="cyber-text">Certifications</span>
             </h2>
             <p className="text-lg text-muted-foreground">
-              Sécurité du Cloud (DataScientest, 03/2024) • Bash & Linux (01/2024) • Introduction à Python (01/2024) • Prévention Sup’ (INRS, 02/2024)
+              Sécurité du Cloud (DataScientest, 03/2024) • Bash & Linux (01/2024) • Introduction à Python (01/2024) •
+              Prévention Sup’ (INRS, 02/2024)
             </p>
           </div>
 
@@ -760,7 +852,6 @@ export default function Home() {
           </Link>
         </div>
       </section>
-
     </div>
   );
 }
