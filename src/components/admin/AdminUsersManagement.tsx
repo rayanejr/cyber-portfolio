@@ -47,11 +47,17 @@ export const AdminUsersManagement: React.FC<AdminUsersManagementProps> = ({ curr
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedRole, setSelectedRole] = useState('all');
   const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const [showEditDialog, setShowEditDialog] = useState(false);
+  const [editingUser, setEditingUser] = useState<UserData | null>(null);
   const [newUserData, setNewUserData] = useState({
     email: '',
     password: '',
     role: 'user',
     sendEmail: true
+  });
+  const [editUserData, setEditUserData] = useState({
+    email: '',
+    password: ''
   });
 
   // Récupérer la liste des utilisateurs via edge function
@@ -120,6 +126,39 @@ export const AdminUsersManagement: React.FC<AdminUsersManagementProps> = ({ curr
       toast({
         title: "Erreur",
         description: error.message || "Impossible de créer l'utilisateur",
+        variant: "destructive"
+      });
+    }
+  });
+
+  // Modifier un utilisateur via edge function
+  const updateUserMutation = useMutation({
+    mutationFn: async (userData: { userId: string; email?: string; password?: string }) => {
+      const { data, error } = await supabase.functions.invoke('user-management', {
+        body: { 
+          action: 'update',
+          userId: userData.userId,
+          email: userData.email,
+          password: userData.password
+        }
+      });
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      toast({
+        title: "Utilisateur modifié",
+        description: "L'utilisateur a été modifié avec succès",
+      });
+      setShowEditDialog(false);
+      setEditingUser(null);
+      setEditUserData({ email: '', password: '' });
+      queryClient.invalidateQueries({ queryKey: ['admin-users'] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Erreur",
+        description: error.message || "Impossible de modifier l'utilisateur",
         variant: "destructive"
       });
     }
@@ -255,6 +294,68 @@ export const AdminUsersManagement: React.FC<AdminUsersManagementProps> = ({ curr
             </div>
           </DialogContent>
         </Dialog>
+
+        <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Modifier l'utilisateur</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="edit-email">Email</Label>
+                <Input
+                  id="edit-email"
+                  type="email"
+                  value={editUserData.email}
+                  onChange={(e) => setEditUserData({ ...editUserData, email: e.target.value })}
+                  placeholder="utilisateur@example.com"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="edit-password">Nouveau mot de passe (optionnel)</Label>
+                <Input
+                  id="edit-password"
+                  type="password"
+                  value={editUserData.password}
+                  onChange={(e) => setEditUserData({ ...editUserData, password: e.target.value })}
+                  placeholder="Laisser vide pour ne pas changer"
+                />
+              </div>
+              <div className="flex gap-2">
+                <Button 
+                  onClick={() => {
+                    if (!editingUser) return;
+                    
+                    const hasEmailChanged = editUserData.email !== editingUser.email;
+                    const hasPassword = editUserData.password.trim() !== '';
+                    
+                    if (!hasEmailChanged && !hasPassword) {
+                      toast({
+                        title: "Aucune modification",
+                        description: "Aucun champ n'a été modifié",
+                        variant: "destructive"
+                      });
+                      return;
+                    }
+                    
+                    updateUserMutation.mutate({
+                      userId: editingUser.id,
+                      email: hasEmailChanged ? editUserData.email : undefined,
+                      password: hasPassword ? editUserData.password : undefined
+                    });
+                  }}
+                  disabled={updateUserMutation.isPending}
+                  className="flex-1"
+                >
+                  Enregistrer
+                </Button>
+                <Button variant="outline" onClick={() => setShowEditDialog(false)}>
+                  Annuler
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
 
       {/* Message d'information si erreur de connexion */}
@@ -365,8 +466,9 @@ export const AdminUsersManagement: React.FC<AdminUsersManagementProps> = ({ curr
                           variant="outline"
                           size="sm"
                           onClick={() => {
-                            const profileTab = document.querySelector('[data-tab="profile"]') as HTMLElement;
-                            if (profileTab) profileTab.click();
+                            setEditingUser(user);
+                            setEditUserData({ email: user.email, password: '' });
+                            setShowEditDialog(true);
                           }}
                           disabled={user.id !== currentUser?.id}
                         >

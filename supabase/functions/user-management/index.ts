@@ -6,7 +6,7 @@ const corsHeaders = {
 }
 
 interface UserManagementRequest {
-  action: 'list' | 'create' | 'delete';
+  action: 'list' | 'create' | 'update' | 'delete';
   email?: string;
   password?: string;
   userId?: string;
@@ -103,6 +103,53 @@ Deno.serve(async (req) => {
 
         if (error) {
           console.error('Error creating user:', error);
+          return new Response(
+            JSON.stringify({ error: error.message }),
+            { 
+              status: 400, 
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            }
+          );
+        }
+
+        return new Response(
+          JSON.stringify({ user: data.user }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+
+      case 'update': {
+        if (!userId) {
+          return new Response(
+            JSON.stringify({ error: 'User ID is required' }),
+            { 
+              status: 400, 
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            }
+          );
+        }
+
+        const updateData: any = {};
+        if (email) updateData.email = email;
+        if (password) updateData.password = password;
+
+        if (Object.keys(updateData).length === 0) {
+          return new Response(
+            JSON.stringify({ error: 'No fields to update' }),
+            { 
+              status: 400, 
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            }
+          );
+        }
+
+        const { data, error } = await supabaseAdmin.auth.admin.updateUserById(
+          userId,
+          updateData
+        );
+
+        if (error) {
+          console.error('Error updating user:', error);
           return new Response(
             JSON.stringify({ error: error.message }),
             { 
