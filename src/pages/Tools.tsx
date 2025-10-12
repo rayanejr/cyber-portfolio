@@ -77,23 +77,24 @@ const Tools = () => {
     }
   };
 
-  const generatePassword = (config: any) => {
-    const length = 16;
-    const lowercase = 'abcdefghijklmnopqrstuvwxyz';
-    const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    const numbers = '0123456789';
-    const special = '!@#$%^&*()_+-=[]{}|;:,.<>?';
-    
-    let charset = lowercase + uppercase;
-    if (config.includeNumbers) charset += numbers;
-    if (config.includeSpecialChars) charset += special;
-    
-    let password = '';
-    for (let i = 0; i < length; i++) {
-      password += charset.charAt(Math.floor(Math.random() * charset.length));
+  const generatePassword = async (config: any) => {
+    try {
+      const { data, error } = await supabase.functions.invoke('security-password-generator', {
+        body: {
+          length: 16,
+          includeNumbers: config.includeNumbers,
+          includeSpecialChars: config.includeSpecialChars,
+          includeUppercase: true,
+          includeLowercase: true
+        }
+      });
+
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      console.error('Password generation error:', error);
+      return { password: 'Erreur de génération', strength: 'Erreur', entropy: 0 };
     }
-    
-    return password;
   };
 
   const calculateRisk = (formData: any) => {
@@ -145,30 +146,32 @@ const Tools = () => {
     };
   };
 
-  const analyzeHeaders = (url: string) => {
-    // Simulation d'analyse d'en-têtes
-    const headers = {
-      'Content-Security-Policy': Math.random() > 0.5,
-      'X-Frame-Options': Math.random() > 0.3,
-      'X-XSS-Protection': Math.random() > 0.4,
-      'Strict-Transport-Security': Math.random() > 0.6
-    };
-    
-    const score = Object.values(headers).filter(Boolean).length;
-    return { headers, score, total: 4 };
+  const analyzeHeaders = async (url: string) => {
+    try {
+      const { data, error } = await supabase.functions.invoke('security-header-analyzer', {
+        body: { url }
+      });
+
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      console.error('Header analysis error:', error);
+      return { error: 'Erreur d\'analyse', score: 0, grade: 'F' };
+    }
   };
 
-  const testSSL = (domain: string) => {
-    // Simulation de test SSL
-    return {
-      grade: ['A+', 'A', 'B', 'C'][Math.floor(Math.random() * 4)],
-      protocols: ['TLS 1.3', 'TLS 1.2'],
-      vulnerabilities: Math.random() > 0.7 ? ['Weak cipher suites'] : [],
-      certificate: {
-        valid: true,
-        expires: '2024-12-31'
-      }
-    };
+  const testSSL = async (domain: string) => {
+    try {
+      const { data, error } = await supabase.functions.invoke('security-ssl-checker', {
+        body: { domain }
+      });
+
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      console.error('SSL test error:', error);
+      return { error: 'Erreur de test SSL', grade: 'F', score: 0 };
+    }
   };
 
   const simulateBurpSuite = (formData: any) => {
@@ -259,12 +262,12 @@ const Tools = () => {
     };
   };
 
-  const runTool = (tool: Tool, formData: any = {}) => {
+  const runTool = async (tool: Tool, formData: any = {}) => {
     let result;
     
     switch (tool.category) {
       case 'password':
-        result = generatePassword(tool.config);
+        result = await generatePassword(tool.config);
         break;
       case 'risk':
         result = calculateRisk(formData);
@@ -276,10 +279,10 @@ const Tools = () => {
         result = checkDataLeak(formData.email);
         break;
       case 'security':
-        result = analyzeHeaders(formData.url);
+        result = await analyzeHeaders(formData.url);
         break;
       case 'ssl':
-        result = testSSL(formData.domain);
+        result = await testSSL(formData.domain);
         break;
       case 'Web Security':
       case 'web security':
@@ -313,10 +316,26 @@ const Tools = () => {
               Générer un mot de passe
             </Button>
             {toolResults[tool.id] && (
-              <div className="p-4 bg-muted rounded-lg">
-                <Label className="text-sm font-medium">Mot de passe généré :</Label>
-                <div className="mt-2 p-2 bg-background rounded border font-mono text-sm">
-                  {toolResults[tool.id]}
+              <div className="p-4 bg-muted rounded-lg space-y-3">
+                <div>
+                  <Label className="text-sm font-medium">Mot de passe généré :</Label>
+                  <div className="mt-2 p-2 bg-background rounded border font-mono text-sm select-all">
+                    {toolResults[tool.id].password}
+                  </div>
+                </div>
+                <div className="grid grid-cols-3 gap-2 text-sm">
+                  <div className="text-center p-2 bg-background rounded border">
+                    <div className="font-bold text-primary">{toolResults[tool.id].strength}</div>
+                    <div className="text-xs text-muted-foreground">Force</div>
+                  </div>
+                  <div className="text-center p-2 bg-background rounded border">
+                    <div className="font-bold">{toolResults[tool.id].entropy} bits</div>
+                    <div className="text-xs text-muted-foreground">Entropie</div>
+                  </div>
+                  <div className="text-center p-2 bg-background rounded border">
+                    <div className="font-bold">{toolResults[tool.id].length} chars</div>
+                    <div className="text-xs text-muted-foreground">Longueur</div>
+                  </div>
                 </div>
               </div>
             )}
@@ -407,19 +426,42 @@ const Tools = () => {
               <Input name="url" type="url" placeholder="https://example.com" required />
             </div>
             <Button type="submit" className="w-full">Analyser les en-têtes</Button>
-            {toolResults[tool.id] && (
-              <div className="p-4 bg-muted rounded-lg">
-                <div className="font-semibold mb-2">Score: {toolResults[tool.id].score}/{toolResults[tool.id].total}</div>
+            {toolResults[tool.id] && !toolResults[tool.id].error && (
+              <div className="p-4 bg-muted rounded-lg space-y-3">
+                <div className="flex justify-between items-center">
+                  <div className="font-semibold">Score: {toolResults[tool.id].score}%</div>
+                  <Badge className={
+                    toolResults[tool.id].grade.startsWith('A') ? 'bg-green-500' :
+                    toolResults[tool.id].grade.startsWith('B') ? 'bg-blue-500' :
+                    toolResults[tool.id].grade.startsWith('C') ? 'bg-yellow-500' :
+                    'bg-red-500'
+                  }>
+                    {toolResults[tool.id].grade}
+                  </Badge>
+                </div>
                 <div className="space-y-2">
-                  {Object.entries(toolResults[tool.id].headers).map(([header, present]) => (
-                    <div key={header} className="flex justify-between">
-                      <span className="text-sm">{header}</span>
-                      <span className={present ? 'text-green-400' : 'text-red-400'}>
-                        {present ? '✅' : '❌'}
+                  {Object.entries(toolResults[tool.id].securityHeaders).map(([header, info]: [string, any]) => (
+                    <div key={header} className="flex justify-between items-center p-2 bg-background rounded">
+                      <div>
+                        <div className="text-sm font-medium">{header}</div>
+                        <div className="text-xs text-muted-foreground">{info.description}</div>
+                      </div>
+                      <span className={info.present ? 'text-green-400' : 'text-red-400'}>
+                        {info.present ? '✅' : '❌'}
                       </span>
                     </div>
                   ))}
                 </div>
+                {toolResults[tool.id].recommendations && toolResults[tool.id].recommendations.length > 0 && (
+                  <div className="mt-3 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded">
+                    <div className="font-semibold text-sm mb-2">Recommandations :</div>
+                    <ul className="text-xs space-y-1">
+                      {toolResults[tool.id].recommendations.map((rec: any, idx: number) => (
+                        <li key={idx}>• {rec.header}: {rec.description}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
             )}
           </form>
@@ -437,31 +479,56 @@ const Tools = () => {
               <Input name="domain" type="text" placeholder="example.com" required />
             </div>
             <Button type="submit" className="w-full">Tester SSL/TLS</Button>
-            {toolResults[tool.id] && (
+            {toolResults[tool.id] && !toolResults[tool.id].error && (
               <div className="p-4 bg-muted rounded-lg space-y-3">
-                <div className="text-center">
-                  <div className={`text-2xl font-bold ${
-                    toolResults[tool.id].grade === 'A+' ? 'text-green-400' : 
-                    toolResults[tool.id].grade === 'A' ? 'text-green-400' : 
-                    'text-yellow-400'
-                  }`}>
-                    Grade: {toolResults[tool.id].grade}
-                  </div>
+                <div className="flex justify-between items-center">
+                  <div className="font-semibold">Score: {toolResults[tool.id].score}%</div>
+                  <Badge className={
+                    toolResults[tool.id].grade.startsWith('A') ? 'bg-green-500' :
+                    toolResults[tool.id].grade.startsWith('B') ? 'bg-blue-500' :
+                    toolResults[tool.id].grade.startsWith('C') ? 'bg-yellow-500' :
+                    'bg-red-500'
+                  }>
+                    {toolResults[tool.id].grade}
+                  </Badge>
                 </div>
-                <div>
-                  <div className="font-semibold">Protocoles supportés:</div>
-                  <div className="text-sm">{toolResults[tool.id].protocols.join(', ')}</div>
-                </div>
-                <div>
-                  <div className="font-semibold">Certificat:</div>
-                  <div className="text-sm">Expire le: {toolResults[tool.id].certificate.expires}</div>
-                </div>
-                {toolResults[tool.id].vulnerabilities.length > 0 && (
-                  <div>
-                    <div className="font-semibold text-red-400">Vulnérabilités:</div>
-                    <div className="text-sm">{toolResults[tool.id].vulnerabilities.join(', ')}</div>
+                {toolResults[tool.id].ssl && toolResults[tool.id].ssl.enabled && (
+                  <>
+                    <div className="p-2 bg-background rounded">
+                      <div className="font-semibold text-sm">Protocole:</div>
+                      <div className="text-sm">{toolResults[tool.id].ssl.protocol}</div>
+                    </div>
+                    <div className="p-2 bg-background rounded">
+                      <div className="font-semibold text-sm">HSTS:</div>
+                      <div className="text-sm">
+                        {toolResults[tool.id].ssl.hsts.enabled ? 
+                          `Activé (max-age: ${toolResults[tool.id].ssl.hsts.maxAge}s)` : 
+                          'Non configuré'}
+                      </div>
+                    </div>
+                  </>
+                )}
+                {toolResults[tool.id].issues && toolResults[tool.id].issues.length > 0 && (
+                  <div className="mt-3 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded">
+                    <div className="font-semibold text-sm mb-2">Problèmes détectés :</div>
+                    <ul className="text-xs space-y-1">
+                      {toolResults[tool.id].issues.map((issue: any, idx: number) => (
+                        <li key={idx} className={
+                          issue.severity === 'critical' ? 'text-red-400' :
+                          issue.severity === 'high' ? 'text-orange-400' :
+                          'text-yellow-400'
+                        }>
+                          • [{issue.severity.toUpperCase()}] {issue.description}
+                        </li>
+                      ))}
+                    </ul>
                   </div>
                 )}
+              </div>
+            )}
+            {toolResults[tool.id] && toolResults[tool.id].error && (
+              <div className="p-4 bg-red-500/10 border border-red-500/20 rounded text-red-400">
+                {toolResults[tool.id].error || toolResults[tool.id].ssl?.error}
               </div>
             )}
           </form>

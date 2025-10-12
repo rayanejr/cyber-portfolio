@@ -1,5 +1,17 @@
 project_id = "pcpjqxuuuawwqxrecexm"
 
+[functions.security-password-generator]
+verify_jwt = false
+
+[functions.security-header-analyzer]
+verify_jwt = false
+
+[functions.security-ssl-checker]
+verify_jwt = false
+
+[functions.security-real-tests]
+verify_jwt = true
+
 [functions.security-test-data]
 verify_jwt = true
 
