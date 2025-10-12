@@ -65,6 +65,16 @@ const AdminFiles = () => {
     const file = event.target.files?.[0];
     if (!file) return;
 
+    // Validation pour photo de profil (PNG uniquement)
+    if (formData.file_category === 'profile_photo' && !file.type.includes('png')) {
+      toast({
+        title: "Format invalide",
+        description: "La photo de profil doit être au format PNG uniquement.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setUploading(true);
     try {
       const fileExt = file.name.split('.').pop();
@@ -222,7 +232,7 @@ const AdminFiles = () => {
   const getCategoryLabel = (category: string) => {
     const labels: { [key: string]: string } = {
       cv: "CV",
-      profile_photo: "Photo de profil",
+      profile_photo: "Photo de Profil",
       logos: "Logos",
       certificates: "Certificats",
       documents: "Documents",
@@ -292,7 +302,7 @@ const AdminFiles = () => {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="cv">CV</SelectItem>
-                        <SelectItem value="profile_photo">Photo de profil</SelectItem>
+                        <SelectItem value="profile_photo">Photo de Profil</SelectItem>
                         <SelectItem value="logos">Logos</SelectItem>
                         <SelectItem value="certificates">Certificats</SelectItem>
                         <SelectItem value="documents">Documents</SelectItem>
@@ -341,7 +351,7 @@ const AdminFiles = () => {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="cv">CV</SelectItem>
-                        <SelectItem value="profile_photo">Photo de profil</SelectItem>
+                        <SelectItem value="profile_photo">Photo de Profil</SelectItem>
                         <SelectItem value="logos">Logos</SelectItem>
                         <SelectItem value="certificates">Certificats</SelectItem>
                         <SelectItem value="documents">Documents</SelectItem>
@@ -361,9 +371,7 @@ const AdminFiles = () => {
                       disabled={uploading}
                     />
                     {formData.file_category === 'profile_photo' && (
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Uniquement les fichiers PNG
-                      </p>
+                      <p className="text-xs text-muted-foreground mt-1">Format PNG uniquement</p>
                     )}
                     {uploading && <span className="text-sm text-muted-foreground">Upload en cours...</span>}
                   </div>
