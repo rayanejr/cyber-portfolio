@@ -19,9 +19,10 @@ serve(async (req) => {
     const { testType } = await req.json();
 
     const results: any[] = [];
+    const runAll = !testType || testType === 'all';
 
     // Test de chiffrement AES-256
-    if (!testType || testType === 'encryption') {
+    if (runAll || testType === 'encryption') {
       try {
         const testData = 'Test de chiffrement ANSSI';
         const encoder = new TextEncoder();
@@ -74,7 +75,7 @@ serve(async (req) => {
     }
 
     // Test RLS (Row Level Security)
-    if (!testType || testType === 'database') {
+    if (runAll || testType === 'database') {
       try {
         // Vérifier que RLS est activé sur les tables critiques
         const { data: tables } = await supabase
@@ -118,7 +119,7 @@ serve(async (req) => {
     }
 
     // Test d'authentification
-    if (!testType || testType === 'authentication') {
+    if (runAll || testType === 'authentication') {
       try {
         // Test de création de session invalide
         const { error } = await supabase.auth.signInWithPassword({
@@ -147,7 +148,7 @@ serve(async (req) => {
     }
 
     // Test de rate limiting
-    if (!testType || testType === 'network') {
+    if (runAll || testType === 'network') {
       try {
         const { count } = await supabase
           .from('rate_limit_contact')
