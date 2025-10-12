@@ -361,33 +361,31 @@ export const AdminUsersManagement: React.FC<AdminUsersManagementProps> = ({ curr
                     <TableCell>{formatDate(user.last_sign_in_at)}</TableCell>
                     <TableCell>
                       <div className="flex gap-2">
-                        {user.id === currentUser?.id ? (
-                          <Button 
-                            size="sm" 
-                            variant="outline"
-                            onClick={() => window.location.href = '/admin?tab=profile'}
-                          >
-                            <Edit className="h-4 w-4 mr-1" />
-                            Mon compte
-                          </Button>
-                        ) : (
-                          <>
-                            <Button size="sm" variant="outline" disabled>
-                              <Edit className="h-4 w-4" />
-                            </Button>
-                            <Button 
-                              size="sm" 
-                              variant="destructive"
-                              onClick={() => {
-                                if (confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')) {
-                                  deleteUserMutation.mutate(user.id);
-                                }
-                              }}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </>
-                        )}
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            const profileTab = document.querySelector('[data-tab="profile"]') as HTMLElement;
+                            if (profileTab) profileTab.click();
+                          }}
+                          disabled={user.id !== currentUser?.id}
+                        >
+                          <Edit className="h-4 w-4 mr-1" />
+                          Modifier
+                        </Button>
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => {
+                            if (confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')) {
+                              deleteUserMutation.mutate(user.id);
+                            }
+                          }}
+                          disabled={deleteUserMutation.isPending}
+                        >
+                          <Trash2 className="h-4 w-4 mr-1" />
+                          Supprimer
+                        </Button>
                       </div>
                     </TableCell>
                   </TableRow>
