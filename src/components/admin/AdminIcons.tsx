@@ -110,9 +110,9 @@ const AdminIcons = () => {
         description: "Le logo a été uploadé avec succès.",
       });
       
-      fetchIcons();
-      // Rafraîchir la page pour que les autres composants voient le nouveau logo
-      window.location.reload();
+      await fetchIcons();
+      // Dispatcher l'événement pour que les autres composants mettent à jour le logo
+      window.dispatchEvent(new CustomEvent('logoUpdated'));
     } catch (error) {
       console.error('Error uploading logo:', error);
       toast({
@@ -144,9 +144,9 @@ const AdminIcons = () => {
         description: "Le logo a été défini comme actif.",
       });
       
-      fetchIcons();
-      // Rafraîchir la page pour que les autres composants voient le nouveau logo
-      window.location.reload();
+      await fetchIcons();
+      // Dispatcher l'événement pour que les autres composants mettent à jour le logo
+      window.dispatchEvent(new CustomEvent('logoUpdated'));
     } catch (error) {
       console.error('Error setting active logo:', error);
       toast({
