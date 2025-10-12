@@ -65,11 +65,39 @@ const AdminFiles = () => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    // Validation pour photo de profil (PNG uniquement)
-    if (formData.file_category === 'profile_photo' && !file.type.includes('png')) {
+    // Validation des types de fichiers selon la catégorie
+    const validations: { [key: string]: { types: string[], message: string } } = {
+      cv: { 
+        types: ['application/pdf'], 
+        message: 'Le CV doit être au format PDF uniquement.' 
+      },
+      profile_photo: { 
+        types: ['image/png', 'image/jpeg', 'image/jpg'], 
+        message: 'La photo de profil doit être au format PNG ou JPEG/JPG.' 
+      },
+      logos: { 
+        types: ['image/png', 'image/jpeg', 'image/jpg'], 
+        message: 'Le logo doit être au format PNG ou JPEG/JPG.' 
+      },
+      certificates: { 
+        types: ['image/png', 'image/jpeg', 'image/jpg', 'application/pdf'], 
+        message: 'Le certificat doit être au format PNG, JPEG/JPG ou PDF.' 
+      },
+      documents: { 
+        types: ['image/png', 'image/jpeg', 'image/jpg', 'application/pdf'], 
+        message: 'Le document doit être au format PNG, JPEG/JPG ou PDF.' 
+      },
+      other: { 
+        types: ['image/png', 'image/jpeg', 'image/jpg', 'application/pdf'], 
+        message: 'Le fichier doit être au format PNG, JPEG/JPG ou PDF.' 
+      }
+    };
+
+    const validation = validations[formData.file_category];
+    if (validation && !validation.types.includes(file.type)) {
       toast({
         title: "Format invalide",
-        description: "La photo de profil doit être au format PNG uniquement.",
+        description: validation.message,
         variant: "destructive",
       });
       return;
