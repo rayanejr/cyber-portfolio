@@ -2,7 +2,6 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" id="dynamic-favicon" type="image/png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>JERBI Rayane | Ingénieur Cybersécurité &amp; Réseaux - Portfolio</title>
     <meta name="description" content="Découvrez mon portfolio, ingénieur cybersécurité & réseaux. Projets, certifications, expériences et veille technologique en sécurité informatique, cloud et infrastructures.">
@@ -22,35 +21,5 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
-    <script>
-      // Charger le favicon dynamiquement depuis Supabase
-      async function loadFavicon() {
-        try {
-          const { createClient } = await import('@supabase/supabase-js');
-          const supabase = createClient(
-            'https://qbhfmucpnpuxzphvwpxp.supabase.co',
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFiaGZtdWNwbnB1eHpwaHZ3cHhwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDUyMzY3MzAsImV4cCI6MjA2MDgxMjczMH0.LUiqNLKxjrwSr9qbDwF2NZFBF_eSqRLvbPYYIJvjjp0'
-          );
-          
-          const { data } = await supabase
-            .from('admin_files')
-            .select('file_url')
-            .eq('file_category', 'logos')
-            .eq('is_active', true)
-            .maybeSingle();
-          
-          if (data?.file_url) {
-            document.getElementById('dynamic-favicon').href = data.file_url;
-          }
-        } catch (error) {
-          console.error('Erreur lors du chargement du favicon:', error);
-        }
-      }
-      
-      loadFavicon();
-      
-      // Écouter les changements de logo
-      window.addEventListener('logoUpdated', loadFavicon);
-    </script>
   </body>
 </html>
