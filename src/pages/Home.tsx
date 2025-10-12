@@ -726,10 +726,6 @@ export default function Home() {
             <h2 className="text-3xl md:text-4xl font-orbitron font-bold">
               <span className="cyber-text">Certifications</span>
             </h2>
-            <p className="text-lg text-muted-foreground">
-              Sécurité du Cloud (DataScientest, 03/2024) • Bash & Linux (01/2024) • Introduction à Python (01/2024) •
-              Prévention Sup’ (INRS, 02/2024)
-            </p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
