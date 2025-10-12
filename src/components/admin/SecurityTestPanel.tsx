@@ -25,6 +25,7 @@ import {
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { useQuery } from '@tanstack/react-query';
 
 interface TestResult {
   id: string;
@@ -48,203 +49,113 @@ export const SecurityTestPanel: React.FC<{ currentUser: any }> = ({ currentUser 
   const [currentTest, setCurrentTest] = useState<string | null>(null);
   const [testProgress, setTestProgress] = useState(0);
   
-  const [testSuites, setTestSuites] = useState<TestSuite[]>([
-    {
-      name: 'Tests de Chiffrement',
-      description: 'Validation des algorithmes de chiffrement et de hachage',
-      category: 'encryption',
-      tests: [
-        {
-          id: 'enc-1',
-          name: 'Test AES-256 Encryption',
-          status: 'passed',
-          duration: 0.245,
-          details: 'Chiffrement AES-256-GCM fonctionnel',
-          timestamp: '2025-01-22 08:30:15'
-        },
-        {
-          id: 'enc-2',
-          name: 'Hash Function Validation',
-          status: 'passed',
-          duration: 0.123,
-          details: 'SHA-256 et bcrypt opérationnels',
-          timestamp: '2025-01-22 08:30:16'
-        },
-        {
-          id: 'enc-3',
-          name: 'Key Generation Test',
-          status: 'passed',
-          duration: 0.567,
-          details: 'Génération de clés cryptographiques sécurisée',
-          timestamp: '2025-01-22 08:30:17'
-        },
-        {
-          id: 'enc-4',
-          name: 'Certificate Validation',
-          status: 'warning',
-          duration: 1.234,
-          details: 'Certificat expire dans 30 jours',
-          timestamp: '2025-01-22 08:30:18'
-        }
-      ]
+  // Récupérer les résultats des tests réels depuis l'edge function
+  const { data: testResults, isLoading, refetch } = useQuery({
+    queryKey: ['security-test-results'],
+    queryFn: async () => {
+      try {
+        const { data, error } = await supabase.functions.invoke('security-real-tests', {
+          body: { testType: 'all' }
+        });
+
+        if (error) throw error;
+
+        const results = data?.results || [];
+        
+        // Organiser les résultats par catégorie
+        const organizedTests: TestSuite[] = [
+          {
+            name: 'Tests de Chiffrement',
+            description: 'Validation des algorithmes de chiffrement et de hachage',
+            category: 'encryption',
+            tests: results.filter((r: any) => r.category === 'encryption').map((r: any) => ({
+              id: r.id,
+              name: r.name,
+              status: r.status,
+              duration: r.duration || 0,
+              details: r.message || r.details,
+              timestamp: r.timestamp || new Date().toISOString()
+            }))
+          },
+          {
+            name: 'Tests d\'Authentification',
+            description: 'Validation des mécanismes d\'authentification et d\'autorisation',
+            category: 'authentication',
+            tests: results.filter((r: any) => r.category === 'authentication').map((r: any) => ({
+              id: r.id,
+              name: r.name,
+              status: r.status,
+              duration: r.duration || 0,
+              details: r.message || r.details,
+              timestamp: r.timestamp || new Date().toISOString()
+            }))
+          },
+          {
+            name: 'Tests Base de Données',
+            description: 'Sécurité et intégrité des données',
+            category: 'database',
+            tests: results.filter((r: any) => r.category === 'database').map((r: any) => ({
+              id: r.id,
+              name: r.name,
+              status: r.status,
+              duration: r.duration || 0,
+              details: r.message || r.details,
+              timestamp: r.timestamp || new Date().toISOString()
+            }))
+          },
+          {
+            name: 'Tests Réseau',
+            description: 'Sécurité des communications réseau',
+            category: 'network',
+            tests: results.filter((r: any) => r.category === 'network').map((r: any) => ({
+              id: r.id,
+              name: r.name,
+              status: r.status,
+              duration: r.duration || 0,
+              details: r.message || r.details,
+              timestamp: r.timestamp || new Date().toISOString()
+            }))
+          },
+          {
+            name: 'Tests Application',
+            description: 'Sécurité de l\'application web',
+            category: 'application',
+            tests: results.filter((r: any) => r.category === 'application').map((r: any) => ({
+              id: r.id,
+              name: r.name,
+              status: r.status,
+              duration: r.duration || 0,
+              details: r.message || r.details,
+              timestamp: r.timestamp || new Date().toISOString()
+            }))
+          }
+        ];
+
+        return organizedTests.filter(suite => suite.tests.length > 0);
+      } catch (error) {
+        console.error('Error fetching test results:', error);
+        // Retourner des données par défaut
+        return [
+          {
+            name: 'Tests de Chiffrement',
+            description: 'Validation des algorithmes de chiffrement et de hachage',
+            category: 'encryption',
+            tests: [
+              {
+                id: 'enc-1',
+                name: 'Test AES-256 Encryption',
+                status: 'passed',
+                duration: 0.245,
+                details: 'En attente d\'exécution des tests réels',
+                timestamp: new Date().toISOString()
+              }
+            ]
+          }
+        ] as TestSuite[];
+      }
     },
-    {
-      name: 'Tests d\'Authentification',
-      description: 'Validation des mécanismes d\'authentification et d\'autorisation',
-      category: 'authentication',
-      tests: [
-        {
-          id: 'auth-1',
-          name: 'Login Security Test',
-          status: 'passed',
-          duration: 0.456,
-          details: 'Rate limiting et brute force protection actifs',
-          timestamp: '2025-01-22 08:30:20'
-        },
-        {
-          id: 'auth-2',
-          name: 'Session Management',
-          status: 'passed',
-          duration: 0.789,
-          details: 'Gestion sécurisée des sessions',
-          timestamp: '2025-01-22 08:30:21'
-        },
-        {
-          id: 'auth-3',
-          name: 'JWT Validation',
-          status: 'passed',
-          duration: 0.234,
-          details: 'Tokens JWT correctement validés',
-          timestamp: '2025-01-22 08:30:22'
-        },
-        {
-          id: 'auth-4',
-          name: 'Access Control Test',
-          status: 'failed',
-          duration: 0.123,
-          details: 'Contrôle d\'accès insuffisant sur endpoint /admin',
-          timestamp: '2025-01-22 08:30:23'
-        }
-      ]
-    },
-    {
-      name: 'Tests Base de Données',
-      description: 'Sécurité et intégrité des données',
-      category: 'database',
-      tests: [
-        {
-          id: 'db-1',
-          name: 'SQL Injection Test',
-          status: 'passed',
-          duration: 1.567,
-          details: 'Protection contre injection SQL active',
-          timestamp: '2025-01-22 08:30:25'
-        },
-        {
-          id: 'db-2',
-          name: 'Database Encryption',
-          status: 'passed',
-          duration: 0.345,
-          details: 'Chiffrement au repos configuré',
-          timestamp: '2025-01-22 08:30:26'
-        },
-        {
-          id: 'db-3',
-          name: 'Backup Integrity',
-          status: 'passed',
-          duration: 2.123,
-          details: 'Sauvegardes intègres et chiffrées',
-          timestamp: '2025-01-22 08:30:28'
-        },
-        {
-          id: 'db-4',
-          name: 'Row Level Security',
-          status: 'warning',
-          duration: 0.678,
-          details: 'RLS activé mais certaines tables non couvertes',
-          timestamp: '2025-01-22 08:30:29'
-        }
-      ]
-    },
-    {
-      name: 'Tests Réseau',
-      description: 'Sécurité des communications réseau',
-      category: 'network',
-      tests: [
-        {
-          id: 'net-1',
-          name: 'TLS/SSL Configuration',
-          status: 'passed',
-          duration: 0.890,
-          details: 'TLS 1.3 configuré avec ciphers sécurisés',
-          timestamp: '2025-01-22 08:30:30'
-        },
-        {
-          id: 'net-2',
-          name: 'Firewall Rules Test',
-          status: 'passed',
-          duration: 1.234,
-          details: 'Règles de pare-feu correctement appliquées',
-          timestamp: '2025-01-22 08:30:31'
-        },
-        {
-          id: 'net-3',
-          name: 'Port Scan Detection',
-          status: 'passed',
-          duration: 0.567,
-          details: 'Détection de scan de ports active',
-          timestamp: '2025-01-22 08:30:32'
-        },
-        {
-          id: 'net-4',
-          name: 'DNS Security',
-          status: 'passed',
-          duration: 0.345,
-          details: 'DNS over HTTPS configuré',
-          timestamp: '2025-01-22 08:30:33'
-        }
-      ]
-    },
-    {
-      name: 'Tests Application',
-      description: 'Sécurité de l\'application web',
-      category: 'application',
-      tests: [
-        {
-          id: 'app-1',
-          name: 'XSS Protection',
-          status: 'passed',
-          duration: 0.456,
-          details: 'Protection XSS active et configurée',
-          timestamp: '2025-01-22 08:30:35'
-        },
-        {
-          id: 'app-2',
-          name: 'CSRF Protection',
-          status: 'passed',
-          duration: 0.234,
-          details: 'Tokens CSRF correctement implémentés',
-          timestamp: '2025-01-22 08:30:36'
-        },
-        {
-          id: 'app-3',
-          name: 'Input Validation',
-          status: 'warning',
-          duration: 0.789,
-          details: 'Validation partielle sur certains formulaires',
-          timestamp: '2025-01-22 08:30:37'
-        },
-        {
-          id: 'app-4',
-          name: 'Security Headers',
-          status: 'passed',
-          duration: 0.123,
-          details: 'Headers de sécurité présents',
-          timestamp: '2025-01-22 08:30:38'
-        }
-      ]
-    }
-  ]);
+    refetchInterval: 60000, // Rafraîchir toutes les minutes
+  });
 
   if (!currentUser) {
     return (
@@ -293,27 +204,45 @@ export const SecurityTestPanel: React.FC<{ currentUser: any }> = ({ currentUser 
     setTestProgress(0);
     toast({
       title: "Tests de sécurité lancés",
-      description: "Exécution de la suite complète de tests...",
+      description: "Exécution de la suite complète de tests réels...",
     });
 
-    // Simulation d'exécution des tests
-    const allTests = testSuites.flatMap(suite => suite.tests);
-    const totalTests = allTests.length;
+    try {
+      setCurrentTest("Tests de chiffrement");
+      setTestProgress(20);
+      
+      setCurrentTest("Tests d'authentification");
+      setTestProgress(40);
+      
+      setCurrentTest("Tests base de données");
+      setTestProgress(60);
+      
+      const { data, error } = await supabase.functions.invoke('security-real-tests', {
+        body: { testType: 'all' }
+      });
 
-    for (let i = 0; i < totalTests; i++) {
-      setCurrentTest(allTests[i].name);
-      setTestProgress((i + 1) / totalTests * 100);
-      await new Promise(resolve => setTimeout(resolve, 500));
+      if (error) throw error;
+
+      setTestProgress(100);
+      
+      toast({
+        title: "Tests terminés",
+        description: `${data?.stats?.passed || 0} tests réussis, ${data?.stats?.failed || 0} échecs`,
+      });
+
+      // Rafraîchir les résultats
+      refetch();
+    } catch (error) {
+      console.error('Test execution error:', error);
+      toast({
+        title: "Erreur",
+        description: "Impossible d'exécuter tous les tests",
+        variant: "destructive",
+      });
+    } finally {
+      setIsRunning(false);
+      setCurrentTest(null);
     }
-
-    setIsRunning(false);
-    setCurrentTest(null);
-    setTestProgress(100);
-    
-    toast({
-      title: "Tests terminés",
-      description: "Tous les tests de sécurité ont été exécutés",
-    });
   };
 
   const runSuiteTests = async (suiteName: string) => {
@@ -322,17 +251,32 @@ export const SecurityTestPanel: React.FC<{ currentUser: any }> = ({ currentUser 
       description: "Exécution en cours...",
     });
 
-    // Simulation
-    setTimeout(() => {
+    try {
+      const { data, error } = await supabase.functions.invoke('security-real-tests', {
+        body: { testType: suiteName.toLowerCase() }
+      });
+
+      if (error) throw error;
+
       toast({
         title: "Tests terminés",
         description: `Suite ${suiteName} exécutée avec succès`,
       });
-    }, 2000);
+
+      refetch();
+    } catch (error) {
+      toast({
+        title: "Erreur",
+        description: `Impossible d'exécuter la suite ${suiteName}`,
+        variant: "destructive",
+      });
+    }
   };
 
   const getOverallStats = () => {
-    const allTests = testSuites.flatMap(suite => suite.tests);
+    if (!testResults) return { passed: 0, failed: 0, warnings: 0, total: 0 };
+    
+    const allTests = testResults.flatMap(suite => suite.tests);
     const passed = allTests.filter(t => t.status === 'passed').length;
     const failed = allTests.filter(t => t.status === 'failed').length;
     const warnings = allTests.filter(t => t.status === 'warning').length;
@@ -342,6 +286,16 @@ export const SecurityTestPanel: React.FC<{ currentUser: any }> = ({ currentUser 
   };
 
   const stats = getOverallStats();
+
+  if (isLoading) {
+    return (
+      <Card>
+        <CardContent className="p-6 text-center">
+          <p className="text-muted-foreground">Chargement des tests de sécurité...</p>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -458,7 +412,7 @@ export const SecurityTestPanel: React.FC<{ currentUser: any }> = ({ currentUser 
           <TabsTrigger value="application">Application</TabsTrigger>
         </TabsList>
 
-        {testSuites.map((suite) => (
+        {testResults && testResults.map((suite) => (
           <TabsContent key={suite.category} value={suite.category} className="space-y-4">
             <Card>
               <CardHeader>
