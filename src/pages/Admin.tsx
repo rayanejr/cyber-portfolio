@@ -41,6 +41,7 @@ import { AdminSecurityAdvanced } from "@/components/admin/AdminSecurityAdvanced"
 import { AdminUsersManagement } from "@/components/admin/AdminUsersManagement";
 
 import AdminAuth from "@/components/auth/AdminAuth";
+import AdminProfile from "@/components/admin/AdminProfile";
 
 import type { User } from '@supabase/supabase-js';
 
@@ -424,6 +425,14 @@ const Admin = () => {
                 <FileText className="w-4 h-4 group-data-[state=active]:scale-110 transition-transform" />
                 <span>Tests</span>
               </TabsTrigger>
+              
+              <TabsTrigger 
+                value="profile" 
+                className="relative flex items-center gap-2 text-xs sm:text-sm px-3 py-2 rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary/20 data-[state=active]:to-secondary/20 data-[state=active]:text-primary transition-all duration-300 hover:bg-primary/10 group"
+              >
+                <Lock className="w-4 h-4 group-data-[state=active]:scale-110 transition-transform" />
+                <span>Profil</span>
+              </TabsTrigger>
             </TabsList>
           </div>
 
@@ -688,6 +697,10 @@ const Admin = () => {
 
           <TabsContent value="security-tests" className="animate-fade-in">
             <SecurityTestPanel currentUser={currentUser} />
+          </TabsContent>
+
+          <TabsContent value="profile" className="animate-fade-in">
+            <AdminProfile />
           </TabsContent>
         </Tabs>
       </div>
