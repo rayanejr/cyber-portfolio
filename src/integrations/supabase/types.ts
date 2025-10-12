@@ -543,6 +543,10 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: string
       }
+      cleanup_old_security_events: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
       debug_whoami: {
         Args: Record<PropertyKey, never>
         Returns: Json
