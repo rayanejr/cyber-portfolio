@@ -394,13 +394,19 @@ const AdminFiles = () => {
                     <Input
                       id="file"
                       type="file"
-                      accept={formData.file_category === 'profile_photo' ? 'image/png' : undefined}
+                      accept={
+                        formData.file_category === 'cv' ? 'application/pdf' :
+                        formData.file_category === 'profile_photo' || formData.file_category === 'logos' ? 'image/png,image/jpeg,image/jpg' :
+                        'image/png,image/jpeg,image/jpg,application/pdf'
+                      }
                       onChange={handleFileUpload}
                       disabled={uploading}
                     />
-                    {formData.file_category === 'profile_photo' && (
-                      <p className="text-xs text-muted-foreground mt-1">Format PNG uniquement</p>
-                    )}
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {formData.file_category === 'cv' && 'PDF uniquement'}
+                      {(formData.file_category === 'profile_photo' || formData.file_category === 'logos') && 'PNG, JPEG/JPG uniquement'}
+                      {(formData.file_category === 'certificates' || formData.file_category === 'documents' || formData.file_category === 'other') && 'PNG, JPEG/JPG, PDF'}
+                    </p>
                     {uploading && <span className="text-sm text-muted-foreground">Upload en cours...</span>}
                   </div>
 

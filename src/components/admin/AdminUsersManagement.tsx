@@ -361,21 +361,33 @@ export const AdminUsersManagement: React.FC<AdminUsersManagementProps> = ({ curr
                     <TableCell>{formatDate(user.last_sign_in_at)}</TableCell>
                     <TableCell>
                       <div className="flex gap-2">
-                        <Button size="sm" variant="outline">
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button 
-                          size="sm" 
-                          variant="destructive"
-                          onClick={() => {
-                            if (confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')) {
-                              deleteUserMutation.mutate(user.id);
-                            }
-                          }}
-                          disabled={user.id === currentUser?.id}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
+                        {user.id === currentUser?.id ? (
+                          <Button 
+                            size="sm" 
+                            variant="outline"
+                            onClick={() => window.location.href = '/admin?tab=profile'}
+                          >
+                            <Edit className="h-4 w-4 mr-1" />
+                            Mon compte
+                          </Button>
+                        ) : (
+                          <>
+                            <Button size="sm" variant="outline" disabled>
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                            <Button 
+                              size="sm" 
+                              variant="destructive"
+                              onClick={() => {
+                                if (confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')) {
+                                  deleteUserMutation.mutate(user.id);
+                                }
+                              }}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </>
+                        )}
                       </div>
                     </TableCell>
                   </TableRow>
