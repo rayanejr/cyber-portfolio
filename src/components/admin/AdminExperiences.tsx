@@ -86,8 +86,13 @@ export default function AdminExperiences() {
     e.preventDefault();
 
     const submitData = {
-      ...formData,
-      end_date: formData.end_date || null, // Convertir string vide en null
+      title: formData.title,
+      company: formData.company,
+      location: formData.location || null,
+      description: formData.description || null,
+      start_date: formData.start_date,
+      end_date: formData.is_current ? null : (formData.end_date || null),
+      is_current: formData.is_current,
       technologies: formData.technologies ? formData.technologies.split(',').map(t => t.trim()).filter(t => t) : [],
       achievements: formData.achievements ? formData.achievements.split('\n').filter(a => a.trim()) : []
     };
