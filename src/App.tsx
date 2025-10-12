@@ -29,7 +29,7 @@ const App = () => (
         <ScrollToTop />
         <div className="min-h-screen flex flex-col">
           <Navbar />
-          <main className="flex-1">
+          <main className="flex-1 pb-24 sm:pb-32 lg:pb-40">
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/projects" element={<Projects />} />
