@@ -142,41 +142,43 @@ export default function Home() {
     };
   }, []);
 
-  // ===== Récupération de la photo de profil depuis Supabase =====
+  // ===== Récupération de la photo de profil depuis admin_files (file_category='profile_photo') =====
   useEffect(() => {
     let alive = true;
 
     (async () => {
       try {
-        const {
-          data: { user },
-        } = await supabase.auth.getUser();
-        if (!user) return;
+        const { data, error } = await supabase
+          .from("admin_files")
+          .select("file_url, file_type, is_active, updated_at")
+          .eq("file_category", "profile_photo");
 
-        const { data, error } = await supabase.from("profiles").select("avatar_url").eq("id", user.id).single();
-
-        if (error || !data?.avatar_url) {
+        if (error || !data) {
           if (alive) setAvatarUrl(null);
           return;
         }
 
-        const value = String(data.avatar_url);
+        // Filtre: actifs avec URL d'image valide
+        const rows = data
+          .filter((r: any) => r?.file_url)
+          .filter((r: any) => /\.(jpg|jpeg|png|webp|gif)$/i.test(String(r.file_url)));
 
-        if (/^https?:\/\//i.test(value)) {
-          if (alive) setAvatarUrl(value);
-          return;
-        }
-
-        const { data: signed, error: signErr } = await supabase.storage.from("avatars").createSignedUrl(value, 60 * 60); // 1h
-
-        if (signErr || !signed?.signedUrl) {
+        if (rows.length === 0) {
           if (alive) setAvatarUrl(null);
           return;
         }
 
-        if (alive) setAvatarUrl(signed.signedUrl);
+        // Prioriser: is_active puis updated_at le + récent
+        rows.sort((a: any, b: any) => {
+          const aScore = (a.is_active ? 10 : 0) + (a.updated_at ? new Date(a.updated_at).getTime() / 1e13 : 0);
+          const bScore = (b.is_active ? 10 : 0) + (b.updated_at ? new Date(b.updated_at).getTime() / 1e13 : 0);
+          return bScore - aScore;
+        });
+
+        const chosen = rows[0];
+        if (alive) setAvatarUrl(String(chosen.file_url));
       } catch (e) {
-        console.warn("[avatar] fetch error:", e);
+        console.error("[profile_photo] fetch error:", e);
         if (alive) setAvatarUrl(null);
       }
     })();
