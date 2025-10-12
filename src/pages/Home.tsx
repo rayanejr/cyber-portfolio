@@ -793,8 +793,7 @@ export default function Home() {
               <span className="cyber-text">Contact</span>
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              En formation dans le domaine de la cybersécurité et du DevSecOps, je reste à l’écoute pour échanger sur
-              vos projets ou opportunités.
+              Prêt à discuter de vos besoins en cybersécurité ou DevSecOps ?
             </p>
           </div>
 
@@ -845,7 +844,8 @@ export default function Home() {
             Prêt à sécuriser votre infrastructure ?
           </h2>
           <p className="text-lg text-primary-foreground/80 mb-8 max-w-2xl mx-auto">
-            Discutons de vos objectifs et des priorités cyber.
+            Toujours curieux d’en apprendre plus et de partager autour des bonnes pratiques de sécurité et
+            d’automatisation.
           </p>
           <Link to="/contact">
             <Button size="lg" variant="secondary" className="btn-matrix">
