@@ -10,7 +10,6 @@ import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import heroImage from "@/assets/cyber-hero.jpg";
-import profilePhoto from "@/assets/profile-photo.jpg";
 import projectSecurity from "@/assets/project-security.jpg";
 import projectSoc from "@/assets/project-soc.jpg";
 import projectThreat from "@/assets/project-threat.jpg";
@@ -389,12 +388,18 @@ export default function Home() {
             >
               <div className="relative w-full max-w-sm lg:max-w-none">
                 <AspectRatio ratio={3 / 4} className="rounded-xl overflow-hidden">
-                  <img
-                    src={avatarUrl ?? profilePhoto}
-                    alt="Rayane – cybersécurité"
-                    className="w-full h-full object-cover object-[50%_20%] cyber-border hover:cyber-glow transition animate-scale-in"
-                    style={{ animationDelay: "0.6s", animationFillMode: "both" }}
-                  />
+                  {avatarUrl ? (
+                    <img
+                      src={avatarUrl}
+                      alt="Photo de profil"
+                      className="w-full h-full object-cover cyber-border hover:cyber-glow transition animate-scale-in"
+                      style={{ animationDelay: "0.6s", animationFillMode: "both" }}
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-muted flex items-center justify-center">
+                      <p className="text-muted-foreground">Photo de profil</p>
+                    </div>
+                  )}
                 </AspectRatio>
 
                 <div
