@@ -267,16 +267,16 @@ const Admin = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background relative overflow-hidden">
+    <div className="min-h-screen w-full bg-background relative overflow-hidden">
       {/* Background effects */}
       <div className="absolute inset-0 cyber-grid opacity-5"></div>
       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5"></div>
       
       {/* Header */}
-      <div className="border-b bg-card/80 backdrop-blur-xl relative z-10 shadow-lg">
-        <div className="container mx-auto px-4 py-4">
+      <div className="w-full border-b bg-card/80 backdrop-blur-xl relative z-10 shadow-lg">
+        <div className="w-full max-w-7xl mx-auto px-4 py-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 animate-fade-in">
-            <div>
+            <div className="flex-1 min-w-0">
               <h1 className="text-xl sm:text-2xl font-bold font-orbitron flex items-center gap-3">
                 <div className="p-2 rounded-lg bg-primary/10 pulse-glow">
                   <Lock className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
@@ -286,15 +286,15 @@ const Admin = () => {
                 </span>
               </h1>
               {currentUser && (
-                <p className="text-sm text-muted-foreground mt-2 flex items-center gap-2 ml-14">
-                  <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                  Connecté en tant que <span className="font-medium text-foreground">{currentUser.email}</span>
+                <p className="text-xs sm:text-sm text-muted-foreground mt-2 flex items-center gap-2 ml-0 sm:ml-14">
+                  <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse flex-shrink-0"></span>
+                  <span className="truncate">Connecté : <span className="font-medium text-foreground">{currentUser.email}</span></span>
                 </p>
               )}
             </div>
             <Button 
               variant="outline" 
-              className="cyber-border hover:cyber-glow group"
+              className="cyber-border hover:cyber-glow group w-full sm:w-auto"
               onClick={async () => {
                 await supabase.auth.signOut();
                 setIsAuthenticated(false);
@@ -309,7 +309,7 @@ const Admin = () => {
       </div>
 
       {/* Main Content */}
-      <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-8 relative z-10">
+      <div className="w-full max-w-7xl mx-auto px-2 sm:px-4 py-4 sm:py-8 relative z-10">
         <Tabs value={selectedTab} onValueChange={setSelectedTab}>
           {/* Tabs Navigation */}
           <div className="w-full overflow-x-auto pb-2 animate-fade-in" style={{ animationDelay: '0.3s', animationFillMode: 'both' }}>
