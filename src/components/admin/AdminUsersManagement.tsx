@@ -326,15 +326,13 @@ export const AdminUsersManagement: React.FC<AdminUsersManagementProps> = ({ curr
                   onClick={() => {
                     if (!editingUser) return;
                     
-                    const hasEmailChanged = editUserData.email !== editingUser.email;
+                    const hasEmailChanged = editUserData.email.trim() !== '' && editUserData.email !== editingUser.email;
                     const hasPassword = editUserData.password.trim() !== '';
                     
                     if (!hasEmailChanged && !hasPassword) {
-                      toast({
-                        title: "Aucune modification",
-                        description: "Aucun champ n'a été modifié",
-                        variant: "destructive"
-                      });
+                      setShowEditDialog(false);
+                      setEditingUser(null);
+                      setEditUserData({ email: '', password: '' });
                       return;
                     }
                     
