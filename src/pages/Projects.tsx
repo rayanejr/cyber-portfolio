@@ -235,7 +235,7 @@ const Projects = () => {
                   animationFillMode: 'both' 
                 }}
               >
-                {project.image_url && (
+                {project.image_url ? (
                   <div className="relative overflow-hidden rounded-t-lg">
                     {/* Animated overlay on hover */}
                     <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"></div>
@@ -243,7 +243,21 @@ const Projects = () => {
                       src={project.image_url}
                       alt={project.title}
                       className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.style.display = 'none';
+                      }}
                     />
+                    {project.featured && (
+                      <Badge className="absolute top-3 right-3 bg-gradient-to-r from-accent to-primary text-white shadow-lg shadow-accent/50 z-20">
+                        <Sparkles className="w-3 h-3 mr-1" />
+                        Mis en avant
+                      </Badge>
+                    )}
+                  </div>
+                ) : (
+                  <div className="relative overflow-hidden rounded-t-lg bg-gradient-to-br from-primary/10 via-secondary/10 to-accent/10 h-48 flex items-center justify-center">
+                    <FolderGit2 className="w-16 h-16 text-muted-foreground/30" />
                     {project.featured && (
                       <Badge className="absolute top-3 right-3 bg-gradient-to-r from-accent to-primary text-white shadow-lg shadow-accent/50 z-20">
                         <Sparkles className="w-3 h-3 mr-1" />

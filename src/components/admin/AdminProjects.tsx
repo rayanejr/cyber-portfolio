@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Edit, Trash2, Upload, ExternalLink, Github, Eye, RotateCcw, RefreshCw } from "lucide-react";
+import { Plus, Edit, Trash2, Upload, ExternalLink, Github, Eye, RotateCcw, RefreshCw, ImageIcon } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { GenerateProjectImageButton } from "./GenerateProjectImageButton";
 
@@ -475,12 +475,21 @@ const AdminProjects = () => {
                       </div>
                     </div>
                     
-                    {project.image_url && (
+                    {project.image_url ? (
                       <img 
                         src={project.image_url} 
                         alt={project.title}
                         className="w-16 h-12 object-cover rounded ml-4"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.src = '';
+                          target.style.display = 'none';
+                        }}
                       />
+                    ) : (
+                      <div className="w-16 h-12 bg-muted/20 rounded ml-4 flex items-center justify-center">
+                        <ImageIcon className="w-6 h-6 text-muted-foreground/50" />
+                      </div>
                     )}
                   </div>
                   

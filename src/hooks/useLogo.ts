@@ -29,7 +29,7 @@ export function useLogo() {
         .eq('is_active', true)
         .order('created_at', { ascending: false })
         .limit(1)
-        .single();
+        .maybeSingle();
 
       if (!error && data?.file_url) {
         const url = data.file_url;
@@ -37,9 +37,13 @@ export function useLogo() {
         // Mettre en cache
         localStorage.setItem(LOGO_CACHE_KEY, url);
         localStorage.setItem(LOGO_CACHE_TIMESTAMP_KEY, Date.now().toString());
-      } else if (error && error.code !== 'PGRST116') {
-        // PGRST116 = pas de résultat, on ignore
+      } else if (error) {
         console.error('[useLogo] Erreur lors de la récupération du logo:', error);
+      } else {
+        // Pas de logo trouvé
+        setLogoUrl(null);
+        localStorage.removeItem(LOGO_CACHE_KEY);
+        localStorage.removeItem(LOGO_CACHE_TIMESTAMP_KEY);
       }
     } catch (error) {
       console.error('[useLogo] Erreur lors de la récupération du logo:', error);
