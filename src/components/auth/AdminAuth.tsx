@@ -79,13 +79,13 @@ const AdminAuth: React.FC<AdminAuthProps> = ({ onAuthenticated }) => {
   };
 
   return (
-    <div className="fixed inset-0 w-full h-full bg-gradient-to-br from-background via-primary/5 to-secondary/10">
-      <div className="absolute inset-0 cyber-grid opacity-10"></div>
+    <div className="min-h-screen w-full bg-gradient-to-br from-background via-primary/5 to-secondary/10">
+      <div className="absolute inset-0 cyber-grid opacity-10 pointer-events-none"></div>
       
-      <div className="h-full w-full">
-        <Card className="h-full w-full cyber-border backdrop-blur-xl bg-card/90 shadow-2xl rounded-none">
+      <div className="w-full py-8 px-4 relative z-10">
+        <Card className="w-full max-w-6xl mx-auto cyber-border backdrop-blur-xl bg-card/90 shadow-2xl">
           {/* Desktop Layout */}
-          <div className="hidden md:grid md:grid-cols-2 h-full">
+          <div className="hidden md:grid md:grid-cols-2 min-h-[600px]">
             {/* Left side - Info */}
             <div className="bg-gradient-to-br from-primary/10 via-secondary/5 to-accent/10 p-8 lg:p-12 flex flex-col justify-center border-r border-primary/20">
               <div className="space-y-6 lg:space-y-8 max-w-xl mx-auto w-full">
@@ -188,8 +188,8 @@ const AdminAuth: React.FC<AdminAuthProps> = ({ onAuthenticated }) => {
           </div>
 
           {/* Mobile Layout */}
-          <div className="md:hidden h-full flex flex-col p-4 overflow-y-auto">
-            <div className="flex-1 flex flex-col justify-center max-w-md mx-auto w-full space-y-6">
+          <div className="md:hidden flex flex-col p-4">
+            <div className="flex flex-col justify-center max-w-md mx-auto w-full space-y-6 py-4">
               {/* Title */}
               <div className="text-center">
                 <h1 className="text-xl font-orbitron font-bold bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">

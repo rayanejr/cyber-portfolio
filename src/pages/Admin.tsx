@@ -267,10 +267,10 @@ const Admin = () => {
   ];
 
   return (
-    <div className="min-h-screen w-full bg-background relative overflow-hidden">
+    <div className="min-h-screen w-full bg-background relative">
       {/* Background effects */}
-      <div className="absolute inset-0 cyber-grid opacity-5"></div>
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5"></div>
+      <div className="fixed inset-0 cyber-grid opacity-5 pointer-events-none"></div>
+      <div className="fixed inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5 pointer-events-none"></div>
       
       {/* Header */}
       <div className="w-full border-b bg-card/80 backdrop-blur-xl relative z-10 shadow-lg">
