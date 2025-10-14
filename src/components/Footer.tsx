@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Shield, Github, Linkedin, Mail, Download } from "lucide-react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { useLogo } from "@/hooks/useLogo";
 
 type Profile = {
   full_name?: string | null;
@@ -11,38 +12,11 @@ type Profile = {
 const SELECT_PROFILE = "full_name, email" as const;
 
 export function Footer() {
-  const [logoUrl, setLogoUrl] = useState<string | null>(null);
+  const logoUrl = useLogo();
   const [profile, setProfile] = useState<Profile | null>(null);
 
   useEffect(() => {
     let mounted = true;
-
-    const fetchLogo = async () => {
-      try {
-        const { data, error } = await supabase
-          .from("admin_files")
-          .select("file_url")
-          .eq("file_category", "logos")
-          .eq("is_active", true)
-          .order('created_at', { ascending: false })
-          .limit(1);
-
-        const first = data?.[0]?.file_url ?? null;
-        if (!error && first && mounted) setLogoUrl(first);
-
-      } catch (error) {
-        const timestamp = new Intl.DateTimeFormat('fr-FR', {
-          timeZone: 'Europe/Paris',
-          day: '2-digit',
-          month: '2-digit',
-          year: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit'
-        }).format(new Date());
-        console.error(`[Footer] ${timestamp} - Erreur lors de la récupération du logo:`, error);
-      }
-    };
 
     const fetchProfile = async () => {
       try {
@@ -60,19 +34,10 @@ export function Footer() {
       }
     };
 
-    // Écouter les mises à jour du logo
-    const handleLogoUpdate = () => {
-      if (mounted) fetchLogo();
-    };
-    
-    window.addEventListener('logoUpdated', handleLogoUpdate);
-
-    // séquentiel pour simplifier les types et debuggability
-    fetchLogo().finally(fetchProfile);
+    fetchProfile();
 
     return () => {
       mounted = false;
-      window.removeEventListener('logoUpdated', handleLogoUpdate);
     };
   }, []);
 

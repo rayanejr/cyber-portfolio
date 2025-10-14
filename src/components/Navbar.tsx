@@ -1,13 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Menu, X, Shield, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "./ThemeToggle";
 import { Link, useLocation } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
+import { useLogo } from "@/hooks/useLogo";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const [logoUrl, setLogoUrl] = useState<string | null>(null);
+  const logoUrl = useLogo();
   const location = useLocation();
 
   const navigation = [
@@ -21,39 +21,6 @@ export function Navbar() {
   ];
 
   const isActive = (href: string) => location.pathname === href;
-
-  useEffect(() => {
-    fetchLogo();
-    
-    // Écouter les mises à jour du logo
-    const handleLogoUpdate = () => {
-      fetchLogo();
-    };
-    
-    window.addEventListener('logoUpdated', handleLogoUpdate);
-    
-    return () => {
-      window.removeEventListener('logoUpdated', handleLogoUpdate);
-    };
-  }, []);
-
-  const fetchLogo = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('admin_files')
-        .select('file_url')
-        .eq('file_category', 'logos')
-        .eq('is_active', true)
-        .order('created_at', { ascending: false })
-        .limit(1);
-
-      if (!error && data && data.length > 0) {
-        setLogoUrl(data[0].file_url);
-      }
-    } catch (error) {
-      console.error('[Admin] Erreur lors de la récupération du logo:', error);
-    }
-  };
 
   return (
     <nav className="sticky top-0 z-50 cyber-border bg-card/80 backdrop-blur-lg animate-slide-in-up">
