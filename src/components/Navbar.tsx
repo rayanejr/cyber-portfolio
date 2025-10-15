@@ -28,15 +28,13 @@ export function Navbar() {
         <div className="flex justify-between h-14 sm:h-16">
           <div className="flex items-center">
             <Link to="/" className="flex items-center space-x-2 animate-fade-in">
-              {logoUrl ? (
+              {logoUrl && (
                 <img 
                   src={logoUrl} 
                   alt="Logo" 
                   className="h-6 w-6 sm:h-8 sm:w-8 object-contain animate-scale-in" 
                   style={{ animationDelay: '0.2s', animationFillMode: 'both' }}
                 />
-              ) : (
-                <Shield className="h-6 w-6 sm:h-8 sm:w-8 text-primary cyber-glow pulse-glow animate-scale-in" style={{ animationDelay: '0.2s', animationFillMode: 'both' }} />
               )}
               <span className="font-orbitron font-bold text-lg sm:text-xl cyber-text animate-fade-in" style={{ animationDelay: '0.4s', animationFillMode: 'both' }}>
                 <span className="hidden sm:inline">JERBI Rayane</span>

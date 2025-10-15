@@ -6,7 +6,7 @@ const LOGO_CACHE_TIMESTAMP_KEY = 'portfolio_logo_timestamp';
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
 export function useLogo() {
-  const [logoUrl, setLogoUrl] = useState<string | null>(() => {
+  const [logoUrl, setLogoUrl] = useState<string>(() => {
     // Essayer de récupérer le logo du cache au démarrage
     const cached = localStorage.getItem(LOGO_CACHE_KEY);
     const timestamp = localStorage.getItem(LOGO_CACHE_TIMESTAMP_KEY);
@@ -17,7 +17,7 @@ export function useLogo() {
         return cached;
       }
     }
-    return null;
+    return '';
   });
 
   const fetchLogo = async () => {
@@ -39,11 +39,11 @@ export function useLogo() {
         localStorage.setItem(LOGO_CACHE_TIMESTAMP_KEY, Date.now().toString());
       } else if (error) {
         console.error('[useLogo] Erreur lors de la récupération du logo:', error);
+        setLogoUrl('');
       } else {
         // Pas de logo trouvé
-        setLogoUrl(null);
-        localStorage.removeItem(LOGO_CACHE_KEY);
-        localStorage.removeItem(LOGO_CACHE_TIMESTAMP_KEY);
+        console.warn('[useLogo] Aucun logo trouvé dans la base de données');
+        setLogoUrl('');
       }
     } catch (error) {
       console.error('[useLogo] Erreur lors de la récupération du logo:', error);
