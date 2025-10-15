@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ExternalLink, Github, Eye, Search, Filter, FolderGit2, Sparkles } from "lucide-react";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
+import { getProjectImageUrl } from "@/utils/imageLoader";
 
 interface Project {
   id: string;
@@ -240,7 +241,7 @@ const Projects = () => {
                     {/* Animated overlay on hover */}
                     <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"></div>
                     <img
-                      src={project.image_url}
+                      src={getProjectImageUrl(project.image_url)}
                       alt={project.title}
                       className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500"
                       onError={(e) => {

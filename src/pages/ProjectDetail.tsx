@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ExternalLink, Github, ArrowLeft, Calendar } from "lucide-react";
+import { getProjectImageUrl } from "@/utils/imageLoader";
 
 interface Project {
   id: string;
@@ -171,7 +172,7 @@ const ProjectDetail = () => {
         {project.image_url && (
           <div className="mb-8 sm:mb-12">
             <img 
-              src={project.image_url} 
+              src={getProjectImageUrl(project.image_url)} 
               alt={project.title}
               className="w-full rounded-lg shadow-lg cyber-border"
             />
