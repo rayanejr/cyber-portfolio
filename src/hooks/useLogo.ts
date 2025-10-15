@@ -22,6 +22,7 @@ export function useLogo() {
 
   const fetchLogo = async () => {
     try {
+      console.log('[useLogo] Récupération du logo...');
       const { data, error } = await supabase
         .from('admin_files')
         .select('file_url')
@@ -31,8 +32,11 @@ export function useLogo() {
         .limit(1)
         .maybeSingle();
 
+      console.log('[useLogo] Résultat de la requête:', { data, error });
+
       if (!error && data?.file_url) {
         const url = data.file_url;
+        console.log('[useLogo] Logo trouvé:', url);
         setLogoUrl(url);
         // Mettre en cache
         localStorage.setItem(LOGO_CACHE_KEY, url);
@@ -47,6 +51,7 @@ export function useLogo() {
       }
     } catch (error) {
       console.error('[useLogo] Erreur lors de la récupération du logo:', error);
+      setLogoUrl('');
     }
   };
 

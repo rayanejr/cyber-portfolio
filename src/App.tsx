@@ -29,21 +29,79 @@ const App = () => (
         <ScrollToTop />
         <div className="min-h-screen flex flex-col">
           <Navbar />
-          <main className="flex-1 pb-24 sm:pb-32 lg:pb-40">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/projects" element={<Projects />} />
-              <Route path="/projects/:id" element={<ProjectDetail />} />
-              <Route path="/veille" element={<VeilleTechno />} />
-              <Route path="/formation" element={<Formation />} />
-              <Route path="/experience" element={<Experience />} />
-              <Route path="/tools" element={<Tools />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/admin" element={<Admin />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </main>
+          <Routes>
+            <Route path="/" element={
+              <>
+                <main className="flex-1 pb-24 sm:pb-32 lg:pb-40">
+                  <Home />
+                </main>
+              </>
+            } />
+            <Route path="/projects" element={
+              <>
+                <main className="flex-1 pb-24 sm:pb-32 lg:pb-40">
+                  <Projects />
+                </main>
+              </>
+            } />
+            <Route path="/projects/:id" element={
+              <>
+                <main className="flex-1 pb-24 sm:pb-32 lg:pb-40">
+                  <ProjectDetail />
+                </main>
+              </>
+            } />
+            <Route path="/veille" element={
+              <>
+                <main className="flex-1 pb-24 sm:pb-32 lg:pb-40">
+                  <VeilleTechno />
+                </main>
+              </>
+            } />
+            <Route path="/formation" element={
+              <>
+                <main className="flex-1 pb-24 sm:pb-32 lg:pb-40">
+                  <Formation />
+                </main>
+              </>
+            } />
+            <Route path="/experience" element={
+              <>
+                <main className="flex-1 pb-24 sm:pb-32 lg:pb-40">
+                  <Experience />
+                </main>
+              </>
+            } />
+            <Route path="/tools" element={
+              <>
+                <main className="flex-1 pb-24 sm:pb-32 lg:pb-40">
+                  <Tools />
+                </main>
+              </>
+            } />
+            <Route path="/contact" element={
+              <>
+                <main className="flex-1 pb-24 sm:pb-32 lg:pb-40">
+                  <Contact />
+                </main>
+              </>
+            } />
+            <Route path="/admin" element={
+              <>
+                <main className="flex-1">
+                  <Admin />
+                </main>
+              </>
+            } />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={
+              <>
+                <main className="flex-1 pb-24 sm:pb-32 lg:pb-40">
+                  <NotFound />
+                </main>
+              </>
+            } />
+          </Routes>
           <Footer />
         </div>
       </BrowserRouter>
