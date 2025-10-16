@@ -2,6 +2,21 @@
  * Charge dynamiquement les images des projets
  * Gère à la fois les URLs Supabase Storage et les assets locaux
  */
+
+// Charger toutes les images des projets avec Vite
+const projectImages = import.meta.glob('/src/assets/projects/*.{png,jpg,jpeg,svg,webp}', { 
+  eager: true,
+  import: 'default'
+}) as Record<string, string>;
+
+const otherAssets = import.meta.glob('/src/assets/*.{png,jpg,jpeg,svg,webp}', { 
+  eager: true,
+  import: 'default'
+}) as Record<string, string>;
+
+// Combiner tous les assets
+const allAssets = { ...projectImages, ...otherAssets };
+
 export const getProjectImageUrl = (imageUrl: string | null): string => {
   if (!imageUrl) {
     return '/placeholder.svg';
@@ -12,20 +27,14 @@ export const getProjectImageUrl = (imageUrl: string | null): string => {
     return imageUrl;
   }
 
-  // Si c'est un chemin /src/assets/..., le convertir pour Vite
+  // Si c'est un chemin /src/assets/..., chercher dans les assets chargés
   if (imageUrl.startsWith('/src/assets/')) {
-    // Retirer le préfixe /src et utiliser le chemin relatif
-    const assetPath = imageUrl.replace('/src/', '@/');
-    
-    // Pour le build de production, les assets doivent être dans public/
-    // ou importés correctement via Vite
-    try {
-      // Essayer de construire l'URL avec Vite
-      const path = imageUrl.replace('/src/assets/', '/assets/');
-      return path;
-    } catch {
-      return '/placeholder.svg';
+    const asset = allAssets[imageUrl];
+    if (asset) {
+      return asset;
     }
+    console.warn(`Image non trouvée: ${imageUrl}`);
+    return '/placeholder.svg';
   }
 
   // Pour tout autre cas, retourner tel quel
