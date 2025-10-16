@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { getProjectImageUrl } from "@/utils/imageLoader";
 import heroImage from "@/assets/cyber-hero.jpg";
 import projectSecurity from "@/assets/project-security.jpg";
 import projectSoc from "@/assets/project-soc.jpg";
@@ -240,7 +241,7 @@ export default function Home() {
             : typeof p.technologies === "string"
               ? safeParseArray(p.technologies)
               : [],
-          image_url: p.image_url || projectFallbacks[i % projectFallbacks.length],
+          image_url: p.image_url || null,
         }));
 
         setRecentProjects(normalized);
@@ -669,7 +670,7 @@ export default function Home() {
               </Card>
             ) : (
               recentProjects.map((p, idx) => {
-                const imgSrc = String(p.image_url || projectFallbacks[idx % projectFallbacks.length]);
+                const imgSrc = p.image_url ? getProjectImageUrl(p.image_url) : projectFallbacks[idx % projectFallbacks.length];
                 const techs = Array.isArray(p.technologies)
                   ? p.technologies
                   : typeof p.technologies === "string"
