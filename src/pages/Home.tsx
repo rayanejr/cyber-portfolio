@@ -570,27 +570,9 @@ export default function Home() {
                       </div>
                     </div>
 
-                    <CardTitle className="text-xl font-orbitron font-bold bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent group-hover:from-primary group-hover:via-secondary group-hover:to-accent transition-all duration-500 mb-2 h-[60px] flex items-center justify-center">
+                    <CardTitle className="text-xl font-orbitron font-bold bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent group-hover:from-primary group-hover:via-secondary group-hover:to-accent transition-all duration-500 mb-4 h-[60px] flex items-center justify-center">
                       {skillGroup.category}
                     </CardTitle>
-
-                    {/* Progress indicator with animation */}
-                    <div className="flex justify-center gap-1.5 mb-2">
-                      {Array.from({ length: 5 }).map((_, i) => (
-                        <div
-                          key={i}
-                          className={`w-8 h-1.5 rounded-full transition-all duration-500 ${
-                            i < Math.min(skillGroup.items.length, 5) 
-                              ? "bg-gradient-to-r from-primary to-secondary group-hover:shadow-[0_0_6px_rgba(139,92,246,0.6)]" 
-                              : "bg-muted"
-                          }`}
-                          style={{ 
-                            animationDelay: `${i * 0.1}s`,
-                            transform: `scaleX(${i < Math.min(skillGroup.items.length, 5) ? '1' : '0.7'})`
-                          }}
-                        />
-                      ))}
-                    </div>
                   </CardHeader>
 
                   <CardContent className="relative z-10 flex-1 flex flex-col">
@@ -614,11 +596,6 @@ export default function Home() {
                               <div className="ml-auto opacity-0 group-hover/skill:opacity-100 transition-all duration-300 flex-shrink-0 transform translate-x-2 group-hover/skill:translate-x-0">
                                 <Code className="w-3.5 h-3.5 text-primary animate-pulse" />
                               </div>
-                            </div>
-
-                            {/* Skill level bar with gradient animation */}
-                            <div className="mt-1.5 h-1 bg-muted/40 rounded-full overflow-hidden">
-                              <div className="h-full bg-gradient-to-r from-primary via-secondary to-accent w-0 group-hover/skill:w-full transition-all duration-1000 rounded-full shadow-[0_0_8px_rgba(139,92,246,0.5)]"></div>
                             </div>
 
                             {/* Hover glow effect */}
