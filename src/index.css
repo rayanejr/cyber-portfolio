@@ -148,42 +148,26 @@
     50% { opacity: 0.8; }
   }
 
-  /* Click animation for skill cards */
-  .active-click {
-    animation: click-pulse 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  @keyframes click-pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(0.98); box-shadow: 0 0 30px hsl(189 100% 50% / 0.4); }
-    100% { transform: scale(1); }
-  }
-
-  /* Scanning line animation */
-  @keyframes scan-down {
-    0% { top: 0%; opacity: 0; }
-    50% { opacity: 1; }
-    100% { top: 100%; opacity: 0; }
-  }
-
-  .animate-scan-down {
-    animation: scan-down 2s ease-in-out infinite;
-  }
-
-  /* Pulse border animation */
-  @keyframes pulse-border {
-    0%, 100% { 
-      opacity: 0.3;
-      transform: scale(1);
+  /* Animation de ligne de scan */
+  @keyframes scan-line {
+    0% {
+      top: 0%;
+      opacity: 0;
     }
-    50% { 
-      opacity: 0.6;
-      transform: scale(1.02);
+    10% {
+      opacity: 1;
+    }
+    90% {
+      opacity: 1;
+    }
+    100% {
+      top: 100%;
+      opacity: 0;
     }
   }
 
-  .animate-pulse-border {
-    animation: pulse-border 2s ease-in-out infinite;
+  .animate-scan-line {
+    animation: scan-line 3s ease-in-out infinite;
   }
 
   .glow-border {

@@ -492,144 +492,90 @@ export default function Home() {
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5"></div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          {/* Enhanced header */}
-          <div className="text-center mb-20 animate-fade-in">
-            <div className="flex items-center justify-center gap-4 mb-6">
-              <div className="w-3 h-3 bg-primary rounded-full animate-ping"></div>
-              <div className="w-2 h-2 bg-secondary rounded-full animate-pulse" style={{ animationDelay: "0.5s" }}></div>
-              <Shield className="w-8 h-8 text-primary animate-float" />
-              <div className="w-2 h-2 bg-accent rounded-full animate-pulse" style={{ animationDelay: "1s" }}></div>
-              <div className="w-3 h-3 bg-primary rounded-full animate-ping" style={{ animationDelay: "1.5s" }}></div>
-            </div>
-
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-orbitron font-bold mb-6">
+          {/* Header */}
+          <div className="text-center mb-16 animate-fade-in">
+            <h2 className="text-4xl md:text-5xl font-orbitron font-bold mb-6">
               <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
-                Arsenal Technique
+                Compétences Techniques
               </span>
             </h2>
-
-            <div className="relative max-w-3xl mx-auto">
-              <p className="text-xl text-muted-foreground leading-relaxed">
-                Connaissances solides en cybersécurité, DevSecOps et infrastructures sécurisées. Je m'intéresse à tout
-                le cycle de sécurité, de l'audit à l'automatisation du déploiement.
-              </p>
-              <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-32 h-1 bg-gradient-to-r from-transparent via-primary to-transparent"></div>
-            </div>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Technologies et outils maîtrisés dans l'écosystème cybersécurité
+            </p>
           </div>
 
-          {/* Interactive skills matrix */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {skills.map((skillGroup, index) => (
+          {/* Skills Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {skills.map((skillGroup, groupIndex) => (
               <div
                 key={skillGroup.category}
-                className="group relative"
+                className="group relative animate-fade-in"
                 style={{
-                  animationDelay: `${0.4 + index * 0.2}s`,
+                  animationDelay: `${groupIndex * 0.15}s`,
                   animationFillMode: "both",
                 }}
-                onClick={(e) => {
-                  const card = e.currentTarget.querySelector('.skill-card');
-                  card?.classList.add('active-click');
-                  setTimeout(() => card?.classList.remove('active-click'), 600);
-                }}
               >
-                {/* Main skill card */}
-                <Card className="skill-card relative cyber-border hover:cyber-glow transition-all duration-500 group cursor-pointer overflow-hidden h-[450px] transform hover:scale-[1.02] hover:shadow-2xl hover:shadow-primary/20 animate-fade-in flex flex-col">
-                  {/* Animated background layers */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-background via-muted/20 to-background"></div>
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-secondary/5 to-accent/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                {/* Card principale avec effet cyber */}
+                <div className="relative h-full p-6 rounded-xl border-2 border-primary/20 bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-sm transition-all duration-500 hover:border-primary/60 hover:shadow-[0_0_30px_rgba(0,255,255,0.3)] hover:scale-[1.02] cursor-pointer overflow-hidden">
+                  
+                  {/* Ligne de scan animée */}
+                  <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-primary to-transparent opacity-0 group-hover:opacity-100 group-hover:animate-scan-line"></div>
+                  
+                  {/* Coins lumineux */}
+                  <div className="absolute top-3 left-3 w-3 h-3 border-t-2 border-l-2 border-primary opacity-40 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="absolute top-3 right-3 w-3 h-3 border-t-2 border-r-2 border-secondary opacity-40 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="absolute bottom-3 left-3 w-3 h-3 border-b-2 border-l-2 border-accent opacity-40 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="absolute bottom-3 right-3 w-3 h-3 border-b-2 border-r-2 border-primary opacity-40 group-hover:opacity-100 transition-opacity duration-300"></div>
 
-                  {/* Scanning lines - horizontal */}
-                  <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                    <div className="absolute top-0 w-full h-[2px] bg-gradient-to-r from-transparent via-primary to-transparent opacity-0 group-hover:opacity-100 group-hover:animate-scan-down"></div>
-                  </div>
-
-                  {/* Pulse effect on hover */}
-                  <div className="absolute inset-0 border-2 border-primary/0 group-hover:border-primary/30 rounded-lg transition-all duration-500 group-hover:animate-pulse-border"></div>
-
-                  {/* Corner indicators with glow */}
-                  <div className="absolute top-2 left-2 w-6 h-6 border-t-2 border-l-2 border-primary/40 group-hover:border-primary group-hover:shadow-[0_0_10px_rgba(139,92,246,0.5)] transition-all duration-300"></div>
-                  <div className="absolute top-2 right-2 w-6 h-6 border-t-2 border-r-2 border-secondary/40 group-hover:border-secondary group-hover:shadow-[0_0_10px_rgba(236,72,153,0.5)] transition-all duration-300"></div>
-                  <div className="absolute bottom-2 left-2 w-6 h-6 border-b-2 border-l-2 border-accent/40 group-hover:border-accent group-hover:shadow-[0_0_10px_rgba(59,130,246,0.5)] transition-all duration-300"></div>
-                  <div className="absolute bottom-2 right-2 w-6 h-6 border-b-2 border-r-2 border-primary/40 group-hover:border-primary group-hover:shadow-[0_0_10px_rgba(139,92,246,0.5)] transition-all duration-300"></div>
-
-                  {/* Click ripple effect */}
-                  <div className="absolute inset-0 pointer-events-none">
-                    <div className="absolute inset-0 bg-primary/20 rounded-lg scale-0 opacity-0 group-active:scale-100 group-active:opacity-100 transition-all duration-300"></div>
-                  </div>
-
-                  <CardHeader className="relative z-10 text-center pb-4 flex-shrink-0">
-                    {/* Category icon with enhanced animation */}
-                    <div className="relative w-16 h-16 mx-auto mb-4">
-                      {/* Rotating ring */}
-                      <div className="absolute inset-0 rounded-full border-2 border-dashed border-primary/30 group-hover:border-primary/60 group-hover:rotate-180 transition-all duration-[2000ms]"></div>
-                      
-                      {/* Icon container */}
-                      <div className="absolute inset-1 rounded-2xl bg-gradient-to-br from-primary/20 via-secondary/20 to-accent/20 flex items-center justify-center group-hover:scale-110 group-hover:rotate-12 transition-all duration-500 shadow-lg group-hover:shadow-primary/50">
-                        <Shield className="w-8 h-8 text-primary group-hover:animate-pulse group-hover:drop-shadow-[0_0_8px_rgba(139,92,246,0.8)]" />
+                  {/* Header avec icône */}
+                  <div className="flex items-center gap-3 mb-6 relative">
+                    <div className="relative">
+                      <div className="absolute inset-0 bg-primary/20 rounded-lg blur-md group-hover:blur-lg transition-all duration-500"></div>
+                      <div className="relative bg-gradient-to-br from-primary/30 to-secondary/30 p-3 rounded-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+                        <Shield className="w-6 h-6 text-primary" />
                       </div>
                     </div>
-
-                    <CardTitle className="text-xl font-orbitron font-bold bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent group-hover:from-primary group-hover:via-secondary group-hover:to-accent transition-all duration-500 mb-4 h-[60px] flex items-center justify-center">
+                    <h3 className="text-lg font-orbitron font-bold text-foreground group-hover:text-primary transition-colors duration-300">
                       {skillGroup.category}
-                    </CardTitle>
-                  </CardHeader>
+                    </h3>
+                  </div>
 
-                  <CardContent className="relative z-10 flex-1 flex flex-col">
-                    {/* Skills container avec hauteur fixe */}
-                    <div className="flex-1 overflow-hidden space-y-2">
-                      {skillGroup.items.slice(0, 8).map((skill: string, skillIndex: number) => (
-                        <div
-                          key={`${skillGroup.category}-${skill}-${skillIndex}`}
-                          className="group/skill relative"
-                          style={{
-                            animationDelay: `${index * 0.2 + skillIndex * 0.1}s`,
-                          }}
-                        >
-                          <div className="relative p-2.5 rounded-lg bg-gradient-to-r from-muted/30 to-muted/10 border border-muted/30 hover:border-primary/50 hover:bg-gradient-to-r hover:from-primary/10 hover:to-secondary/10 transition-all duration-300 group-hover/skill:transform group-hover/skill:translate-x-1 group-hover/skill:shadow-md animate-fade-in cursor-pointer">
-                            {/* Skill name */}
-                            <div className="flex items-center gap-2">
-                              <div className="w-2 h-2 rounded-full bg-primary/60 group-hover/skill:bg-primary group-hover/skill:animate-pulse group-hover/skill:shadow-[0_0_6px_rgba(139,92,246,0.8)] flex-shrink-0 transition-all duration-300"></div>
-                              <span className="text-sm font-medium text-foreground group-hover/skill:text-primary group-hover/skill:font-semibold transition-all duration-300 truncate">
-                                {skill}
-                              </span>
-                              <div className="ml-auto opacity-0 group-hover/skill:opacity-100 transition-all duration-300 flex-shrink-0 transform translate-x-2 group-hover/skill:translate-x-0">
-                                <Code className="w-3.5 h-3.5 text-primary animate-pulse" />
-                              </div>
-                            </div>
-
-                            {/* Hover glow effect */}
-                            <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-secondary/5 opacity-0 group-hover/skill:opacity-100 transition-opacity duration-300 rounded-lg pointer-events-none"></div>
-                          </div>
-                        </div>
-                      ))}
-
-                      {/* Indicateur s'il y a plus de compétences */}
-                      {skillGroup.items.length > 8 && (
-                        <div className="text-xs text-muted-foreground text-center pt-2 opacity-70 group-hover:opacity-100 transition-opacity duration-300">
-                          <span className="bg-muted/50 px-2 py-1 rounded-full">
-                            +{skillGroup.items.length - 8} autres compétences
-                          </span>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Enhanced stats footer */}
-                    <div className="pt-3 mt-auto border-t border-muted/20 group-hover:border-primary/30 transition-all duration-300 flex-shrink-0">
-                      <div className="flex items-center justify-center gap-3 text-xs text-muted-foreground group-hover:text-primary transition-colors duration-300">
-                        <div className="flex items-center gap-1.5 group-hover:scale-110 transition-transform duration-300">
-                          <Target className="w-3.5 h-3.5 group-hover:animate-pulse" />
-                          <span className="font-semibold">{skillGroup.items.length}</span>
-                        </div>
-                        <div className="w-1 h-1 rounded-full bg-muted-foreground"></div>
-                        <div className="flex items-center gap-1">
-                          <Award className="w-3 h-3" />
-                          <span>Expert</span>
-                        </div>
+                  {/* Liste des compétences */}
+                  <div className="space-y-2">
+                    {skillGroup.items.map((skill: string, skillIndex: number) => (
+                      <div
+                        key={`${skillGroup.category}-${skill}`}
+                        className="group/item flex items-center gap-2 p-2 rounded-md bg-muted/20 hover:bg-gradient-to-r hover:from-primary/20 hover:to-secondary/20 transition-all duration-300 hover:translate-x-2 cursor-pointer animate-fade-in"
+                        style={{
+                          animationDelay: `${groupIndex * 0.15 + skillIndex * 0.05}s`,
+                          animationFillMode: "both",
+                        }}
+                      >
+                        {/* Point lumineux */}
+                        <div className="w-1.5 h-1.5 rounded-full bg-primary/50 group-hover/item:bg-primary group-hover/item:shadow-[0_0_8px_rgba(0,255,255,0.8)] transition-all duration-300"></div>
+                        
+                        {/* Nom de la compétence */}
+                        <span className="text-sm font-medium text-foreground/90 group-hover/item:text-primary group-hover/item:font-semibold transition-all duration-300 flex-1">
+                          {skill}
+                        </span>
+                        
+                        {/* Icône code qui apparaît au hover */}
+                        <Code className="w-3.5 h-3.5 text-primary opacity-0 group-hover/item:opacity-100 transition-all duration-300 -translate-x-2 group-hover/item:translate-x-0" />
                       </div>
+                    ))}
+                  </div>
+
+                  {/* Footer avec compteur */}
+                  <div className="mt-6 pt-4 border-t border-primary/20 group-hover:border-primary/40 transition-colors duration-300">
+                    <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground group-hover:text-primary transition-colors duration-300">
+                      <Target className="w-3.5 h-3.5" />
+                      <span className="font-semibold">{skillGroup.items.length} technologies</span>
                     </div>
-                  </CardContent>
-                </Card>
+                  </div>
+
+                  {/* Effet de glow au hover */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-xl"></div>
+                </div>
               </div>
             ))}
           </div>
@@ -641,7 +587,7 @@ export default function Home() {
             </p>
             <Link to="/projects">
               <Button size="lg" className="btn-cyber group">
-                Voir mes projets
+                Voir tous les projets
                 <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
               </Button>
             </Link>
