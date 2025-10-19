@@ -25,8 +25,9 @@ export function Navbar() {
   return (
     <nav className="sticky top-0 z-50 cyber-border bg-card/80 backdrop-blur-lg animate-slide-in-up">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-14 sm:h-16">
-          <div className="flex items-center">
+        <div className="flex items-center justify-between h-14 sm:h-16">
+          {/* Gauche - Logo */}
+          <div className="flex items-center min-w-[200px]">
             <Link to="/" className="flex items-center space-x-2 animate-fade-in">
               {logoUrl && (
                 <img 
@@ -43,28 +44,26 @@ export function Navbar() {
             </Link>
           </div>
 
-          {/* Desktop navigation - Centré */}
-          <div className="hidden lg:flex flex-1 justify-center items-center">
-            <div className="flex items-center space-x-1 xl:space-x-3">
-              {navigation.map((item) => (
-                <Link
-                  key={item.name}
-                  to={item.href}
-                  className={`px-2 py-2 rounded-md text-xs font-medium transition-all duration-300 whitespace-nowrap ${
-                    isActive(item.href)
-                      ? "text-primary bg-primary/10 border border-primary/30"
-                      : "text-muted-foreground hover:text-primary hover:bg-primary/5"
-                  }`}
-                >
-                  <span className="hidden 2xl:inline">{item.name}</span>
-                  <span className="2xl:hidden">{item.short}</span>
-                </Link>
-              ))}
-            </div>
+          {/* Centre - Navigation */}
+          <div className="hidden lg:flex items-center justify-center flex-1">
+            {navigation.map((item) => (
+              <Link
+                key={item.name}
+                to={item.href}
+                className={`px-3 py-2 rounded-md text-xs font-medium transition-all duration-300 whitespace-nowrap ${
+                  isActive(item.href)
+                    ? "text-primary bg-primary/10 border border-primary/30"
+                    : "text-muted-foreground hover:text-primary hover:bg-primary/5"
+                }`}
+              >
+                <span className="hidden 2xl:inline">{item.name}</span>
+                <span className="2xl:hidden">{item.short}</span>
+              </Link>
+            ))}
           </div>
 
-          {/* Actions - Droite */}
-          <div className="hidden lg:flex items-center space-x-2">
+          {/* Droite - Actions */}
+          <div className="hidden lg:flex items-center space-x-2 min-w-[200px] justify-end">
             <ThemeToggle />
             <Link to="/admin">
               <Button variant="outline" size="sm" className="btn-ghost-cyber">
