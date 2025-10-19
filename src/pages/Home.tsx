@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ArrowRight, Shield, Target, Code, Award, ExternalLink, ChevronRight, Mail, Phone, MapPin } from "lucide-react";
+import { ArrowRight, Shield, Target, Code, Award, ExternalLink, ChevronRight, Mail, Phone, MapPin, Terminal } from "lucide-react";
 import CVDownloadButton from "@/components/CVDownloadButton";
 import AIAssistantSection from "@/components/AIAssistantSection";
 import { Button } from "@/components/ui/button";
@@ -485,65 +485,113 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ===== COMPÉTENCES TECHNIQUES ===== */}
-      <section className="py-12 relative overflow-hidden">
+      {/* ===== COMPÉTENCES - STYLE API TERMINAL ===== */}
+      <section className="py-16 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5"></div>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          {/* Header compact */}
-          <div className="text-center mb-8 animate-fade-in">
-            <h2 className="text-3xl md:text-4xl font-orbitron font-bold mb-2">
-              <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
-                Compétences Techniques
-              </span>
-            </h2>
-          </div>
-
-          {/* Grille compacte 4 colonnes */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-            {skills.map((skillGroup, groupIndex) => (
-              <div
-                key={skillGroup.category}
-                className="group relative animate-fade-in"
-                style={{
-                  animationDelay: `${groupIndex * 0.1}s`,
-                  animationFillMode: "both",
-                }}
-              >
-                <div className="relative h-full p-4 rounded-lg border border-primary/20 bg-card/80 backdrop-blur-sm transition-all duration-300 hover:border-primary/60 hover:shadow-[0_0_20px_rgba(0,255,255,0.2)] hover:scale-[1.02]">
-                  
-                  {/* Header minimaliste */}
-                  <div className="flex items-center gap-2 mb-3 pb-2 border-b border-primary/10">
-                    <div className="p-1.5 rounded bg-primary/20">
-                      <Shield className="w-4 h-4 text-primary" />
-                    </div>
-                    <h3 className="text-sm font-orbitron font-bold text-foreground">
-                      {skillGroup.category}
-                    </h3>
-                  </div>
-
-                  {/* Liste ultra-compacte */}
-                  <div className="space-y-1.5">
-                    {skillGroup.items.map((skill: string) => (
-                      <div
-                        key={`${skillGroup.category}-${skill}`}
-                        className="flex items-center gap-2 text-xs text-muted-foreground hover:text-primary transition-colors duration-200"
-                      >
-                        <div className="w-1 h-1 rounded-full bg-primary/50"></div>
-                        <span>{skill}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          {/* Header Terminal Style */}
+          <div className="mb-8 animate-fade-in">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="flex gap-2">
+                <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                <div className="w-3 h-3 rounded-full bg-green-500"></div>
               </div>
-            ))}
+              <span className="text-sm text-primary font-mono">security.skills</span>
+              <Badge variant="outline" className="text-xs border-primary/40">status:active</Badge>
+            </div>
+            <div className="font-mono text-sm text-muted-foreground space-y-1 ml-8">
+              <p className="text-primary">&gt; Loading skill modules...</p>
+              <p className="text-secondary">&gt; Initializing security framework...</p>
+              <p className="text-accent">&gt; All systems operational</p>
+            </div>
           </div>
 
-          {/* CTA compact */}
-          <div className="text-center animate-fade-in">
+          {/* Terminal Window */}
+          <div className="rounded-lg border-2 border-primary/30 bg-card/80 backdrop-blur-sm overflow-hidden animate-fade-in" style={{ animationDelay: "0.2s", animationFillMode: "both" }}>
+            {/* Terminal Header */}
+            <div className="bg-primary/10 px-4 py-3 border-b border-primary/20 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Terminal className="w-4 h-4 text-primary" />
+                <span className="text-sm font-mono text-foreground">~/cybersec-skills</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="text-xs text-muted-foreground font-mono">Server Status:</span>
+                <Badge className="bg-green-500/20 text-green-400 border-green-500/40">Online</Badge>
+              </div>
+            </div>
+
+            {/* API Endpoints List */}
+            <div className="p-6">
+              <div className="mb-4 flex items-center justify-between">
+                <p className="text-sm text-muted-foreground font-mono">Available Endpoints</p>
+                <Badge variant="secondary" className="text-xs font-mono">{skills.length} routes</Badge>
+              </div>
+
+              {/* Skills as API Endpoints */}
+              <div className="space-y-3">
+                {skills.map((skillGroup, groupIndex) => (
+                  <div
+                    key={skillGroup.category}
+                    className="group animate-fade-in"
+                    style={{
+                      animationDelay: `${0.3 + groupIndex * 0.1}s`,
+                      animationFillMode: "both",
+                    }}
+                  >
+                    {/* Endpoint Header */}
+                    <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-all duration-300 border border-primary/10 hover:border-primary/30">
+                      <div className="flex items-center gap-2 flex-1">
+                        <Badge className="bg-primary/20 text-primary border-primary/40 font-mono text-xs px-2">GET</Badge>
+                        <span className="text-sm font-mono text-foreground">/{skillGroup.category.toLowerCase().replace(/\s+/g, '-')}</span>
+                      </div>
+                      <ChevronRight className="w-4 h-4 text-primary group-hover:translate-x-1 transition-transform" />
+                    </div>
+
+                    {/* Response Body (Skills List) */}
+                    <div className="ml-4 mt-2 p-4 rounded-lg bg-card/50 border border-primary/10">
+                      <div className="flex items-center gap-2 mb-3">
+                        <Badge variant="outline" className="text-xs font-mono border-green-500/40 text-green-400">200 OK</Badge>
+                        <span className="text-xs text-muted-foreground font-mono">Response Body</span>
+                      </div>
+                      
+                      {/* Skills Grid */}
+                      <div className="flex flex-wrap gap-2">
+                        {skillGroup.items.map((skill: string) => (
+                          <Badge
+                            key={`${skillGroup.category}-${skill}`}
+                            variant="secondary"
+                            className="text-xs font-medium bg-primary/10 text-foreground hover:bg-primary/20 transition-colors cursor-default"
+                          >
+                            {skill}
+                          </Badge>
+                        ))}
+                      </div>
+
+                      {/* Response Metadata */}
+                      <div className="mt-3 pt-3 border-t border-primary/10 flex items-center gap-6 text-xs font-mono">
+                        <div className="flex items-center gap-2">
+                          <span className="text-muted-foreground">Skills:</span>
+                          <span className="text-primary">{skillGroup.items.length}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-muted-foreground">Cache:</span>
+                          <span className="text-green-400">HIT</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Footer CTA */}
+          <div className="text-center mt-8 animate-fade-in" style={{ animationDelay: "0.8s", animationFillMode: "both" }}>
             <Link to="/projects">
-              <Button size="sm" className="btn-cyber group">
-                Voir mes projets
+              <Button className="btn-cyber group">
+                Découvrir mes projets
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Button>
             </Link>
