@@ -485,110 +485,66 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ===== ARSENAL TECHNIQUE CYBERSÉCURITÉ ===== */}
-      <section className="py-20 relative overflow-hidden">
-        {/* Background effects */}
-        <div className="absolute inset-0 cyber-grid opacity-10"></div>
+      {/* ===== COMPÉTENCES TECHNIQUES ===== */}
+      <section className="py-12 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5"></div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          {/* Header */}
-          <div className="text-center mb-16 animate-fade-in">
-            <h2 className="text-4xl md:text-5xl font-orbitron font-bold mb-6">
+          {/* Header compact */}
+          <div className="text-center mb-8 animate-fade-in">
+            <h2 className="text-3xl md:text-4xl font-orbitron font-bold mb-2">
               <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
                 Compétences Techniques
               </span>
             </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Technologies et outils maîtrisés dans l'écosystème cybersécurité
-            </p>
           </div>
 
-          {/* Skills Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {/* Grille compacte 4 colonnes */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             {skills.map((skillGroup, groupIndex) => (
               <div
                 key={skillGroup.category}
                 className="group relative animate-fade-in"
                 style={{
-                  animationDelay: `${groupIndex * 0.15}s`,
+                  animationDelay: `${groupIndex * 0.1}s`,
                   animationFillMode: "both",
                 }}
               >
-                {/* Card principale avec effet cyber */}
-                <div className="relative h-full p-6 rounded-xl border-2 border-primary/20 bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-sm transition-all duration-500 hover:border-primary/60 hover:shadow-[0_0_30px_rgba(0,255,255,0.3)] hover:scale-[1.02] cursor-pointer overflow-hidden">
+                <div className="relative h-full p-4 rounded-lg border border-primary/20 bg-card/80 backdrop-blur-sm transition-all duration-300 hover:border-primary/60 hover:shadow-[0_0_20px_rgba(0,255,255,0.2)] hover:scale-[1.02]">
                   
-                  {/* Ligne de scan animée */}
-                  <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-primary to-transparent opacity-0 group-hover:opacity-100 group-hover:animate-scan-line"></div>
-                  
-                  {/* Coins lumineux */}
-                  <div className="absolute top-3 left-3 w-3 h-3 border-t-2 border-l-2 border-primary opacity-40 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  <div className="absolute top-3 right-3 w-3 h-3 border-t-2 border-r-2 border-secondary opacity-40 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  <div className="absolute bottom-3 left-3 w-3 h-3 border-b-2 border-l-2 border-accent opacity-40 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  <div className="absolute bottom-3 right-3 w-3 h-3 border-b-2 border-r-2 border-primary opacity-40 group-hover:opacity-100 transition-opacity duration-300"></div>
-
-                  {/* Header avec icône */}
-                  <div className="flex items-center gap-3 mb-6 relative">
-                    <div className="relative">
-                      <div className="absolute inset-0 bg-primary/20 rounded-lg blur-md group-hover:blur-lg transition-all duration-500"></div>
-                      <div className="relative bg-gradient-to-br from-primary/30 to-secondary/30 p-3 rounded-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
-                        <Shield className="w-6 h-6 text-primary" />
-                      </div>
+                  {/* Header minimaliste */}
+                  <div className="flex items-center gap-2 mb-3 pb-2 border-b border-primary/10">
+                    <div className="p-1.5 rounded bg-primary/20">
+                      <Shield className="w-4 h-4 text-primary" />
                     </div>
-                    <h3 className="text-lg font-orbitron font-bold text-foreground group-hover:text-primary transition-colors duration-300">
+                    <h3 className="text-sm font-orbitron font-bold text-foreground">
                       {skillGroup.category}
                     </h3>
                   </div>
 
-                  {/* Liste des compétences */}
-                  <div className="space-y-2">
-                    {skillGroup.items.map((skill: string, skillIndex: number) => (
+                  {/* Liste ultra-compacte */}
+                  <div className="space-y-1.5">
+                    {skillGroup.items.map((skill: string) => (
                       <div
                         key={`${skillGroup.category}-${skill}`}
-                        className="group/item flex items-center gap-2 p-2 rounded-md bg-muted/20 hover:bg-gradient-to-r hover:from-primary/20 hover:to-secondary/20 transition-all duration-300 hover:translate-x-2 cursor-pointer animate-fade-in"
-                        style={{
-                          animationDelay: `${groupIndex * 0.15 + skillIndex * 0.05}s`,
-                          animationFillMode: "both",
-                        }}
+                        className="flex items-center gap-2 text-xs text-muted-foreground hover:text-primary transition-colors duration-200"
                       >
-                        {/* Point lumineux */}
-                        <div className="w-1.5 h-1.5 rounded-full bg-primary/50 group-hover/item:bg-primary group-hover/item:shadow-[0_0_8px_rgba(0,255,255,0.8)] transition-all duration-300"></div>
-                        
-                        {/* Nom de la compétence */}
-                        <span className="text-sm font-medium text-foreground/90 group-hover/item:text-primary group-hover/item:font-semibold transition-all duration-300 flex-1">
-                          {skill}
-                        </span>
-                        
-                        {/* Icône code qui apparaît au hover */}
-                        <Code className="w-3.5 h-3.5 text-primary opacity-0 group-hover/item:opacity-100 transition-all duration-300 -translate-x-2 group-hover/item:translate-x-0" />
+                        <div className="w-1 h-1 rounded-full bg-primary/50"></div>
+                        <span>{skill}</span>
                       </div>
                     ))}
                   </div>
-
-                  {/* Footer avec compteur */}
-                  <div className="mt-6 pt-4 border-t border-primary/20 group-hover:border-primary/40 transition-colors duration-300">
-                    <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground group-hover:text-primary transition-colors duration-300">
-                      <Target className="w-3.5 h-3.5" />
-                      <span className="font-semibold">{skillGroup.items.length} technologies</span>
-                    </div>
-                  </div>
-
-                  {/* Effet de glow au hover */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-xl"></div>
                 </div>
               </div>
             ))}
           </div>
 
-          {/* Call to action */}
-          <div className="text-center mt-16 animate-fade-in">
-            <p className="text-lg text-muted-foreground mb-6">
-              Découvrez mes projets pratiques et réalisations techniques
-            </p>
+          {/* CTA compact */}
+          <div className="text-center animate-fade-in">
             <Link to="/projects">
-              <Button size="lg" className="btn-cyber group">
-                Voir tous les projets
-                <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+              <Button size="sm" className="btn-cyber group">
+                Voir mes projets
+                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Button>
             </Link>
           </div>
