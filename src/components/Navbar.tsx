@@ -43,32 +43,35 @@ export function Navbar() {
             </Link>
           </div>
 
-          {/* Desktop navigation */}
-          <div className="hidden lg:flex items-center space-x-1 xl:space-x-3">
-            {navigation.map((item) => (
-              <Link
-                key={item.name}
-                to={item.href}
-                className={`px-2 py-2 rounded-md text-xs font-medium transition-all duration-300 whitespace-nowrap ${
-                  isActive(item.href)
-                    ? "text-primary bg-primary/10 border border-primary/30"
-                    : "text-muted-foreground hover:text-primary hover:bg-primary/5"
-                }`}
-              >
-                <span className="hidden 2xl:inline">{item.name}</span>
-                <span className="2xl:hidden">{item.short}</span>
-              </Link>
-            ))}
-            
-            <div className="flex items-center space-x-2">
-              <ThemeToggle />
-              <Link to="/admin">
-                <Button variant="outline" size="sm" className="btn-ghost-cyber">
-                  <User className="h-4 w-4 mr-2" />
-                  <span>Admin</span>
-                </Button>
-              </Link>
+          {/* Desktop navigation - Centré */}
+          <div className="hidden lg:flex flex-1 justify-center items-center">
+            <div className="flex items-center space-x-1 xl:space-x-3">
+              {navigation.map((item) => (
+                <Link
+                  key={item.name}
+                  to={item.href}
+                  className={`px-2 py-2 rounded-md text-xs font-medium transition-all duration-300 whitespace-nowrap ${
+                    isActive(item.href)
+                      ? "text-primary bg-primary/10 border border-primary/30"
+                      : "text-muted-foreground hover:text-primary hover:bg-primary/5"
+                  }`}
+                >
+                  <span className="hidden 2xl:inline">{item.name}</span>
+                  <span className="2xl:hidden">{item.short}</span>
+                </Link>
+              ))}
             </div>
+          </div>
+
+          {/* Actions - Droite */}
+          <div className="hidden lg:flex items-center space-x-2">
+            <ThemeToggle />
+            <Link to="/admin">
+              <Button variant="outline" size="sm" className="btn-ghost-cyber">
+                <User className="h-4 w-4 mr-2" />
+                <span>Admin</span>
+              </Button>
+            </Link>
           </div>
 
           {/* Mobile menu button */}
