@@ -57,9 +57,9 @@ export function Footer() {
   return (
     <footer className="cyber-border bg-card/50 backdrop-blur-lg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-        <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-8">
-          {/* Gauche - Logo + identité */}
-          <div className="lg:max-w-md">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+          {/* Logo + identité */}
+          <div className="col-span-1 sm:col-span-2">
             <div className="flex items-center space-x-2 mb-3 sm:mb-4">
               {logoUrl ? (
                 <img
@@ -75,14 +75,15 @@ export function Footer() {
               </span>
             </div>
 
-            <p className="text-muted-foreground mb-2 sm:mb-2 text-sm sm:text-base">
+            <p className="text-muted-foreground mb-2 sm:mb-2 max-w-xl text-sm sm:text-base">
               {roleTitle} <span className="text-muted-foreground/80">@ {company}</span> • {degree} – {school}
             </p>
-            <p className="text-muted-foreground mb-3 sm:mb-4 text-sm sm:text-base">
+            <p className="text-muted-foreground mb-3 sm:mb-4 max-w-xl text-sm sm:text-base">
               {tagline}
             </p>
 
             <div className="flex flex-wrap items-center gap-3 sm:gap-4">
+              {/* CV si dispo */}
               {resumeUrl && (
                 <a
                   href={resumeUrl}
@@ -96,6 +97,7 @@ export function Footer() {
                 </a>
               )}
 
+              {/* Réseaux sociaux */}
               {github && (
                 <a
                   href={github}
@@ -133,8 +135,8 @@ export function Footer() {
             </div>
           </div>
 
-          {/* Centre - Navigation */}
-          <nav aria-label="Navigation principale" className="lg:flex-shrink-0">
+          {/* Navigation */}
+          <nav aria-label="Navigation principale">
             <h3 className="font-orbitron font-semibold mb-3 sm:mb-4 text-sm sm:text-base">Navigation</h3>
             <ul className="space-y-1 sm:space-y-2">
               <li><Link to="/" className="text-muted-foreground hover:text-primary transition-colors text-sm">Accueil</Link></li>
@@ -145,8 +147,8 @@ export function Footer() {
             </ul>
           </nav>
 
-          {/* Droite - Services */}
-          <div className="lg:flex-shrink-0">
+          {/* Services */}
+          <div>
             <h3 className="font-orbitron font-semibold mb-3 sm:mb-4 text-sm sm:text-base">Services</h3>
             <ul className="space-y-1 sm:space-y-2">
               <li><Link to="/tools" className="text-muted-foreground hover:text-primary transition-colors text-sm">Outils cyber</Link></li>
@@ -155,12 +157,10 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-border mt-6 sm:mt-8 pt-6 sm:pt-8 flex flex-col sm:flex-row justify-between items-center gap-2">
+        <div className="border-t border-border mt-6 sm:mt-8 pt-6 sm:pt-8 text-center">
           <p className="text-muted-foreground text-xs sm:text-sm">
-            © {new Date().getFullYear()} {displayName}. Tous droits réservés.
-          </p>
-          <p className="text-primary text-xs sm:text-sm">
-            Cybersécurité • DevOps • Réseaux
+            © {new Date().getFullYear()} {displayName}. Tous droits réservés. |{" "}
+            <span className="text-primary">Cybersécurité • DevOps • Réseaux</span>
           </p>
         </div>
       </div>
