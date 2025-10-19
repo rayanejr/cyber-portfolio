@@ -25,9 +25,8 @@ export function Navbar() {
   return (
     <nav className="sticky top-0 z-50 cyber-border bg-card/80 backdrop-blur-lg animate-slide-in-up">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-14 sm:h-16">
-          {/* Gauche - Logo */}
-          <div className="flex items-center min-w-[200px]">
+        <div className="flex justify-between h-14 sm:h-16">
+          <div className="flex items-center">
             <Link to="/" className="flex items-center space-x-2 animate-fade-in">
               {logoUrl && (
                 <img 
@@ -44,13 +43,13 @@ export function Navbar() {
             </Link>
           </div>
 
-          {/* Centre - Navigation */}
-          <div className="hidden lg:flex items-center justify-center flex-1">
+          {/* Desktop navigation */}
+          <div className="hidden lg:flex items-center space-x-1 xl:space-x-3">
             {navigation.map((item) => (
               <Link
                 key={item.name}
                 to={item.href}
-                className={`px-3 py-2 rounded-md text-xs font-medium transition-all duration-300 whitespace-nowrap ${
+                className={`px-2 py-2 rounded-md text-xs font-medium transition-all duration-300 whitespace-nowrap ${
                   isActive(item.href)
                     ? "text-primary bg-primary/10 border border-primary/30"
                     : "text-muted-foreground hover:text-primary hover:bg-primary/5"
@@ -60,17 +59,16 @@ export function Navbar() {
                 <span className="2xl:hidden">{item.short}</span>
               </Link>
             ))}
-          </div>
-
-          {/* Droite - Actions */}
-          <div className="hidden lg:flex items-center space-x-2 min-w-[200px] justify-end">
-            <ThemeToggle />
-            <Link to="/admin">
-              <Button variant="outline" size="sm" className="btn-ghost-cyber">
-                <User className="h-4 w-4 mr-2" />
-                <span>Admin</span>
-              </Button>
-            </Link>
+            
+            <div className="flex items-center space-x-2">
+              <ThemeToggle />
+              <Link to="/admin">
+                <Button variant="outline" size="sm" className="btn-ghost-cyber">
+                  <User className="h-4 w-4 mr-2" />
+                  <span>Admin</span>
+                </Button>
+              </Link>
+            </div>
           </div>
 
           {/* Mobile menu button */}
