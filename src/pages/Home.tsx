@@ -485,112 +485,164 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ===== COMPÉTENCES - STYLE API TERMINAL ===== */}
-      <section className="py-16 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5"></div>
+      {/* ===== COMPÉTENCES - STYLE API TERMINAL INTERACTIF ===== */}
+      <section className="py-20 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-secondary/5"></div>
 
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          {/* Header Terminal Style */}
-          <div className="mb-8 animate-fade-in">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="flex gap-2">
-                <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                <div className="w-3 h-3 rounded-full bg-green-500"></div>
-              </div>
-              <span className="text-sm text-primary font-mono">security.skills</span>
-              <Badge variant="outline" className="text-xs border-primary/40">status:active</Badge>
-            </div>
-            <div className="font-mono text-sm text-muted-foreground space-y-1 ml-8">
-              <p className="text-primary">&gt; Loading skill modules...</p>
-              <p className="text-secondary">&gt; Initializing security framework...</p>
-              <p className="text-accent">&gt; All systems operational</p>
-            </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          {/* Title */}
+          <div className="text-center mb-12 animate-fade-in">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
+              Compétences
+            </h2>
+            <Badge variant="outline" className="text-sm border-primary/40 bg-primary/5">
+              <span className="text-primary font-mono">● system.skills</span>
+              <span className="text-muted-foreground ml-2">status: active</span>
+            </Badge>
           </div>
 
           {/* Terminal Window */}
-          <div className="rounded-lg border-2 border-primary/30 bg-card/80 backdrop-blur-sm overflow-hidden animate-fade-in" style={{ animationDelay: "0.2s", animationFillMode: "both" }}>
+          <div className="rounded-lg border-2 border-primary/30 bg-card/95 backdrop-blur-md overflow-hidden shadow-2xl animate-fade-in" style={{ animationDelay: "0.2s", animationFillMode: "both" }}>
             {/* Terminal Header */}
-            <div className="bg-primary/10 px-4 py-3 border-b border-primary/20 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Terminal className="w-4 h-4 text-primary" />
-                <span className="text-sm font-mono text-foreground">~/cybersec-skills</span>
+            <div className="bg-gradient-to-r from-primary/10 via-secondary/10 to-primary/10 px-4 py-3 border-b border-primary/20 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="flex gap-1.5">
+                  <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                  <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                  <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                </div>
+                <span className="text-sm font-mono text-foreground">~/skills-api</span>
               </div>
               <div className="flex items-center gap-3">
-                <span className="text-xs text-muted-foreground font-mono">Server Status:</span>
-                <Badge className="bg-green-500/20 text-green-400 border-green-500/40">Online</Badge>
+                <span className="text-xs text-muted-foreground font-mono hidden sm:inline">Server Status: Online</span>
+                <Button variant="ghost" size="sm" className="text-xs font-mono h-6 px-2">[ Hide Endpoints ]</Button>
               </div>
             </div>
 
-            {/* API Endpoints List */}
-            <div className="p-6">
-              <div className="mb-4 flex items-center justify-between">
-                <p className="text-sm text-muted-foreground font-mono">Available Endpoints</p>
-                <Badge variant="secondary" className="text-xs font-mono">{skills.length} routes</Badge>
+            {/* Main Content: Sidebar + Display */}
+            <div className="grid md:grid-cols-[280px,1fr] min-h-[500px]">
+              {/* Sidebar - Available Endpoints */}
+              <div className="bg-muted/30 border-r border-primary/10 p-4">
+                <div className="mb-4">
+                  <p className="text-xs text-muted-foreground font-mono mb-2">Available Endpoints</p>
+                  <Badge variant="secondary" className="text-xs font-mono">{skills.length} routes</Badge>
+                </div>
+                
+                <div className="space-y-2">
+                  {skills.map((skillGroup, idx) => {
+                    const isSelected = idx === 0; // First one selected by default for now
+                    return (
+                      <button
+                        key={skillGroup.category}
+                        className={`w-full text-left p-3 rounded-md transition-all duration-200 flex items-center gap-2 ${
+                          isSelected 
+                            ? 'bg-primary/20 border border-primary/40' 
+                            : 'hover:bg-muted/50 border border-transparent'
+                        }`}
+                      >
+                        <Badge className={`font-mono text-xs px-1.5 ${isSelected ? 'bg-primary text-primary-foreground' : 'bg-primary/40 text-primary'}`}>
+                          GET
+                        </Badge>
+                        <span className="text-sm font-mono text-foreground truncate">
+                          /{skillGroup.category.toLowerCase().replace(/\s+/g, '-')}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
 
-              {/* Skills as API Endpoints */}
-              <div className="space-y-3">
-                {skills.map((skillGroup, groupIndex) => (
-                  <div
-                    key={skillGroup.category}
-                    className="group animate-fade-in"
-                    style={{
-                      animationDelay: `${0.3 + groupIndex * 0.1}s`,
-                      animationFillMode: "both",
-                    }}
-                  >
-                    {/* Endpoint Header */}
-                    <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-all duration-300 border border-primary/10 hover:border-primary/30">
-                      <div className="flex items-center gap-2 flex-1">
-                        <Badge className="bg-primary/20 text-primary border-primary/40 font-mono text-xs px-2">GET</Badge>
-                        <span className="text-sm font-mono text-foreground">/{skillGroup.category.toLowerCase().replace(/\s+/g, '-')}</span>
-                      </div>
-                      <ChevronRight className="w-4 h-4 text-primary group-hover:translate-x-1 transition-transform" />
-                    </div>
+              {/* Main Display Area - First category shown by default */}
+              <div className="p-6">
+                <div className="mb-4 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Badge className="bg-primary text-primary-foreground font-mono text-xs">GET</Badge>
+                    <span className="text-lg font-mono text-foreground">/{skills[0]?.category.toLowerCase().replace(/\s+/g, '-')}</span>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button variant="ghost" size="sm" className="text-xs h-7">Copy</Button>
+                    <Button variant="ghost" size="sm" className="text-xs h-7">JSON</Button>
+                    <Button variant="ghost" size="sm" className="text-xs h-7">Download</Button>
+                  </div>
+                </div>
 
-                    {/* Response Body (Skills List) */}
-                    <div className="ml-4 mt-2 p-4 rounded-lg bg-card/50 border border-primary/10">
-                      <div className="flex items-center gap-2 mb-3">
-                        <Badge variant="outline" className="text-xs font-mono border-green-500/40 text-green-400">200 OK</Badge>
-                        <span className="text-xs text-muted-foreground font-mono">Response Body</span>
-                      </div>
-                      
-                      {/* Skills Grid */}
-                      <div className="flex flex-wrap gap-2">
-                        {skillGroup.items.map((skill: string) => (
-                          <Badge
-                            key={`${skillGroup.category}-${skill}`}
-                            variant="secondary"
-                            className="text-xs font-medium bg-primary/10 text-foreground hover:bg-primary/20 transition-colors cursor-default"
-                          >
-                            {skill}
-                          </Badge>
-                        ))}
-                      </div>
+                {/* Response Body */}
+                <div className="rounded-md border border-primary/20 bg-muted/20 p-4 mb-4">
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="text-xs font-mono text-green-400 bg-green-500/10 px-2 py-1 rounded">Response Body</span>
+                    <Badge variant="outline" className="text-xs font-mono border-green-500/40 text-green-400">200 OK</Badge>
+                  </div>
 
-                      {/* Response Metadata */}
-                      <div className="mt-3 pt-3 border-t border-primary/10 flex items-center gap-6 text-xs font-mono">
-                        <div className="flex items-center gap-2">
-                          <span className="text-muted-foreground">Skills:</span>
-                          <span className="text-primary">{skillGroup.items.length}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-muted-foreground">Cache:</span>
-                          <span className="text-green-400">HIT</span>
-                        </div>
-                      </div>
+                  {/* JSON Display */}
+                  <div className="font-mono text-sm mb-4 p-3 bg-card/50 rounded border border-primary/10">
+                    <div className="text-foreground">
+                      <span className="text-muted-foreground">{'{'}</span>
+                      <br />
+                      <span className="ml-4 text-secondary">"category"</span>
+                      <span className="text-muted-foreground">: </span>
+                      <span className="text-primary">"{skills[0]?.category}"</span>
+                      <span className="text-muted-foreground">,</span>
+                      <br />
+                      <span className="ml-4 text-secondary">"skills"</span>
+                      <span className="text-muted-foreground">: [</span>
+                      <br />
+                      {skills[0]?.items.map((skill, idx) => (
+                        <span key={skill}>
+                          <span className="ml-8 text-accent">"{skill}"</span>
+                          {idx < skills[0].items.length - 1 && <span className="text-muted-foreground">,</span>}
+                          <br />
+                        </span>
+                      ))}
+                      <span className="ml-4 text-muted-foreground">]</span>
+                      <br />
+                      <span className="text-muted-foreground">{'}'}</span>
                     </div>
                   </div>
-                ))}
+
+                  {/* Skills Badges */}
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {skills[0]?.items.map((skill) => (
+                      <Badge
+                        key={skill}
+                        variant="secondary"
+                        className="text-sm font-medium bg-primary/10 text-foreground hover:bg-primary/20 transition-all cursor-default border border-primary/20"
+                      >
+                        ● {skill}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Footer Metadata */}
+                <div className="grid grid-cols-3 gap-4 p-4 rounded-md bg-muted/20 border border-primary/10">
+                  <div>
+                    <p className="text-xs text-muted-foreground font-mono mb-1">Response Time</p>
+                    <p className="text-sm font-mono text-green-400">66ms <span className="text-xs text-muted-foreground">(normal)</span></p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground font-mono mb-1">Cache Status</p>
+                    <p className="text-sm font-mono text-green-400">HIT</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground font-mono mb-1">Size</p>
+                    <p className="text-sm font-mono text-green-400">0KB</p>
+                  </div>
+                </div>
+
+                {/* Bottom Info Bar */}
+                <div className="mt-4 pt-4 border-t border-primary/10 flex flex-wrap items-center justify-between gap-2 text-xs font-mono text-muted-foreground">
+                  <span>API Version: 1.0.0</span>
+                  <span>Last Updated: 19/10/2025</span>
+                  <Button variant="link" className="text-xs h-auto p-0 text-primary hover:text-primary/80">View Docs</Button>
+                </div>
               </div>
             </div>
           </div>
 
           {/* Footer CTA */}
-          <div className="text-center mt-8 animate-fade-in" style={{ animationDelay: "0.8s", animationFillMode: "both" }}>
+          <div className="text-center mt-10 animate-fade-in" style={{ animationDelay: "0.5s", animationFillMode: "both" }}>
             <Link to="/projects">
-              <Button className="btn-cyber group">
+              <Button className="btn-cyber group px-8">
                 Découvrir mes projets
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Button>
