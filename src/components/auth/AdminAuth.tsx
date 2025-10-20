@@ -79,10 +79,10 @@ const AdminAuth: React.FC<AdminAuthProps> = ({ onAuthenticated }) => {
   };
 
   return (
-    <div className="w-full bg-gradient-to-br from-background via-primary/5 to-secondary/10 relative">
+    <div className="min-h-screen w-full bg-gradient-to-br from-background via-primary/5 to-secondary/10 relative flex items-center justify-center">
       <div className="absolute inset-0 cyber-grid opacity-10 pointer-events-none"></div>
       
-      <div className="container mx-auto py-8 px-4 relative z-10">
+      <div className="container mx-auto px-4 relative z-10">
         <Card className="w-full max-w-6xl mx-auto cyber-border backdrop-blur-xl bg-card/90 shadow-2xl">
           {/* Desktop Layout */}
           <div className="hidden md:grid md:grid-cols-2">
