@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ArrowRight, Shield, Target, Code, Award, ExternalLink, ChevronRight, Mail, Phone, MapPin, Terminal } from "lucide-react";
+import { ArrowRight, Shield, Target, Code, Award, ExternalLink, ChevronRight, Mail, Phone, MapPin, Terminal, Copy, Download } from "lucide-react";
 import CVDownloadButton from "@/components/CVDownloadButton";
 import AIAssistantSection from "@/components/AIAssistantSection";
 import { Button } from "@/components/ui/button";
@@ -50,6 +50,7 @@ const projectFallbacks = [projectSecurity, projectSoc, projectThreat];
 
 export default function Home() {
   const [skills, setSkills] = useState<SkillGroup[]>([]);
+  const [selectedSkillIndex, setSelectedSkillIndex] = useState(0);
   const [certifications, setCertifications] = useState<CertRow[]>([]);
   const [recentProjects, setRecentProjects] = useState<ProjectRow[]>([]);
   const { toast } = useToast();
@@ -530,10 +531,11 @@ export default function Home() {
                 
                 <div className="space-y-2">
                   {skills.map((skillGroup, idx) => {
-                    const isSelected = idx === 0; // First one selected by default for now
+                    const isSelected = idx === selectedSkillIndex;
                     return (
                       <button
                         key={skillGroup.category}
+                        onClick={() => setSelectedSkillIndex(idx)}
                         className={`w-full text-left p-3 rounded-md transition-all duration-200 flex items-center gap-2 ${
                           isSelected 
                             ? 'bg-primary/20 border border-primary/40' 
@@ -552,89 +554,107 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Main Display Area - First category shown by default */}
+              {/* Main Display Area - Selected category */}
               <div className="p-6">
-                <div className="mb-4 flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Badge className="bg-primary text-primary-foreground font-mono text-xs">GET</Badge>
-                    <span className="text-lg font-mono text-foreground">/{skills[0]?.category.toLowerCase().replace(/\s+/g, '-')}</span>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button variant="ghost" size="sm" className="text-xs h-7">Copy</Button>
-                    <Button variant="ghost" size="sm" className="text-xs h-7">JSON</Button>
-                    <Button variant="ghost" size="sm" className="text-xs h-7">Download</Button>
-                  </div>
-                </div>
-
-                {/* Response Body */}
-                <div className="rounded-md border border-primary/20 bg-muted/20 p-4 mb-4">
-                  <div className="flex items-center gap-2 mb-3">
-                    <span className="text-xs font-mono text-green-400 bg-green-500/10 px-2 py-1 rounded">Response Body</span>
-                    <Badge variant="outline" className="text-xs font-mono border-green-500/40 text-green-400">200 OK</Badge>
-                  </div>
-
-                  {/* JSON Display */}
-                  <div className="font-mono text-sm mb-4 p-3 bg-card/50 rounded border border-primary/10">
-                    <div className="text-foreground">
-                      <span className="text-muted-foreground">{'{'}</span>
-                      <br />
-                      <span className="ml-4 text-secondary">"category"</span>
-                      <span className="text-muted-foreground">: </span>
-                      <span className="text-primary">"{skills[0]?.category}"</span>
-                      <span className="text-muted-foreground">,</span>
-                      <br />
-                      <span className="ml-4 text-secondary">"skills"</span>
-                      <span className="text-muted-foreground">: [</span>
-                      <br />
-                      {skills[0]?.items.map((skill, idx) => (
-                        <span key={skill}>
-                          <span className="ml-8 text-accent">"{skill}"</span>
-                          {idx < skills[0].items.length - 1 && <span className="text-muted-foreground">,</span>}
-                          <br />
-                        </span>
-                      ))}
-                      <span className="ml-4 text-muted-foreground">]</span>
-                      <br />
-                      <span className="text-muted-foreground">{'}'}</span>
+                {skills[selectedSkillIndex] && (
+                  <>
+                    <div className="mb-4 flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Badge className="bg-primary text-primary-foreground font-mono text-xs">GET</Badge>
+                        <span className="text-lg font-mono text-foreground">/{skills[selectedSkillIndex].category.toLowerCase().replace(/\s+/g, '-')}</span>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className="text-xs h-7"
+                          onClick={() => {
+                            navigator.clipboard.writeText(JSON.stringify(skills[selectedSkillIndex], null, 2));
+                            toast({ title: "Copié !", description: "Données copiées dans le presse-papier" });
+                          }}
+                        >
+                          <Copy className="w-3 h-3 mr-1" />
+                          Copy
+                        </Button>
+                        <Button variant="ghost" size="sm" className="text-xs h-7">JSON</Button>
+                        <Button variant="ghost" size="sm" className="text-xs h-7">
+                          <Download className="w-3 h-3 mr-1" />
+                          Download
+                        </Button>
+                      </div>
                     </div>
-                  </div>
 
-                  {/* Skills Badges */}
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {skills[0]?.items.map((skill) => (
-                      <Badge
-                        key={skill}
-                        variant="secondary"
-                        className="text-sm font-medium bg-primary/10 text-foreground hover:bg-primary/20 transition-all cursor-default border border-primary/20"
-                      >
-                        ● {skill}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
+                    {/* Response Body */}
+                    <div className="rounded-md border border-primary/20 bg-muted/20 p-4 mb-4">
+                      <div className="flex items-center gap-2 mb-3">
+                        <span className="text-xs font-mono text-green-400 bg-green-500/10 px-2 py-1 rounded">Response Body</span>
+                        <Badge variant="outline" className="text-xs font-mono border-green-500/40 text-green-400">200 OK</Badge>
+                      </div>
 
-                {/* Footer Metadata */}
-                <div className="grid grid-cols-3 gap-4 p-4 rounded-md bg-muted/20 border border-primary/10">
-                  <div>
-                    <p className="text-xs text-muted-foreground font-mono mb-1">Response Time</p>
-                    <p className="text-sm font-mono text-green-400">66ms <span className="text-xs text-muted-foreground">(normal)</span></p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-muted-foreground font-mono mb-1">Cache Status</p>
-                    <p className="text-sm font-mono text-green-400">HIT</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-muted-foreground font-mono mb-1">Size</p>
-                    <p className="text-sm font-mono text-green-400">0KB</p>
-                  </div>
-                </div>
+                      {/* JSON Display */}
+                      <div className="font-mono text-sm mb-4 p-3 bg-card/50 rounded border border-primary/10 overflow-x-auto">
+                        <div className="text-foreground">
+                          <span className="text-muted-foreground">{'{'}</span>
+                          <br />
+                          <span className="ml-4 text-secondary">"category"</span>
+                          <span className="text-muted-foreground">: </span>
+                          <span className="text-primary">"{skills[selectedSkillIndex].category}"</span>
+                          <span className="text-muted-foreground">,</span>
+                          <br />
+                          <span className="ml-4 text-secondary">"skills"</span>
+                          <span className="text-muted-foreground">: [</span>
+                          <br />
+                          {skills[selectedSkillIndex].items.map((skill, idx) => (
+                            <span key={skill}>
+                              <span className="ml-8 text-accent">"{skill}"</span>
+                              {idx < skills[selectedSkillIndex].items.length - 1 && <span className="text-muted-foreground">,</span>}
+                              <br />
+                            </span>
+                          ))}
+                          <span className="ml-4 text-muted-foreground">]</span>
+                          <br />
+                          <span className="text-muted-foreground">{'}'}</span>
+                        </div>
+                      </div>
 
-                {/* Bottom Info Bar */}
-                <div className="mt-4 pt-4 border-t border-primary/10 flex flex-wrap items-center justify-between gap-2 text-xs font-mono text-muted-foreground">
-                  <span>API Version: 1.0.0</span>
-                  <span>Last Updated: 19/10/2025</span>
-                  <Button variant="link" className="text-xs h-auto p-0 text-primary hover:text-primary/80">View Docs</Button>
-                </div>
+                      {/* Skills Badges */}
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        {skills[selectedSkillIndex].items.map((skill) => (
+                          <Badge
+                            key={skill}
+                            variant="secondary"
+                            className="text-sm font-medium bg-primary/10 text-foreground hover:bg-primary/20 transition-all cursor-default border border-primary/20"
+                          >
+                            ● {skill}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Footer Metadata */}
+                    <div className="grid grid-cols-3 gap-4 p-4 rounded-md bg-muted/20 border border-primary/10">
+                      <div>
+                        <p className="text-xs text-muted-foreground font-mono mb-1">Response Time</p>
+                        <p className="text-sm font-mono text-green-400">66ms <span className="text-xs text-muted-foreground">(normal)</span></p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-muted-foreground font-mono mb-1">Cache Status</p>
+                        <p className="text-sm font-mono text-green-400">HIT</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-muted-foreground font-mono mb-1">Size</p>
+                        <p className="text-sm font-mono text-green-400">{(JSON.stringify(skills[selectedSkillIndex]).length / 1024).toFixed(2)}KB</p>
+                      </div>
+                    </div>
+
+                    {/* Bottom Info Bar */}
+                    <div className="mt-4 pt-4 border-t border-primary/10 flex flex-wrap items-center justify-between gap-2 text-xs font-mono text-muted-foreground">
+                      <span>API Version: 1.0.0</span>
+                      <span>Last Updated: 19/10/2025</span>
+                      <Button variant="link" className="text-xs h-auto p-0 text-primary hover:text-primary/80">View Docs</Button>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           </div>
