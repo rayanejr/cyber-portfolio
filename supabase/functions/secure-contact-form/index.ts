@@ -161,6 +161,9 @@ serve(async (req) => {
       );
     }
 
+    // Extract first IP from the comma-separated list
+    const firstIP = clientIP.split(',')[0].trim();
+
     // Insert contact message and verify success with SELECT
     const { data: insertData, error: insertError } = await supabaseAdmin
       .from('contact_messages')
@@ -168,7 +171,8 @@ serve(async (req) => {
         name: name.trim(),
         email: email.trim().toLowerCase(),
         subject: subject?.trim() || null,
-        message: message.trim()
+        message: message.trim(),
+        ip_address: firstIP
       })
       .select('id')
       .single();

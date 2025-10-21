@@ -122,19 +122,18 @@ const AIAssistantSection: React.FC = () => {
   ];
 
   return (
-    <section className="py-20 bg-muted/30">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-orbitron font-bold mb-4 text-primary">
-            Assistant IA Cybersécurité
-          </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Posez toutes vos questions sur la cybersécurité, mes compétences et mes services. 
-            Je suis là pour vous aider !
-          </p>
-        </div>
+    <>
+      <div className="text-center mb-12">
+        <h2 className="text-3xl md:text-4xl font-orbitron font-bold mb-4 text-primary">
+          Assistant IA Cybersécurité
+        </h2>
+        <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          Posez toutes vos questions sur la cybersécurité, mes compétences et mes services. 
+          Je suis là pour vous aider !
+        </p>
+      </div>
 
-        <div className="max-w-4xl mx-auto">
+      <div className="w-full">
           <Card className="cyber-border shadow-xl bg-background/95 backdrop-blur">
             <CardHeader className="pb-4">
               <CardTitle className="text-xl font-orbitron flex items-center justify-center">
@@ -250,8 +249,7 @@ const AIAssistantSection: React.FC = () => {
             </CardContent>
           </Card>
         </div>
-      </div>
-    </section>
+    </>
   );
 };
 

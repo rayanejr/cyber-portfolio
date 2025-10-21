@@ -130,6 +130,7 @@ export type Database = {
           created_at: string
           email: string
           id: string
+          ip_address: unknown | null
           is_read: boolean | null
           message: string
           name: string
@@ -139,6 +140,7 @@ export type Database = {
           created_at?: string
           email: string
           id?: string
+          ip_address?: unknown | null
           is_read?: boolean | null
           message: string
           name: string
@@ -148,6 +150,7 @@ export type Database = {
           created_at?: string
           email?: string
           id?: string
+          ip_address?: unknown | null
           is_read?: boolean | null
           message?: string
           name?: string
@@ -539,6 +542,10 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: number
       }
+      cleanup_old_rate_limit_data: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
       cleanup_old_security_data: {
         Args: Record<PropertyKey, never>
         Returns: string
@@ -574,6 +581,10 @@ export type Database = {
       rotate_expired_sessions: {
         Args: Record<PropertyKey, never>
         Returns: number
+      }
+      unblock_ip: {
+        Args: { ip_to_unblock: unknown }
+        Returns: undefined
       }
       validate_encryption_key: {
         Args: Record<PropertyKey, never>

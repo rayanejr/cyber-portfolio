@@ -521,32 +521,32 @@ export default function Home() {
             </div>
 
             {/* Main Content: Sidebar + Display */}
-            <div className="flex flex-col md:grid md:grid-cols-[280px,1fr] min-h-[500px]">
+            <div className="flex flex-col lg:grid lg:grid-cols-[340px,1fr] min-h-[500px]">
               {/* Sidebar - Available Endpoints */}
-              <div className="bg-muted/30 md:border-r border-b md:border-b-0 border-primary/10 p-3 md:p-4">
-                <div className="mb-3 md:mb-4">
+              <div className="bg-muted/30 lg:border-r border-b lg:border-b-0 border-primary/10 p-4 lg:p-5">
+                <div className="mb-4">
                   <p className="text-xs text-muted-foreground font-mono mb-2">Available Endpoints</p>
                   <Badge variant="secondary" className="text-xs font-mono">{skills.length} routes</Badge>
                 </div>
                 
-                {/* Mobile: Horizontal scroll */}
-                <div className="md:space-y-2 flex md:flex-col gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
+                {/* Mobile: Horizontal scroll | Desktop: Vertical list */}
+                <div className="lg:space-y-2 flex lg:flex-col gap-2 overflow-x-auto lg:overflow-x-visible pb-2 lg:pb-0 scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
                   {skills.map((skillGroup, idx) => {
                     const isSelected = idx === selectedSkillIndex;
                     return (
                       <button
                         key={skillGroup.category}
                         onClick={() => setSelectedSkillIndex(idx)}
-                        className={`flex-shrink-0 md:w-full text-left p-2.5 md:p-3 rounded-md transition-all duration-200 flex items-center gap-2 ${
+                        className={`flex-shrink-0 w-full text-left p-3 lg:p-3.5 rounded-md transition-all duration-200 flex items-center gap-2.5 ${
                           isSelected 
                             ? 'bg-primary/20 border border-primary/40' 
                             : 'hover:bg-muted/50 border border-transparent'
                         }`}
                       >
-                        <Badge className={`font-mono text-xs px-1.5 flex-shrink-0 ${isSelected ? 'bg-primary text-primary-foreground' : 'bg-primary/40 text-primary'}`}>
+                        <Badge className={`font-mono text-xs px-2 flex-shrink-0 ${isSelected ? 'bg-primary text-primary-foreground' : 'bg-primary/40 text-primary'}`}>
                           GET
                         </Badge>
-                        <span className="text-xs md:text-sm font-mono text-foreground whitespace-nowrap md:whitespace-normal md:truncate">
+                        <span className="text-sm font-mono text-foreground whitespace-nowrap">
                           /{skillGroup.category.toLowerCase().replace(/\s+/g, '-')}
                         </span>
                       </button>
@@ -814,8 +814,12 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ===== ASSISTANT IA ===== */}
-      <AIAssistantSection />
+      {/* ===== ASSISTANT IA - ÉLARGI ===== */}
+      <section className="py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <AIAssistantSection />
+        </div>
+      </section>
 
       {/* ===== CONTACT ===== */}
       <section className="py-20 bg-card/30">

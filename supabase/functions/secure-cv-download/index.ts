@@ -19,9 +19,14 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    // Get the active CV file info using the secure function
+    // Get the active CV file info directly from admin_files
     const { data: cvData, error: cvError } = await supabaseAdmin
-      .rpc('get_active_cv_for_download');
+      .from('admin_files')
+      .select('file_url, filename, file_type')
+      .eq('file_category', 'cv')
+      .eq('is_active', true)
+      .order('created_at', { ascending: false })
+      .limit(1);
 
     if (cvError) {
       console.error('Error fetching CV info:', cvError);
@@ -46,53 +51,12 @@ serve(async (req) => {
 
     const cv = cvData[0];
     
-    // Extract filename from the file_url (handle both full paths and just filenames)
-    const fileName = cv.file_url.includes('/') ? cv.file_url.split('/').pop() : cv.file_url;
-    
-    if (!fileName) {
-      console.error('Invalid file URL:', cv.file_url);
-      return new Response(
-        JSON.stringify({ error: 'Fichier CV introuvable' }),
-        { 
-          status: 404, 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-        }
-      );
-    }
-
-    // Create a signed URL for the CV file (valid for 5 minutes)
-    const { data: signedUrlData, error: signedUrlError } = await supabaseAdmin.storage
-      .from('admin-files')
-      .createSignedUrl(fileName, 300); // 5 minutes
-
-    if (signedUrlError) {
-      console.error('Error creating signed URL:', signedUrlError);
-      return new Response(
-        JSON.stringify({ error: 'Impossible de générer le lien de téléchargement' }),
-        { 
-          status: 500, 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-        }
-      );
-    }
-
-    // Log successful CV access (non-sensitive info)
-    await supabaseAdmin
-      .from('security_logs')
-      .insert({
-        event_type: 'CV_DOWNLOAD',
-        severity: 'INFO',
-        source: 'secure-cv-download',
-        metadata: {
-          filename: cv.filename,
-          file_type: cv.file_type
-        }
-      });
-
+    // The file_url is already a full public URL from storage
+    // Just return it directly
     return new Response(
       JSON.stringify({ 
-        signedUrl: signedUrlData.signedUrl,
-        filename: cv.filename,
+        signedUrl: cv.file_url,
+        filename: cv.filename || 'CV_Rayane_Jerbi.pdf',
         available: true
       }),
       {
