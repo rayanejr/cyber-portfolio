@@ -521,31 +521,32 @@ export default function Home() {
             </div>
 
             {/* Main Content: Sidebar + Display */}
-            <div className="grid md:grid-cols-[280px,1fr] min-h-[500px]">
+            <div className="flex flex-col md:grid md:grid-cols-[280px,1fr] min-h-[500px]">
               {/* Sidebar - Available Endpoints */}
-              <div className="bg-muted/30 border-r border-primary/10 p-4">
-                <div className="mb-4">
+              <div className="bg-muted/30 md:border-r border-b md:border-b-0 border-primary/10 p-3 md:p-4">
+                <div className="mb-3 md:mb-4">
                   <p className="text-xs text-muted-foreground font-mono mb-2">Available Endpoints</p>
                   <Badge variant="secondary" className="text-xs font-mono">{skills.length} routes</Badge>
                 </div>
                 
-                <div className="space-y-2">
+                {/* Mobile: Horizontal scroll */}
+                <div className="md:space-y-2 flex md:flex-col gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
                   {skills.map((skillGroup, idx) => {
                     const isSelected = idx === selectedSkillIndex;
                     return (
                       <button
                         key={skillGroup.category}
                         onClick={() => setSelectedSkillIndex(idx)}
-                        className={`w-full text-left p-3 rounded-md transition-all duration-200 flex items-center gap-2 ${
+                        className={`flex-shrink-0 md:w-full text-left p-2.5 md:p-3 rounded-md transition-all duration-200 flex items-center gap-2 ${
                           isSelected 
                             ? 'bg-primary/20 border border-primary/40' 
                             : 'hover:bg-muted/50 border border-transparent'
                         }`}
                       >
-                        <Badge className={`font-mono text-xs px-1.5 ${isSelected ? 'bg-primary text-primary-foreground' : 'bg-primary/40 text-primary'}`}>
+                        <Badge className={`font-mono text-xs px-1.5 flex-shrink-0 ${isSelected ? 'bg-primary text-primary-foreground' : 'bg-primary/40 text-primary'}`}>
                           GET
                         </Badge>
-                        <span className="text-sm font-mono text-foreground truncate">
+                        <span className="text-xs md:text-sm font-mono text-foreground whitespace-nowrap md:whitespace-normal md:truncate">
                           /{skillGroup.category.toLowerCase().replace(/\s+/g, '-')}
                         </span>
                       </button>
@@ -555,44 +556,44 @@ export default function Home() {
               </div>
 
               {/* Main Display Area - Selected category */}
-              <div className="p-6">
+              <div className="p-4 md:p-6">
                 {skills[selectedSkillIndex] && (
                   <>
-                    <div className="mb-4 flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <Badge className="bg-primary text-primary-foreground font-mono text-xs">GET</Badge>
-                        <span className="text-lg font-mono text-foreground">/{skills[selectedSkillIndex].category.toLowerCase().replace(/\s+/g, '-')}</span>
+                    <div className="mb-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                      <div className="flex items-center gap-2 min-w-0 flex-1">
+                        <Badge className="bg-primary text-primary-foreground font-mono text-xs flex-shrink-0">GET</Badge>
+                        <span className="text-sm md:text-lg font-mono text-foreground truncate">/{skills[selectedSkillIndex].category.toLowerCase().replace(/\s+/g, '-')}</span>
                       </div>
-                      <div className="flex gap-2">
+                      <div className="flex gap-2 w-full sm:w-auto">
                         <Button 
                           variant="ghost" 
                           size="sm" 
-                          className="text-xs h-7"
+                          className="text-xs h-7 flex-1 sm:flex-initial"
                           onClick={() => {
                             navigator.clipboard.writeText(JSON.stringify(skills[selectedSkillIndex], null, 2));
                             toast({ title: "Copié !", description: "Données copiées dans le presse-papier" });
                           }}
                         >
-                          <Copy className="w-3 h-3 mr-1" />
-                          Copy
+                          <Copy className="w-3 h-3 sm:mr-1" />
+                          <span className="hidden sm:inline">Copy</span>
                         </Button>
-                        <Button variant="ghost" size="sm" className="text-xs h-7">JSON</Button>
-                        <Button variant="ghost" size="sm" className="text-xs h-7">
-                          <Download className="w-3 h-3 mr-1" />
-                          Download
+                        <Button variant="ghost" size="sm" className="text-xs h-7 flex-1 sm:flex-initial hidden sm:flex">JSON</Button>
+                        <Button variant="ghost" size="sm" className="text-xs h-7 flex-1 sm:flex-initial">
+                          <Download className="w-3 h-3 sm:mr-1" />
+                          <span className="hidden sm:inline">Download</span>
                         </Button>
                       </div>
                     </div>
 
                     {/* Response Body */}
-                    <div className="rounded-md border border-primary/20 bg-muted/20 p-4 mb-4">
+                    <div className="rounded-md border border-primary/20 bg-muted/20 p-3 md:p-4 mb-4">
                       <div className="flex items-center gap-2 mb-3">
                         <span className="text-xs font-mono text-green-400 bg-green-500/10 px-2 py-1 rounded">Response Body</span>
                         <Badge variant="outline" className="text-xs font-mono border-green-500/40 text-green-400">200 OK</Badge>
                       </div>
 
                       {/* JSON Display */}
-                      <div className="font-mono text-sm mb-4 p-3 bg-card/50 rounded border border-primary/10 overflow-x-auto">
+                      <div className="font-mono text-xs md:text-sm mb-4 p-2 md:p-3 bg-card/50 rounded border border-primary/10 overflow-x-auto">
                         <div className="text-foreground">
                           <span className="text-muted-foreground">{'{'}</span>
                           <br />
@@ -632,26 +633,26 @@ export default function Home() {
                     </div>
 
                     {/* Footer Metadata */}
-                    <div className="grid grid-cols-3 gap-4 p-4 rounded-md bg-muted/20 border border-primary/10">
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4 p-3 md:p-4 rounded-md bg-muted/20 border border-primary/10">
                       <div>
                         <p className="text-xs text-muted-foreground font-mono mb-1">Response Time</p>
-                        <p className="text-sm font-mono text-green-400">66ms <span className="text-xs text-muted-foreground">(normal)</span></p>
+                        <p className="text-xs md:text-sm font-mono text-green-400">66ms <span className="hidden md:inline text-xs text-muted-foreground">(normal)</span></p>
                       </div>
                       <div>
                         <p className="text-xs text-muted-foreground font-mono mb-1">Cache Status</p>
-                        <p className="text-sm font-mono text-green-400">HIT</p>
+                        <p className="text-xs md:text-sm font-mono text-green-400">HIT</p>
                       </div>
-                      <div>
+                      <div className="col-span-2 md:col-span-1">
                         <p className="text-xs text-muted-foreground font-mono mb-1">Size</p>
-                        <p className="text-sm font-mono text-green-400">{(JSON.stringify(skills[selectedSkillIndex]).length / 1024).toFixed(2)}KB</p>
+                        <p className="text-xs md:text-sm font-mono text-green-400">{(JSON.stringify(skills[selectedSkillIndex]).length / 1024).toFixed(2)}KB</p>
                       </div>
                     </div>
 
                     {/* Bottom Info Bar */}
-                    <div className="mt-4 pt-4 border-t border-primary/10 flex flex-wrap items-center justify-between gap-2 text-xs font-mono text-muted-foreground">
+                    <div className="mt-4 pt-4 border-t border-primary/10 flex flex-col sm:flex-row flex-wrap items-start sm:items-center justify-between gap-2 text-xs font-mono text-muted-foreground">
                       <span>API Version: 1.0.0</span>
                       <span>Last Updated: 19/10/2025</span>
-                      <Button variant="link" className="text-xs h-auto p-0 text-primary hover:text-primary/80">View Docs</Button>
+                      <Button variant="link" className="text-xs h-auto p-0 text-primary hover:text-primary/80 self-start sm:self-center">View Docs</Button>
                     </div>
                   </>
                 )}
