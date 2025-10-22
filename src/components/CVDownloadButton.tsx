@@ -48,26 +48,13 @@ export default function CVDownloadButton() {
     }
 
     try {
-      // Utiliser fetch puis créer un Blob pour éviter le blocage par les adblockers
-      const response = await fetch(resumeUrl);
-      const blob = await response.blob();
-      const blobUrl = window.URL.createObjectURL(blob);
-      
-      const link = document.createElement('a');
-      link.href = blobUrl;
-      link.download = 'Rayane_Jerbi_CV.pdf'; // Nom sans underscore au début
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      
-      // Nettoyer l'URL blob après un délai
-      setTimeout(() => window.URL.revokeObjectURL(blobUrl), 100);
-      
-      console.log('CV téléchargé avec succès');
-    } catch (error: any) {
-      console.error('Error downloading CV:', error);
-      // Fallback: ouverture dans nouvel onglet
+      // Solution la plus compatible : ouvrir dans un nouvel onglet
+      // Évite les problèmes avec les adblockers et ERR_BLOCKED_BY_CLIENT
       window.open(resumeUrl, '_blank', 'noopener,noreferrer');
+      console.log('CV ouvert dans un nouvel onglet');
+    } catch (error: any) {
+      console.error('Error opening CV:', error);
+      alert('Impossible d\'ouvrir le CV. Veuillez désactiver votre bloqueur de publicités.');
     }
   };
 
@@ -78,7 +65,7 @@ export default function CVDownloadButton() {
       onClick={handleDownload}
       disabled={isLoading}
     >
-      {isLoading ? 'Chargement...' : (resumeUrl ? 'Télécharger mon CV' : 'CV bientôt disponible')}
+      {isLoading ? 'Chargement...' : (resumeUrl ? 'Voir mon CV' : 'CV bientôt disponible')}
       <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
     </Button>
   );

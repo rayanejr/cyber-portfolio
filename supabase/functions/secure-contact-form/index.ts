@@ -1,6 +1,8 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
+// Updated: 2025-10-22 - Fixed rate limiting without ON CONFLICT
+
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -91,78 +93,70 @@ serve(async (req) => {
       );
     }
 
-    // Rate limiting check and update (atomic operation)
+    // Rate limiting check (simplified without ON CONFLICT)
     const windowStart = new Date();
     windowStart.setMinutes(Math.floor(windowStart.getMinutes() / 15) * 15, 0, 0); // 15-minute windows
 
-    const { data: rateLimitData, error: rateLimitError } = await supabaseAdmin
+    // First extract the first IP
+    const firstIP = clientIP.split(',')[0].trim();
+
+    // Check existing rate limit
+    const { data: existingLimit } = await supabaseAdmin
       .from('rate_limit_contact')
-      .upsert({
-        ip_address: clientIP,
-        window_start: windowStart.toISOString(),
-        attempts: 1
-      }, {
-        onConflict: 'ip_address,window_start',
-        ignoreDuplicates: false
-      })
-      .select()
-      .single();
+      .select('attempts, is_blocked')
+      .eq('ip_address', firstIP)
+      .gte('window_start', windowStart.toISOString())
+      .order('window_start', { ascending: false })
+      .limit(1)
+      .maybeSingle();
 
-    if (rateLimitError) {
-      // If upsert failed, try to increment existing record
-      const { data: existingLimit } = await supabaseAdmin
-        .from('rate_limit_contact')
-        .select('attempts, is_blocked')
-        .eq('ip_address', clientIP)
-        .eq('window_start', windowStart.toISOString())
-        .single();
+    if (existingLimit) {
+      // Check if blocked
+      if (existingLimit.is_blocked) {
+        return new Response(
+          JSON.stringify({ error: 'Trop de tentatives. Veuillez réessayer plus tard.' }),
+          { 
+            status: 429, 
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          }
+        );
+      }
 
-      if (existingLimit) {
-        const newAttempts = existingLimit.attempts + 1;
-        
-        if (newAttempts > 5 || existingLimit.is_blocked) {
-          await supabaseAdmin
-            .from('rate_limit_contact')
-            .update({ 
-              attempts: newAttempts, 
-              is_blocked: true 
-            })
-            .eq('ip_address', clientIP)
-            .eq('window_start', windowStart.toISOString());
-
-          return new Response(
-            JSON.stringify({ error: 'Trop de tentatives. Veuillez réessayer plus tard.' }),
-            { 
-              status: 429, 
-              headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-            }
-          );
-        }
-
+      // Check attempts
+      if (existingLimit.attempts >= 5) {
+        // Block the IP
         await supabaseAdmin
           .from('rate_limit_contact')
-          .update({ attempts: newAttempts })
-          .eq('ip_address', clientIP)
-          .eq('window_start', windowStart.toISOString());
+          .update({ is_blocked: true })
+          .eq('ip_address', firstIP)
+          .gte('window_start', windowStart.toISOString());
+
+        return new Response(
+          JSON.stringify({ error: 'Trop de tentatives. Veuillez réessayer plus tard.' }),
+          { 
+            status: 429, 
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          }
+        );
       }
-    } else if (rateLimitData?.attempts && rateLimitData.attempts > 5) {
+
+      // Increment attempts
       await supabaseAdmin
         .from('rate_limit_contact')
-        .update({ is_blocked: true })
-        .eq('ip_address', clientIP)
-        .eq('window_start', windowStart.toISOString());
-
-      return new Response(
-        JSON.stringify({ error: 'Trop de tentatives. Veuillez réessayer plus tard.' }),
-        { 
-          status: 429, 
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-        }
-      );
+        .update({ attempts: existingLimit.attempts + 1 })
+        .eq('ip_address', firstIP)
+        .gte('window_start', windowStart.toISOString());
+    } else {
+      // Create new rate limit entry
+      await supabaseAdmin
+        .from('rate_limit_contact')
+        .insert({
+          ip_address: firstIP,
+          window_start: windowStart.toISOString(),
+          attempts: 1,
+          is_blocked: false
+        });
     }
-
-    // Extract first IP from the comma-separated list
-    const firstIP = clientIP.split(',')[0].trim();
 
     // Insert contact message and verify success with SELECT
     const { data: insertData, error: insertError } = await supabaseAdmin
