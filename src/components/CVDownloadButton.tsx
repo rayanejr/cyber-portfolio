@@ -48,21 +48,26 @@ export default function CVDownloadButton() {
     }
 
     try {
-      // Téléchargement direct - plus simple et fiable
+      // Utiliser fetch puis créer un Blob pour éviter le blocage par les adblockers
+      const response = await fetch(resumeUrl);
+      const blob = await response.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
+      
       const link = document.createElement('a');
-      link.href = resumeUrl;
-      link.download = 'CV_Rayane_Jerbi.pdf';
-      link.target = '_blank';
-      link.rel = 'noopener noreferrer';
+      link.href = blobUrl;
+      link.download = 'Rayane_Jerbi_CV.pdf'; // Nom sans underscore au début
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
       
-      console.log('CV téléchargé depuis:', resumeUrl);
+      // Nettoyer l'URL blob après un délai
+      setTimeout(() => window.URL.revokeObjectURL(blobUrl), 100);
+      
+      console.log('CV téléchargé avec succès');
     } catch (error: any) {
       console.error('Error downloading CV:', error);
       // Fallback: ouverture dans nouvel onglet
-      window.open(resumeUrl, '_blank');
+      window.open(resumeUrl, '_blank', 'noopener,noreferrer');
     }
   };
 

@@ -274,7 +274,7 @@ const Admin = () => {
       
       {/* Header */}
       <div className="w-full border-b bg-card/80 backdrop-blur-xl relative z-10 shadow-lg">
-        <div className="w-full max-w-7xl mx-auto px-4 py-4">
+        <div className="w-full max-w-screen-2xl mx-auto px-4 py-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 animate-fade-in">
             <div className="flex-1 min-w-0">
               <h1 className="text-xl sm:text-2xl font-bold font-orbitron flex items-center gap-3">

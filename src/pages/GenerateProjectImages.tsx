@@ -21,7 +21,7 @@ const GenerateProjectImages = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-12">
+    <div className="w-full px-4 py-12 max-w-screen-2xl mx-auto">
       <Button
         onClick={() => navigate('/projects')}
         variant="ghost"

@@ -23,7 +23,7 @@ const NotFound = () => {
       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5"></div>
       
       {/* Content */}
-      <div className="relative z-10 container mx-auto px-4 py-16">
+      <div className="relative z-10 w-full px-4 py-16 max-w-screen-2xl mx-auto">
         <Card className="max-w-2xl mx-auto cyber-border backdrop-blur-xl bg-card/90 shadow-2xl">
           <div className="p-8 sm:p-12 text-center space-y-6">
             {/* Icon */}

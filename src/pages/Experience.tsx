@@ -51,7 +51,7 @@ const Experience = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-background py-12 sm:py-20">
-        <div className="container mx-auto px-4 sm:px-6">
+        <div className="w-full px-4 sm:px-6 lg:px-8 max-w-screen-2xl mx-auto">
           <div className="text-center">
             <div className="animate-pulse space-y-4">
               <div className="h-8 bg-muted rounded w-2/3 sm:w-1/3 mx-auto"></div>
@@ -70,7 +70,7 @@ const Experience = () => {
       <div className="absolute inset-0 bg-gradient-to-br from-secondary/5 via-transparent to-accent/5"></div>
       
       <div className="relative py-12 sm:py-20">
-        <div className="container mx-auto px-4 sm:px-6">
+        <div className="w-full px-4 sm:px-6 lg:px-8 max-w-screen-2xl mx-auto">
           {/* Enhanced header */}
           <div className="text-center mb-12 sm:mb-16 animate-fade-in">
             <div className="flex items-center justify-center gap-4 mb-6">
