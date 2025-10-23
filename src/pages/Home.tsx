@@ -529,38 +529,28 @@ export default function Home() {
                   <Badge variant="secondary" className="text-xs font-mono">{skills.length} routes</Badge>
                 </div>
                 
-                {/* Mobile: Dropdown selector | Desktop: Vertical list */}
-                <div className="lg:hidden mb-4">
-                  <select
-                    value={selectedSkillIndex}
-                    onChange={(e) => setSelectedSkillIndex(Number(e.target.value))}
-                    className="w-full p-3 rounded-md bg-muted border border-primary/20 text-foreground font-mono text-sm"
-                  >
-                    {skills.map((skillGroup, idx) => (
-                      <option key={skillGroup.category} value={idx}>
-                        GET /{skillGroup.category.toLowerCase().replace(/\s+/g, '-')}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="hidden lg:block lg:space-y-2">
+                {/* Mobile & Desktop: Vertical list of routes */}
+                <div className="space-y-2">
                   {skills.map((skillGroup, idx) => {
                     const isSelected = idx === selectedSkillIndex;
                     return (
                       <button
                         key={skillGroup.category}
                         onClick={() => setSelectedSkillIndex(idx)}
-                        className={`w-full text-left p-3.5 rounded-md transition-all duration-200 flex items-center gap-2.5 ${
+                        className={`w-full text-left p-3 lg:p-3.5 rounded-md transition-all duration-200 flex items-center gap-2.5 ${
                           isSelected 
                             ? 'bg-primary/20 border border-primary/40' 
                             : 'hover:bg-muted/50 border border-transparent'
                         }`}
                       >
-                        <Badge className={`font-mono text-xs px-2 flex-shrink-0 ${isSelected ? 'bg-primary text-primary-foreground' : 'bg-primary/40 text-primary'}`}>
+                        <span className={`font-mono text-xs lg:text-sm font-semibold ${
+                          isSelected ? 'text-secondary' : 'text-muted-foreground'
+                        }`}>
                           GET
-                        </Badge>
-                        <span className="text-sm font-mono text-foreground whitespace-nowrap">
+                        </span>
+                        <span className={`font-mono text-xs lg:text-sm ${
+                          isSelected ? 'text-foreground' : 'text-muted-foreground'
+                        }`}>
                           /{skillGroup.category.toLowerCase().replace(/\s+/g, '-')}
                         </span>
                       </button>

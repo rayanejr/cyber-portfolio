@@ -48,19 +48,25 @@ export default function CVDownloadButton() {
     }
 
     try {
-      // Créer un élément <a> invisible pour forcer le téléchargement
+      // Fetch le fichier en blob pour éviter ERR_BLOCKED_BY_CLIENT
+      const response = await fetch(resumeUrl);
+      const blob = await response.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
+      
+      // Créer un élément <a> avec le blob URL
       const link = document.createElement('a');
-      link.href = resumeUrl;
-      link.target = '_blank';
-      link.rel = 'noopener noreferrer';
-      link.download = 'CV_Rayane_Jerbi.pdf'; // Force le téléchargement
+      link.href = blobUrl;
+      link.download = 'CV_Rayane_Jerbi.pdf';
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      console.log('CV download triggered');
+      
+      // Nettoyer le blob URL
+      window.URL.revokeObjectURL(blobUrl);
+      console.log('CV download successful');
     } catch (error: any) {
       console.error('Error downloading CV:', error);
-      // Fallback: ouvrir dans nouvel onglet si échec
+      // Fallback: ouvrir dans nouvel onglet
       window.open(resumeUrl, '_blank', 'noopener,noreferrer');
     }
   };
