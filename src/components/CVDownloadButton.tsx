@@ -41,45 +41,14 @@ export default function CVDownloadButton() {
     fetchResume();
   }, []);
 
-  const handleDownload = async () => {
+  const handleDownload = () => {
     if (!resumeUrl) {
       alert('CV temporairement indisponible');
       return;
     }
-
-    try {
-      // Utiliser l'API fetch avec mode no-cors pour éviter les blocages
-      const response = await fetch(resumeUrl, {
-        mode: 'cors',
-        credentials: 'omit'
-      });
-      
-      if (!response.ok) throw new Error('Network response failed');
-      
-      const blob = await response.blob();
-      const blobUrl = URL.createObjectURL(blob);
-      
-      // Téléchargement via blob URL
-      const link = document.createElement('a');
-      link.style.display = 'none';
-      link.href = blobUrl;
-      link.download = 'CV_Rayane_Jerbi.pdf';
-      link.target = '_blank';
-      
-      document.body.appendChild(link);
-      link.click();
-      
-      // Cleanup après un délai
-      setTimeout(() => {
-        document.body.removeChild(link);
-        URL.revokeObjectURL(blobUrl);
-      }, 100);
-      
-    } catch (error: any) {
-      console.error('Error downloading CV:', error);
-      // Fallback: ouvrir dans nouvel onglet
-      window.open(resumeUrl, '_blank', 'noopener,noreferrer');
-    }
+    
+    // Ouvrir directement dans un nouvel onglet (évite ERR_BLOCKED_BY_CLIENT)
+    window.open(resumeUrl, '_blank', 'noopener,noreferrer');
   };
 
   return (

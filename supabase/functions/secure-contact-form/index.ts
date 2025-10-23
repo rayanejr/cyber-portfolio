@@ -1,7 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-// Updated: 2025-10-23 - Fixed database insertion without ON CONFLICT
+// Updated: 2025-10-23 16:00 - Force redeploy to fix IP and ON CONFLICT issues
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
