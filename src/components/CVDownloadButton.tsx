@@ -48,13 +48,20 @@ export default function CVDownloadButton() {
     }
 
     try {
-      // Solution la plus compatible : ouvrir dans un nouvel onglet
-      // Évite les problèmes avec les adblockers et ERR_BLOCKED_BY_CLIENT
-      window.open(resumeUrl, '_blank', 'noopener,noreferrer');
-      console.log('CV ouvert dans un nouvel onglet');
+      // Créer un élément <a> invisible pour forcer le téléchargement
+      const link = document.createElement('a');
+      link.href = resumeUrl;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      link.download = 'CV_Rayane_Jerbi.pdf'; // Force le téléchargement
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      console.log('CV download triggered');
     } catch (error: any) {
-      console.error('Error opening CV:', error);
-      alert('Impossible d\'ouvrir le CV. Veuillez désactiver votre bloqueur de publicités.');
+      console.error('Error downloading CV:', error);
+      // Fallback: ouvrir dans nouvel onglet si échec
+      window.open(resumeUrl, '_blank', 'noopener,noreferrer');
     }
   };
 

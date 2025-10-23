@@ -529,15 +529,29 @@ export default function Home() {
                   <Badge variant="secondary" className="text-xs font-mono">{skills.length} routes</Badge>
                 </div>
                 
-                {/* Mobile: Horizontal scroll | Desktop: Vertical list */}
-                <div className="lg:space-y-2 flex lg:flex-col gap-2 overflow-x-auto lg:overflow-x-visible pb-2 lg:pb-0 scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
+                {/* Mobile: Dropdown selector | Desktop: Vertical list */}
+                <div className="lg:hidden mb-4">
+                  <select
+                    value={selectedSkillIndex}
+                    onChange={(e) => setSelectedSkillIndex(Number(e.target.value))}
+                    className="w-full p-3 rounded-md bg-muted border border-primary/20 text-foreground font-mono text-sm"
+                  >
+                    {skills.map((skillGroup, idx) => (
+                      <option key={skillGroup.category} value={idx}>
+                        GET /{skillGroup.category.toLowerCase().replace(/\s+/g, '-')}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="hidden lg:block lg:space-y-2">
                   {skills.map((skillGroup, idx) => {
                     const isSelected = idx === selectedSkillIndex;
                     return (
                       <button
                         key={skillGroup.category}
                         onClick={() => setSelectedSkillIndex(idx)}
-                        className={`flex-shrink-0 w-full text-left p-3 lg:p-3.5 rounded-md transition-all duration-200 flex items-center gap-2.5 ${
+                        className={`w-full text-left p-3.5 rounded-md transition-all duration-200 flex items-center gap-2.5 ${
                           isSelected 
                             ? 'bg-primary/20 border border-primary/40' 
                             : 'hover:bg-muted/50 border border-transparent'
