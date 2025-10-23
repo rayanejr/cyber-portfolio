@@ -520,16 +520,16 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Main Content: Sidebar + Display */}
+            {/* Main Content: Mobile = Stacked | Desktop = Sidebar + Display */}
             <div className="flex flex-col lg:grid lg:grid-cols-[340px,1fr] min-h-[500px]">
               {/* Sidebar - Available Endpoints */}
-              <div className="bg-muted/30 lg:border-r border-b lg:border-b-0 border-primary/10 p-4 lg:p-5">
+              <div className="bg-muted/30 lg:border-r border-primary/10 p-4 lg:p-5">
                 <div className="mb-4">
                   <p className="text-xs text-muted-foreground font-mono mb-2">Available Endpoints</p>
                   <Badge variant="secondary" className="text-xs font-mono">{skills.length} routes</Badge>
                 </div>
                 
-                {/* Mobile & Desktop: Vertical list of routes */}
+                {/* Vertical list of routes */}
                 <div className="space-y-2">
                   {skills.map((skillGroup, idx) => {
                     const isSelected = idx === selectedSkillIndex;
@@ -559,8 +559,8 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Main Display Area - Selected category */}
-              <div className="p-4 md:p-6">
+              {/* Main Display Area - Selected category (shown below on mobile) */}
+              <div className="p-4 md:p-6 border-t lg:border-t-0 border-primary/10">
                 {skills[selectedSkillIndex] && (
                   <>
                     <div className="mb-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
