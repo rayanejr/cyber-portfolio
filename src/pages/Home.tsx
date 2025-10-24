@@ -529,7 +529,7 @@ export default function Home() {
                   <Badge variant="secondary" className="text-xs font-mono">{skills.length} routes</Badge>
                 </div>
                 
-                {/* Vertical list of routes */}
+                {/* Vertical list of routes - Enhanced for mobile */}
                 <div className="space-y-2">
                   {skills.map((skillGroup, idx) => {
                     const isSelected = idx === selectedSkillIndex;
@@ -537,22 +537,32 @@ export default function Home() {
                       <button
                         key={skillGroup.category}
                         onClick={() => setSelectedSkillIndex(idx)}
-                        className={`w-full text-left p-3 lg:p-3.5 rounded-md transition-all duration-200 flex items-center gap-2.5 ${
+                        className={`group w-full text-left p-3 lg:p-3.5 rounded-lg transition-all duration-300 flex items-center gap-2.5 relative overflow-hidden ${
                           isSelected 
-                            ? 'bg-primary/20 border border-primary/40' 
-                            : 'hover:bg-muted/50 border border-transparent'
+                            ? 'bg-gradient-to-r from-primary/30 via-secondary/20 to-primary/30 border-2 border-primary shadow-lg shadow-primary/20 scale-[1.02]' 
+                            : 'bg-muted/30 hover:bg-gradient-to-r hover:from-primary/10 hover:to-secondary/10 border-2 border-transparent hover:border-primary/30 hover:scale-[1.01] hover:shadow-md active:scale-[0.98]'
                         }`}
                       >
-                        <span className={`font-mono text-xs lg:text-sm font-semibold ${
-                          isSelected ? 'text-secondary' : 'text-muted-foreground'
-                        }`}>
+                        {/* Glow effect on hover */}
+                        <div className={`absolute inset-0 bg-gradient-to-r from-transparent via-secondary/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ${isSelected ? 'opacity-50' : ''}`}></div>
+                        
+                        <span className={`relative font-mono text-sm lg:text-sm font-bold ${
+                          isSelected ? 'text-secondary' : 'text-muted-foreground group-hover:text-secondary'
+                        } transition-colors`}>
                           GET
                         </span>
-                        <span className={`font-mono text-xs lg:text-sm ${
-                          isSelected ? 'text-foreground' : 'text-muted-foreground'
-                        }`}>
+                        <span className={`relative font-mono text-sm lg:text-sm font-medium ${
+                          isSelected ? 'text-foreground' : 'text-muted-foreground group-hover:text-foreground'
+                        } transition-colors`}>
                           /{skillGroup.category.toLowerCase().replace(/\s+/g, '-')}
                         </span>
+                        
+                        {/* Click indicator */}
+                        <div className={`ml-auto transition-all duration-300 ${
+                          isSelected ? 'opacity-100 rotate-90' : 'opacity-0 group-hover:opacity-100'
+                        }`}>
+                          <ChevronRight className="w-4 h-4 text-secondary" />
+                        </div>
                       </button>
                     );
                   })}
