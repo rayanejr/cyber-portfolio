@@ -93,69 +93,26 @@ serve(async (req) => {
       );
     }
 
-    // Rate limiting check (simplified without ON CONFLICT)
+    // Simple rate limiting without ON CONFLICT
     const windowStart = new Date();
-    windowStart.setMinutes(Math.floor(windowStart.getMinutes() / 15) * 15, 0, 0); // 15-minute windows
-
-    // First extract the first IP
+    windowStart.setMinutes(Math.floor(windowStart.getMinutes() / 15) * 15, 0, 0);
     const firstIP = clientIP.split(',')[0].trim();
 
-    // Check existing rate limit
-    const { data: existingLimit } = await supabaseAdmin
-      .from('rate_limit_contact')
-      .select('attempts, is_blocked')
+    // Count recent submissions from this IP
+    const { count: recentCount } = await supabaseAdmin
+      .from('contact_messages')
+      .select('*', { count: 'exact', head: true })
       .eq('ip_address', firstIP)
-      .gte('window_start', windowStart.toISOString())
-      .order('window_start', { ascending: false })
-      .limit(1)
-      .maybeSingle();
+      .gte('created_at', windowStart.toISOString());
 
-    if (existingLimit) {
-      // Check if blocked
-      if (existingLimit.is_blocked) {
-        return new Response(
-          JSON.stringify({ error: 'Trop de tentatives. Veuillez réessayer plus tard.' }),
-          { 
-            status: 429, 
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-          }
-        );
-      }
-
-      // Check attempts
-      if (existingLimit.attempts >= 5) {
-        // Block the IP
-        await supabaseAdmin
-          .from('rate_limit_contact')
-          .update({ is_blocked: true })
-          .eq('ip_address', firstIP)
-          .gte('window_start', windowStart.toISOString());
-
-        return new Response(
-          JSON.stringify({ error: 'Trop de tentatives. Veuillez réessayer plus tard.' }),
-          { 
-            status: 429, 
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-          }
-        );
-      }
-
-      // Increment attempts
-      await supabaseAdmin
-        .from('rate_limit_contact')
-        .update({ attempts: existingLimit.attempts + 1 })
-        .eq('ip_address', firstIP)
-        .gte('window_start', windowStart.toISOString());
-    } else {
-      // Create new rate limit entry
-      await supabaseAdmin
-        .from('rate_limit_contact')
-        .insert({
-          ip_address: firstIP,
-          window_start: windowStart.toISOString(),
-          attempts: 1,
-          is_blocked: false
-        });
+    if (recentCount && recentCount >= 5) {
+      return new Response(
+        JSON.stringify({ error: 'Trop de tentatives. Veuillez réessayer plus tard.' }),
+        { 
+          status: 429, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        }
+      );
     }
 
     // Insert contact message and verify success with SELECT
