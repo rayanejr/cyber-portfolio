@@ -93,10 +93,12 @@ serve(async (req) => {
       );
     }
 
-    // Simple rate limiting: count messages in last 15 minutes
-    const windowStart = new Date(Date.now() - 15 * 60 * 1000);
+    // Simple rate limiting without ON CONFLICT
+    const windowStart = new Date();
+    windowStart.setMinutes(Math.floor(windowStart.getMinutes() / 15) * 15, 0, 0);
     const firstIP = clientIP.split(',')[0].trim();
 
+    // Count recent submissions from this IP
     const { count: recentCount } = await supabaseAdmin
       .from('contact_messages')
       .select('*', { count: 'exact', head: true })
@@ -113,7 +115,7 @@ serve(async (req) => {
       );
     }
 
-    // Insert contact message
+    // Insert contact message and verify success with SELECT
     const { data: insertData, error: insertError } = await supabaseAdmin
       .from('contact_messages')
       .insert({
