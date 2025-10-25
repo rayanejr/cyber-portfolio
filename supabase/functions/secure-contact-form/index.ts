@@ -134,10 +134,10 @@ serve(async (req) => {
       await supabaseAdmin
         .from('security_events')
         .insert({
-          kind: 'security_log',
-          severity: 'ERROR',
+          kind: 'SECURITY_LOG',
+          severity: 'MEDIUM',
           action: 'CONTACT_INSERT_ERROR',
-          ip_address: clientIP,
+          ip_address: firstIP,
           message: `Contact insert failed: ${insertError.message}`,
           details: { error: insertError, email }
         });
@@ -154,10 +154,10 @@ serve(async (req) => {
     await supabaseAdmin
       .from('security_events')
       .insert({
-        kind: 'audit',
-        severity: 'INFO',
+        kind: 'AUDIT',
+        severity: 'LOW',
         action: 'CONTACT_SUBMIT',
-        ip_address: clientIP,
+        ip_address: firstIP,
         message: `Contact message ${insertData.id} submitted`,
         details: {
           contact_id: insertData.id,
