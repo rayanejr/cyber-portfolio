@@ -130,7 +130,7 @@ export type Database = {
           created_at: string
           email: string
           id: string
-          ip_address: unknown
+          ip_address: unknown | null
           is_read: boolean | null
           message: string
           name: string
@@ -140,7 +140,7 @@ export type Database = {
           created_at?: string
           email: string
           id?: string
-          ip_address?: unknown
+          ip_address?: unknown | null
           is_read?: boolean | null
           message: string
           name: string
@@ -150,7 +150,7 @@ export type Database = {
           created_at?: string
           email?: string
           id?: string
-          ip_address?: unknown
+          ip_address?: unknown | null
           is_read?: boolean | null
           message?: string
           name?: string
@@ -326,7 +326,7 @@ export type Database = {
           details: Json | null
           detected_at: string | null
           id: string
-          ip_address: unknown
+          ip_address: unknown | null
           kind: Database["public"]["Enums"]["security_event_kind"]
           message: string | null
           record_id: string | null
@@ -342,7 +342,7 @@ export type Database = {
           details?: Json | null
           detected_at?: string | null
           id?: string
-          ip_address?: unknown
+          ip_address?: unknown | null
           kind: Database["public"]["Enums"]["security_event_kind"]
           message?: string | null
           record_id?: string | null
@@ -358,7 +358,7 @@ export type Database = {
           details?: Json | null
           detected_at?: string | null
           id?: string
-          ip_address?: unknown
+          ip_address?: unknown | null
           kind?: Database["public"]["Enums"]["security_event_kind"]
           message?: string | null
           record_id?: string | null
@@ -538,13 +538,34 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      cleanup_expired_sessions: { Args: never; Returns: number }
-      cleanup_old_rate_limit_data: { Args: never; Returns: undefined }
-      cleanup_old_security_data: { Args: never; Returns: string }
-      cleanup_old_security_events: { Args: never; Returns: undefined }
-      debug_whoami: { Args: never; Returns: Json }
-      is_admin: { Args: never; Returns: boolean }
-      is_bcrypt: { Args: { p: string }; Returns: boolean }
+      cleanup_expired_sessions: {
+        Args: Record<PropertyKey, never>
+        Returns: number
+      }
+      cleanup_old_rate_limit_data: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
+      cleanup_old_security_data: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
+      cleanup_old_security_events: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
+      debug_whoami: {
+        Args: Record<PropertyKey, never>
+        Returns: Json
+      }
+      is_admin: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
+      is_bcrypt: {
+        Args: { p: string }
+        Returns: boolean
+      }
       log_security_event: {
         Args: {
           p_event_type: string
@@ -557,9 +578,18 @@ export type Database = {
         }
         Returns: string
       }
-      rotate_expired_sessions: { Args: never; Returns: number }
-      unblock_ip: { Args: { ip_to_unblock: unknown }; Returns: undefined }
-      validate_encryption_key: { Args: never; Returns: boolean }
+      rotate_expired_sessions: {
+        Args: Record<PropertyKey, never>
+        Returns: number
+      }
+      unblock_ip: {
+        Args: { ip_to_unblock: unknown }
+        Returns: undefined
+      }
+      validate_encryption_key: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
       validate_password_strength: {
         Args: { password: string }
         Returns: boolean
