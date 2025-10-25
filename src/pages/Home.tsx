@@ -319,7 +319,7 @@ export default function Home() {
           <h1 className="text-3xl sm:text-4xl md:text-6xl font-orbitron font-bold mb-4 sm:mb-6 animate-fade-in">
             <span className="sr-only">Rôle : </span>
             <span className="cyber-text">—</span>
-            <div aria-live="polite" className="flex flex-wrap justify-center items-center gap-x-2 min-h-[3.5rem] sm:min-h-[4rem] md:min-h-[5rem]">
+            <div aria-live="polite" className="flex flex-wrap justify-center items-center gap-x-2 h-[5.5rem] sm:h-[6rem] md:h-[7rem]">
               <span
                 className="bg-gradient-to-r from-violet-500 via-fuchsia-500 to-pink-500 bg-clip-text text-transparent animate-fade-in"
                 style={{ animationDelay: "0.3s", animationFillMode: "both" }}
@@ -330,7 +330,7 @@ export default function Home() {
             </div>
           </h1>
           <p
-            className="text-lg sm:text-xl md:text-2xl text-muted-foreground mb-6 sm:mb-8 max-w-3xl mx-auto px-4 animate-fade-in"
+            className="text-base sm:text-lg md:text-xl text-muted-foreground mb-6 sm:mb-8 max-w-3xl mx-auto px-4 animate-fade-in"
             style={{ animationDelay: "0.6s", animationFillMode: "both" }}
           >
             Étudiant en 2ᵉ année de Master IRS (Université Paris-Saclay, 2024–2026). Recherche une alternance (3
