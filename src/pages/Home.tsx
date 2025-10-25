@@ -330,7 +330,7 @@ export default function Home() {
             </div>
           </h1>
           <p
-            className="text-lg sm:text-xl md:text-2xl text-muted-foreground mb-6 sm:mb-8 max-w-3xl mx-auto px-4 animate-fade-in"
+            className="text-sm sm:text-base md:text-lg text-muted-foreground mb-6 sm:mb-8 max-w-2xl mx-auto px-4 animate-fade-in leading-relaxed"
             style={{ animationDelay: "0.6s", animationFillMode: "both" }}
           >
             Étudiant en 2ᵉ année de Master IRS (Université Paris-Saclay, 2024–2026). Recherche une alternance (3
