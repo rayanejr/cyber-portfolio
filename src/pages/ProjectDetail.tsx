@@ -62,7 +62,7 @@ const ProjectDetail = () => {
 
   if (loading) {
     return (
-    <div className="w-full px-4 sm:px-6 lg:px-8 py-12 sm:py-20 max-w-screen-2xl mx-auto">
+    <div className="w-full px-4 sm:px-6 lg:px-12 xl:px-16 py-12 sm:py-20">
         <div className="animate-pulse space-y-4">
           <div className="h-8 bg-muted rounded w-3/4 sm:w-1/4 mb-6 sm:mb-8"></div>
           <div className="h-48 sm:h-64 bg-muted rounded mb-6 sm:mb-8"></div>
@@ -75,7 +75,7 @@ const ProjectDetail = () => {
 
   if (notFound || !project) {
     return (
-      <div className="w-full px-4 sm:px-6 lg:px-8 py-12 sm:py-20 max-w-screen-2xl mx-auto">
+      <div className="w-full px-4 sm:px-6 lg:px-12 xl:px-16 py-12 sm:py-20">
         <div className="text-center max-w-2xl mx-auto">
           <h1 className="text-3xl sm:text-4xl font-bold mb-4 cyber-text">Projet non trouvé</h1>
           <p className="text-muted-foreground mb-6 sm:mb-8 text-base sm:text-lg">
@@ -93,7 +93,7 @@ const ProjectDetail = () => {
   }
 
   return (
-    <div className="w-full px-4 sm:px-6 lg:px-8 py-12 sm:py-20 max-w-screen-2xl mx-auto">
+    <div className="w-full px-4 sm:px-6 lg:px-12 xl:px-16 py-12 sm:py-20">
       {/* Back Button */}
       <Button asChild variant="ghost" className="mb-6 sm:mb-8 cyber-border">
         <Link to="/projects">

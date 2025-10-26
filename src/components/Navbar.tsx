@@ -24,7 +24,7 @@ export function Navbar() {
 
   return (
     <nav className="sticky top-0 z-50 cyber-border bg-card/80 backdrop-blur-lg animate-slide-in-up">
-      <div className="w-full px-4 sm:px-6 lg:px-8 max-w-screen-2xl mx-auto">
+      <div className="w-full px-4 sm:px-6 lg:px-12 xl:px-16">
         <div className="flex justify-between h-14 sm:h-16">
           <div className="flex items-center">
             <Link to="/" className="flex items-center space-x-2 animate-fade-in">
