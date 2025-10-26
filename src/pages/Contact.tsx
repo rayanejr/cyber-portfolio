@@ -97,7 +97,7 @@ const Contact = () => {
             </div>
           </div>
 
-          <div className="w-full grid lg:grid-cols-2 gap-8 sm:gap-12">
+          <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-8 sm:gap-12">
             {/* Contact Form */}
             <Card className="cyber-border card-interactive bg-card/50 backdrop-blur-sm animate-fade-in" style={{ animationDelay: '0.6s', animationFillMode: 'both' }}>
               <CardHeader className="relative overflow-hidden">
