@@ -56,7 +56,7 @@ export function Footer() {
 
   return (
     <footer className="cyber-border bg-card/50 backdrop-blur-lg">
-      <div className="w-full px-4 sm:px-6 lg:px-8 py-8 sm:py-12 max-w-screen-2xl mx-auto">
+      <div className="w-full px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
           {/* Logo + identité */}
           <div className="col-span-1 sm:col-span-2">
