@@ -314,7 +314,7 @@ export default function Home() {
           className="absolute inset-0 bg-cover bg-center opacity-5 animate-scale-in"
           style={{ backgroundImage: `url(${heroImage})` }}
         />
-        <div className="relative w-full px-4 sm:px-6 lg:px-12 xl:px-16 text-center">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           {/* Titre rotatif typewriter + dégradé violet */}
           <h1 className="text-3xl sm:text-4xl md:text-6xl font-orbitron font-bold mb-4 sm:mb-6 animate-fade-in">
             <span className="sr-only">Rôle : </span>
@@ -369,7 +369,7 @@ export default function Home() {
       {/* ===== À PROPOS ===== */}
       <section className="py-12 sm:py-20 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-accent/5 via-transparent to-primary/5"></div>
-        <div className="w-full px-4 sm:px-6 lg:px-12 xl:px-16 relative z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-12 animate-fade-in">
             <div className="flex items-center justify-center gap-4 mb-6">
               <div className="w-3 h-3 bg-accent rounded-full animate-ping"></div>
@@ -688,7 +688,7 @@ export default function Home() {
 
       {/* ===== PROJETS RÉCENTS (DB) ===== */}
       <section className="py-20 bg-card/30">
-        <div className="w-full px-4 sm:px-6 lg:px-12 xl:px-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center mb-10">
             <h2 className="text-3xl md:text-4xl font-orbitron font-bold">
               Projets <span className="cyber-text">récents</span>
@@ -767,7 +767,7 @@ export default function Home() {
 
       {/* ===== CERTIFICATIONS (PDF/JPG seulement) ===== */}
       <section className="py-20">
-        <div className="w-full px-4 sm:px-6 lg:px-12 xl:px-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-orbitron font-bold">
               <span className="cyber-text">Certifications</span>
@@ -830,14 +830,14 @@ export default function Home() {
 
       {/* ===== ASSISTANT IA - ÉLARGI ===== */}
       <section className="py-20">
-        <div className="w-full px-4 sm:px-6 lg:px-12 xl:px-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <AIAssistantSection />
         </div>
       </section>
 
       {/* ===== CONTACT ===== */}
       <section className="py-20 bg-card/30">
-        <div className="w-full px-4 sm:px-6 lg:px-12 xl:px-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-orbitron font-bold">
               <span className="cyber-text">Contact</span>

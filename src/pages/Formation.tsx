@@ -69,7 +69,7 @@ const Formation = () => {
       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5"></div>
       
       <div className="relative py-12 sm:py-20">
-        <div className="w-full px-4 sm:px-6 lg:px-12 xl:px-16">
+        <div className="w-full px-4 sm:px-6 lg:px-8 max-w-screen-2xl mx-auto">
           {/* Enhanced header */}
           <div className="text-center mb-12 sm:mb-16 animate-fade-in">
             <div className="flex items-center justify-center gap-4 mb-6">
