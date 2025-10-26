@@ -274,7 +274,7 @@ const Admin = () => {
       
       {/* Header */}
       <div className="w-full border-b bg-card/80 backdrop-blur-xl relative z-10 shadow-lg">
-        <div className="w-full px-4 py-4">
+        <div className="w-full max-w-screen-2xl mx-auto px-4 py-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 animate-fade-in">
             <div className="flex-1 min-w-0">
               <h1 className="text-xl sm:text-2xl font-bold font-orbitron flex items-center gap-3">
@@ -309,7 +309,7 @@ const Admin = () => {
       </div>
 
       {/* Main Content */}
-      <div className="w-full px-2 sm:px-4 lg:px-8 py-4 sm:py-8 relative z-10">
+      <div className="w-full px-2 sm:px-4 lg:px-8 py-4 sm:py-8 relative z-10 max-w-screen-2xl mx-auto">
         <Tabs value={selectedTab} onValueChange={setSelectedTab}>
           {/* Tabs Navigation */}
           <div className="w-full overflow-x-auto pb-2 animate-fade-in" style={{ animationDelay: '0.3s', animationFillMode: 'both' }}>

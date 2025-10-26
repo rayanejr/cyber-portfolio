@@ -50,7 +50,7 @@ const Formation = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-background py-12 sm:py-20">
-        <div className="w-full px-4 sm:px-6 lg:px-8">
+        <div className="w-full px-4 sm:px-6 lg:px-8 max-w-screen-2xl mx-auto">
           <div className="text-center">
             <div className="animate-pulse space-y-4">
               <div className="h-8 bg-muted rounded w-2/3 sm:w-1/3 mx-auto"></div>
@@ -69,7 +69,7 @@ const Formation = () => {
       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5"></div>
       
       <div className="relative py-12 sm:py-20">
-        <div className="w-full px-4 sm:px-6 lg:px-8">
+        <div className="w-full px-4 sm:px-6 lg:px-8 max-w-screen-2xl mx-auto">
           {/* Enhanced header */}
           <div className="text-center mb-12 sm:mb-16 animate-fade-in">
             <div className="flex items-center justify-center gap-4 mb-6">
@@ -92,7 +92,7 @@ const Formation = () => {
             </div>
           </div>
 
-          <div className="w-full">
+          <div className="max-w-4xl mx-auto">
             <div className="relative">
               {/* Enhanced Timeline line */}
               <div className="absolute left-6 sm:left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-primary via-secondary to-accent opacity-50"></div>
