@@ -10,7 +10,6 @@ export default function CVDownloadButton() {
   useEffect(() => {
     const fetchResume = async () => {
       try {
-        // Récupérer directement le CV depuis admin_files
         const { data, error } = await supabase
           .from("admin_files")
           .select("file_url, filename")
@@ -19,20 +18,20 @@ export default function CVDownloadButton() {
           .order("created_at", { ascending: false })
           .limit(1);
 
-        if (!error && data && data.length > 0) {
+        if (error) {
+          console.error('[CVDownload] Erreur Supabase:', error);
+          setIsLoading(false);
+          return;
+        }
+
+        if (data && data.length > 0) {
+          console.log('[CVDownload] CV trouvé:', data[0].filename);
           setResumeUrl(data[0].file_url);
+        } else {
+          console.warn('[CVDownload] Aucun CV actif trouvé');
         }
       } catch (error) {
-        const timestamp = new Intl.DateTimeFormat('fr-FR', {
-          timeZone: 'Europe/Paris',
-          day: '2-digit',
-          month: '2-digit',
-          year: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit'
-        }).format(new Date());
-        console.error(`[CVDownload] ${timestamp} - Erreur lors de la récupération du CV:`, error);
+        console.error('[CVDownload] Erreur catch:', error);
       } finally {
         setIsLoading(false);
       }

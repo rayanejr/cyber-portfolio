@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ScrollToTop from "./components/ScrollToTop";
+import ErrorBoundary from "./components/ErrorBoundary";
 import { Navbar } from "./components/Navbar";
 import { Footer } from "./components/Footer";
 import Home from "./pages/Home";
@@ -22,15 +23,16 @@ import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient();
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <ScrollToTop />
-        <div className="min-h-screen flex flex-col">
-          <Navbar />
-          <Routes>
+  <ErrorBoundary>
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <ScrollToTop />
+          <div className="min-h-screen flex flex-col">
+            <Navbar />
+            <Routes>
             <Route path="/" element={
               <>
                 <main className="flex-1 pb-24 sm:pb-32 lg:pb-40">
@@ -109,12 +111,13 @@ const App = () => (
                 </main>
               </>
             } />
-          </Routes>
-          <Footer />
-        </div>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
+            </Routes>
+            <Footer />
+          </div>
+        </BrowserRouter>
+      </TooltipProvider>
+    </QueryClientProvider>
+  </ErrorBoundary>
 );
 
 export default App;
