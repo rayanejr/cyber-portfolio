@@ -621,7 +621,7 @@ export default function Home() {
                           <br />
                           {skills[selectedSkillIndex].items.map((skill, idx) => (
                             <span key={skill}>
-                              <span className="ml-8 text-accent">"{skill}"</span>
+                              <span className="ml-8 text-primary">"{skill}"</span>
                               {idx < skills[selectedSkillIndex].items.length - 1 && <span className="text-muted-foreground">,</span>}
                               <br />
                             </span>
@@ -638,7 +638,7 @@ export default function Home() {
                           <Badge
                             key={skill}
                             variant="secondary"
-                            className="text-sm font-medium bg-primary/10 text-foreground hover:bg-primary/20 transition-all cursor-default border border-primary/20"
+                            className="text-sm font-medium bg-primary/10 text-primary hover:bg-primary/20 transition-all cursor-default border border-primary/20"
                           >
                             ● {skill}
                           </Badge>
