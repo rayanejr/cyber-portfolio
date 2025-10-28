@@ -7,4 +7,8 @@ import { initFavicon } from './utils/faviconManager';
 // Initialiser le favicon dynamique
 initFavicon();
 
-createRoot(document.getElementById("root")!).render(<App />);
+createRoot(document.getElementById("root")!).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
