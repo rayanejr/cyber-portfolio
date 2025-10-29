@@ -55,10 +55,7 @@ export default function Home() {
   const [recentProjects, setRecentProjects] = useState<ProjectRow[]>([]);
   const { toast } = useToast();
 
-  // Forcer le scroll en haut au montage du composant
-  useEffect(() => {
-    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
-  }, []);
+  // Le scroll est géré par ScrollToTop component
 
   // === Titres qui tournent (typewriter) ===
   const roles = [

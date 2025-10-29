@@ -2,6 +2,13 @@ import React, { Component, ErrorInfo, ReactNode } from 'react';
 import { Button } from '@/components/ui/button';
 import { AlertTriangle } from 'lucide-react';
 
+// Helper to navigate without breaking React Router
+const navigateToHome = () => {
+  // Use history API instead of window.location to avoid full page reload
+  window.history.pushState({}, '', '/');
+  window.dispatchEvent(new PopStateEvent('popstate'));
+};
+
 interface Props {
   children: ReactNode;
 }
@@ -27,7 +34,7 @@ class ErrorBoundary extends Component<Props, State> {
 
   private handleReset = () => {
     this.setState({ hasError: false, error: null });
-    window.location.href = '/';
+    navigateToHome();
   };
 
   public render() {
