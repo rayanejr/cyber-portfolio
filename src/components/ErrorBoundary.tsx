@@ -1,13 +1,6 @@
 import React, { Component, ErrorInfo, ReactNode } from 'react';
 import { Button } from '@/components/ui/button';
-import { AlertTriangle } from 'lucide-react';
-
-// Helper to navigate without breaking React Router
-const navigateToHome = () => {
-  // Use history API instead of window.location to avoid full page reload
-  window.history.pushState({}, '', '/');
-  window.dispatchEvent(new PopStateEvent('popstate'));
-};
+import { AlertTriangle, Home } from 'lucide-react';
 
 interface Props {
   children: ReactNode;
@@ -16,25 +9,37 @@ interface Props {
 interface State {
   hasError: boolean;
   error: Error | null;
+  errorInfo: ErrorInfo | null;
 }
 
 class ErrorBoundary extends Component<Props, State> {
   public state: State = {
     hasError: false,
-    error: null
+    error: null,
+    errorInfo: null
   };
 
   public static getDerivedStateFromError(error: Error): State {
-    return { hasError: true, error };
+    return { hasError: true, error, errorInfo: null };
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error('ErrorBoundary caught an error:', error, errorInfo);
+    // Store error info in state
+    this.setState({
+      errorInfo
+    });
   }
 
   private handleReset = () => {
-    this.setState({ hasError: false, error: null });
-    navigateToHome();
+    this.setState({ hasError: false, error: null, errorInfo: null });
+  };
+
+  private handleGoHome = () => {
+    this.setState({ hasError: false, error: null, errorInfo: null });
+    // Force a proper navigation using pushState
+    window.history.pushState(null, '', '/');
+    window.location.reload();
   };
 
   public render() {
@@ -54,13 +59,31 @@ class ErrorBoundary extends Component<Props, State> {
               <p className="text-muted-foreground">
                 Nous sommes désolés, quelque chose s'est mal passé.
               </p>
+              {this.state.error && (
+                <details className="mt-4 text-left text-xs">
+                  <summary className="cursor-pointer text-muted-foreground hover:text-foreground">
+                    Détails de l'erreur
+                  </summary>
+                  <pre className="mt-2 p-2 bg-muted rounded text-xs overflow-auto">
+                    {this.state.error.toString()}
+                  </pre>
+                </details>
+              )}
             </div>
-            <Button 
-              onClick={this.handleReset}
-              className="w-full"
-            >
-              Retour à l'accueil
-            </Button>
+            <div className="flex gap-2 justify-center">
+              <Button 
+                onClick={this.handleReset}
+                variant="outline"
+              >
+                Réessayer
+              </Button>
+              <Button 
+                onClick={this.handleGoHome}
+              >
+                <Home className="w-4 h-4 mr-2" />
+                Retour à l'accueil
+              </Button>
+            </div>
           </div>
         </div>
       );
