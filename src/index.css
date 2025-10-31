@@ -73,58 +73,30 @@
   }
 
   .light {
-    /* Enhanced light mode with vibrant, professional colors */
-    --background: 210 40% 98%;
-    --foreground: 222 87% 12%;
-    
+    /* Light mode overrides with enhanced animations */
+    --background: 200 100% 98%;
+    --foreground: 222 87% 8%;
     --card: 0 0% 100%;
-    --card-foreground: 222 87% 12%;
-    
+    --card-foreground: 222 87% 8%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222 87% 12%;
+    --popover-foreground: 222 87% 8%;
+    --primary: 195 100% 45%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 142 100% 40%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 200 50% 95%;
+    --muted-foreground: 222 47% 35%;
+    --accent: 270 91% 55%;
+    --accent-foreground: 0 0% 98%;
+    --border: 200 50% 85%;
+    --input: 200 50% 90%;
+    --gradient-hero: linear-gradient(135deg, hsl(200 100% 98%), hsl(200 50% 95%));
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(200 50% 98%));
     
-    /* Vibrant cyan primary - professional and modern */
-    --primary: 189 95% 42%;
-    --primary-foreground: 0 0% 100%;
-    
-    /* Rich teal secondary */
-    --secondary: 175 70% 45%;
-    --secondary-foreground: 0 0% 100%;
-    
-    --muted: 210 40% 96%;
-    --muted-foreground: 222 47% 40%;
-    
-    /* Purple accent for highlights */
-    --accent: 270 75% 60%;
-    --accent-foreground: 0 0% 100%;
-    
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
-    
-    --border: 210 40% 90%;
-    --input: 210 40% 94%;
-    --ring: 189 95% 42%;
-    
-    /* Enhanced light gradients */
-    --gradient-hero: linear-gradient(135deg, hsl(210 40% 98%), hsl(210 50% 96%));
-    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(210 40% 98%));
-    --gradient-cyber: linear-gradient(135deg, hsl(189 95% 42%), hsl(270 75% 60%));
-    --gradient-matrix: linear-gradient(135deg, hsl(175 70% 45%), hsl(189 95% 42%));
-    
-    /* Refined light mode glows */
-    --glow-primary: 0 0 25px hsl(189 95% 42% / 0.3), 0 0 50px hsl(189 95% 42% / 0.15);
-    --glow-secondary: 0 0 25px hsl(175 70% 45% / 0.3), 0 0 50px hsl(175 70% 45% / 0.15);
-    --glow-accent: 0 0 25px hsl(270 75% 60% / 0.3), 0 0 50px hsl(270 75% 60% / 0.15);
-    
-    /* Sidebar light mode */
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 222 87% 12%;
-    --sidebar-primary: 189 95% 42%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 210 40% 96%;
-    --sidebar-accent-foreground: 222 87% 12%;
-    --sidebar-border: 210 40% 90%;
-    --sidebar-ring: 189 95% 42%;
+    /* Enhanced light mode effects */
+    --glow-primary: 0 0 20px hsl(195 100% 45% / 0.4);
+    --glow-secondary: 0 0 20px hsl(142 100% 40% / 0.4);
+    --glow-accent: 0 0 20px hsl(270 91% 55% / 0.4);
   }
 }
 
